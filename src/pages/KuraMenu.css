@@ -1,0 +1,245 @@
+.kura {
+  min-height: 100vh;
+}
+
+/* ---------- Header: the logo photo ---------- */
+/* The logo sits in the middle of the photo, so a centred "cover" crop keeps it
+   visible; very wide screens switch to a height-based size so it never clips. */
+.kura-header {
+  height: clamp(16rem, 34vw, 26rem);
+  background-color: #525e33;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@media (min-width: 80rem) {
+  .kura-header {
+    background-size: auto 240%;
+    box-shadow: inset 0 0 12rem 4rem #525e33;
+  }
+}
+
+/* ---------- Category tabs ---------- */
+.kura-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--paper-deep);
+  border-bottom: 1px solid rgba(43, 42, 38, 0.15);
+}
+
+.kura-tabs ul {
+  display: flex;
+  gap: 0.25rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.kura-tabs ul::-webkit-scrollbar {
+  display: none;
+}
+
+.kura-tabs a {
+  display: block;
+  white-space: nowrap;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.kura-tabs a:hover {
+  color: var(--ink);
+}
+
+.kura-tabs a.is-active {
+  background: var(--leaf);
+  color: var(--paper);
+}
+
+/* ---------- Sheet (two columns on wide screens, like the printed menu) ---------- */
+.kura-sheet {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  columns: 2 26rem;
+  column-gap: 4rem;
+}
+
+.kura-section {
+  break-inside: avoid;
+  margin-bottom: 2.75rem;
+  scroll-margin-top: 4rem;
+}
+
+/* Ribbon banner — the one decorative flourish, echoing the printed menu */
+.kura-ribbon {
+  position: relative;
+  display: inline-block;
+  margin: 0 0 1rem 0.75rem;
+  padding: 0.1rem 1.5rem 0.2rem;
+  background: var(--leaf);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.03em;
+  transform: rotate(-1.2deg);
+}
+
+.kura-ribbon::before,
+.kura-ribbon::after {
+  content: '';
+  position: absolute;
+  top: 0.35rem;
+  width: 1rem;
+  height: 100%;
+  background: var(--leaf-deep);
+  z-index: -1;
+}
+
+.kura-ribbon::before {
+  left: -0.75rem;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 40% 50%);
+}
+
+.kura-ribbon::after {
+  right: -0.75rem;
+  clip-path: polygon(0 0, 100% 0, 60% 50%, 100% 100%, 0 100%);
+}
+
+.kura-ribbon span {
+  position: relative;
+}
+
+.kura-note {
+  margin: -0.25rem 0 0.75rem;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* ---------- Items ---------- */
+.kura-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.kura-item + .kura-item {
+  margin-top: 0.6rem;
+}
+
+.kura-item-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.kura-item-name {
+  font-weight: 700;
+}
+
+.kura-item-detail {
+  margin-left: 0.5rem;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.kura-leader {
+  flex: 1;
+  min-width: 1.5rem;
+  border-bottom: 2px dotted rgba(43, 42, 38, 0.35);
+  transform: translateY(-0.3em);
+}
+
+.kura-price {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.kura-price--ask {
+  color: var(--ink-soft);
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.kura-sizes {
+  display: flex;
+  gap: 0.75rem;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.kura-size small {
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+.kura-item-desc {
+  margin: 0.2rem 0 0;
+  max-width: 34rem;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+/* ---------- Sides ---------- */
+.kura-sides {
+  margin-top: 1.25rem;
+  padding: 0.9rem 1rem;
+  border-left: 3px solid var(--cherry);
+  background: rgba(90, 104, 54, 0.1);
+}
+
+.kura-sides p {
+  margin: 0 0 0.4rem;
+  font-weight: 700;
+}
+
+.kura-sides ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.kura-sides li::marker {
+  color: var(--leaf);
+}
+
+/* ---------- Footer ---------- */
+.kura-footer {
+  padding: 1.5rem 1.25rem 2.5rem;
+  text-align: center;
+  border-top: 1px solid rgba(43, 42, 38, 0.15);
+}
+
+.kura-footer p {
+  margin: 0;
+}
+
+.kura-footer a {
+  color: var(--cherry);
+  font-weight: 700;
+}
+
+@media (max-width: 30rem) {
+  .kura-ribbon {
+    font-size: 1.75rem;
+  }
+  .kura-sizes {
+    flex-direction: column;
+    gap: 0;
+    align-items: flex-end;
+  }
+}
