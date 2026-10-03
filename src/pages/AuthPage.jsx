@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, Navigate, useLocation } from 'react-router-dom'
-import { useAuth } from '../auth/AuthContext.jsx'
+import { homeFor, useAuth } from '../auth/AuthContext.jsx'
 import { errorMessage, t } from '../i18n/index.js'
 import Field from '../components/Field.jsx'
 
@@ -13,8 +13,11 @@ export default function AuthPage({ mode }) {
   const [pending, setPending] = useState(false)
   const isRegister = mode === 'register'
 
+  // After logging in, go back to the page that asked for it (e.g. a shared
+  // /negocios/<id> link), or to the user's home
   if (ready && user) {
-    return <Navigate to={location.state?.from?.pathname ?? '/dashboard'} replace />
+    const from = location.state?.from
+    return <Navigate to={from ? `${from.pathname}${from.search ?? ''}` : homeFor(user)} replace />
   }
 
   const update = (field) => (e) => setForm({ ...form, [field]: e.target.value })

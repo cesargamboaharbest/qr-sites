@@ -1,3 +1,6 @@
+// Shown for products (in menus with a cart) that have no photo yet
+export const PLACEHOLDER_IMAGE = '/generic-product.png'
+
 // Groups products by category, keeping the order in which categories first appear.
 // Products without a category go last, under `fallbackLabel`.
 export function groupByCategory(products, fallbackLabel) {

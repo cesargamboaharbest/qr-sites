@@ -3,6 +3,8 @@ import { Router } from 'express'
 import mongoose from 'mongoose'
 import Business from '../models/Business.js'
 import Order from '../models/Order.js'
+import User from '../models/User.js'
+import { THEMES } from '../themes.js'
 import { HttpError } from '../errors.js'
 
 const MAX_QUANTITY = 99
@@ -23,17 +25,26 @@ function findTable(business, tableId) {
 router.get('/:slug', async (req, res) => {
   const business = await loadPublished(req.params.slug)
   const table = req.query.table ? findTable(business, req.query.table) : null
+  // The theme is chosen by the owner for all their sites
+  const owner = await User.findById(business.owner, { theme: 1 })
   res.json({
+    theme: owner?.theme ?? THEMES[0],
     business: {
       name: business.name,
       slug: business.slug,
       description: business.description,
       currency: business.currency,
       ordering: business.ordering,
-      theme: business.theme,
       products: business.products
         .filter((p) => p.available)
-        .map(({ _id, name, description, category, price }) => ({ _id, name, description, category, price })),
+        .map(({ _id, name, description, category, price, imageUrl }) => ({
+          _id,
+          name,
+          description,
+          category,
+          price,
+          imageUrl,
+        })),
     },
     table: table && { id: table._id, name: table.name },
   })

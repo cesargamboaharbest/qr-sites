@@ -1,0 +1,93 @@
+/* The owner's theme (top navigation) also styles the dashboard. The admin
+   area is built on the colour/font tokens from index.css and admin.css, so
+   each theme only redefines them on `.admin[data-theme]` plus a few touches.
+   Kura is the default look and needs no overrides. */
+.admin {
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+/* ---------- Tienda de té ---------- */
+.admin[data-theme='tea'] {
+  --paper: #f7f5f1;
+  --paper-deep: #fff;
+  --card: #fff;
+  --ink: #2a2a2a;
+  --ink-soft: #6b6b6b;
+  --leaf: #9a7b4f;
+  --leaf-deep: #7a5f3a;
+  --cherry: #a0462a;
+  --line: rgba(0, 0, 0, 0.08);
+  --font-body: 'Almarai', system-ui, sans-serif;
+}
+
+.admin[data-theme='tea'] .brand {
+  font-family: 'Archivo', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+}
+
+.admin[data-theme='tea'] h1 {
+  font-family: 'Catamaran', sans-serif;
+  font-weight: 400;
+}
+
+.admin[data-theme='tea'] .btn-ghost {
+  border-color: transparent;
+  background: #e8e5df;
+}
+
+.admin[data-theme='tea'] .tab,
+.admin[data-theme='tea'] .admin-nav a {
+  font-family: 'Archivo', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ---------- Boutique ---------- */
+.admin[data-theme='boutique'] {
+  --paper: #fff;
+  --paper-deep: #fff;
+  --card: #fff;
+  --ink: #000;
+  --ink-soft: #777;
+  --leaf: #333;
+  --leaf-deep: #000;
+  --cherry: #b00020;
+  --line: #e5e5e5;
+  --font-body: 'Montserrat', 'Lucida Grande', Tahoma, sans-serif;
+}
+
+.admin[data-theme='boutique'] .admin-header {
+  border-top: 0.4rem solid #fbe8e8;
+}
+
+.admin[data-theme='boutique'] .brand {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin[data-theme='boutique'] h1 {
+  font-family: 'Playfair Display', Didot, Georgia, serif;
+  font-weight: 400;
+}
+
+.admin[data-theme='boutique'] .btn,
+.admin[data-theme='boutique'] .tab,
+.admin[data-theme='boutique'] .admin-nav a,
+.admin[data-theme='boutique'] .segmented button {
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.admin[data-theme='boutique'] :is(.btn, input, select, textarea, .badge, .card, .notice, .choice, .segmented, .segmented button, .admin-nav a) {
+  border-radius: 0;
+}

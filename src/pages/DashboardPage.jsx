@@ -4,17 +4,20 @@ import { api } from '../api/client.js'
 import { errorMessage, t } from '../i18n/index.js'
 import { publicMenuUrl, slugify } from '../utils/format.js'
 import Field from '../components/Field.jsx'
-import { DEFAULT_THEME, MENU_THEMES } from '../themes/index.js'
+import ProChip from '../components/ProChip.jsx'
+import { useAuth } from '../auth/AuthContext.jsx'
 
 function CreateBusinessForm() {
   const navigate = useNavigate()
+  const { user } = useAuth()
+  // Menus with a shopping cart are part of the Pro plan
+  const cartLocked = !user.proPlan
   const [form, setForm] = useState({
     name: '',
     slug: '',
     description: '',
     currency: 'CRC',
-    ordering: true,
-    theme: DEFAULT_THEME,
+    ordering: !cartLocked,
   })
   const [slugTouched, setSlugTouched] = useState(false)
   const [error, setError] = useState('')
@@ -41,18 +44,24 @@ function CreateBusinessForm() {
       <fieldset className="choice-group">
         <legend>{t('businessForm.type')}</legend>
         {[
-          { ordering: true, label: 'businessForm.typeCart', hint: 'businessForm.typeCartHint' },
+          { ordering: true, label: 'businessForm.typeCart', hint: 'businessForm.typeCartHint', locked: cartLocked },
           { ordering: false, label: 'businessForm.typeMenuOnly', hint: 'businessForm.typeMenuOnlyHint' },
         ].map((option) => (
-          <label key={option.label} className={`choice ${form.ordering === option.ordering ? 'is-selected' : ''}`}>
+          <label
+            key={option.label}
+            className={`choice ${form.ordering === option.ordering ? 'is-selected' : ''} ${option.locked ? 'is-locked' : ''}`}
+          >
             <input
               type="radio"
               name="business-type"
               checked={form.ordering === option.ordering}
               onChange={() => setForm({ ...form, ordering: option.ordering })}
+              disabled={option.locked}
             />
             <span>
-              <strong>{t(option.label)}</strong>
+              <strong>
+                {t(option.label)} {option.locked && <ProChip />}
+              </strong>
               <small>{t(option.hint)}</small>
             </span>
           </label>
@@ -95,21 +104,6 @@ function CreateBusinessForm() {
           <option value="USD">{t('currencies.USD')}</option>
         </select>
       </label>
-      {!form.ordering && (
-        <label className="field">
-          <span>{t('businessForm.theme')}</span>
-          <select value={form.theme} onChange={(e) => setForm({ ...form, theme: e.target.value })}>
-            {Object.keys(MENU_THEMES).map((key) => (
-              <option key={key} value={key}>
-                {t('themes.option', {
-                  name: t(`themes.${key}.name`),
-                  description: t(`themes.${key}.description`),
-                })}
-              </option>
-            ))}
-          </select>
-        </label>
-      )}
       {error && <p className="form-error" role="alert">{error}</p>}
       <button className="btn btn-primary" disabled={pending}>
         {pending

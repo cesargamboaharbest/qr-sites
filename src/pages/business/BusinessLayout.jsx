@@ -85,10 +85,7 @@ export default function BusinessLayout() {
             <span className={`badge ${business.published ? 'badge-ok' : ''}`}>
               {t(business.published ? 'status.published' : 'status.draft')}
             </span>{' '}
-            <span className="badge">
-              {t(business.ordering ? 'types.cart' : 'types.menuOnly')}
-              {!business.ordering && ` · ${t(`themes.${business.theme}.name`)}`}
-            </span>
+            <span className="badge">{t(business.ordering ? 'types.cart' : 'types.menuOnly')}</span>
           </h1>
           {business.published ? (
             <p className="public-url">

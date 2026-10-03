@@ -1,11 +1,13 @@
 import { Router } from 'express'
-import Business, { RESERVED_SLUGS, SLUG_PATTERN, slugify } from '../models/Business.js'
-import Order, { ACTIVE_STATUSES, ORDER_STATUSES } from '../models/Order.js'
+import Business, { IMAGE_URL_PATTERN, RESERVED_SLUGS, SLUG_PATTERN, slugify } from '../models/Business.js'
+import Order from '../models/Order.js'
 import { HttpError } from '../errors.js'
-import { requireAuth } from '../middleware/auth.js'
+import { ownerOnly, requireAuth } from '../middleware/auth.js'
+import { listOrders, updateOrderStatus } from '../orders.js'
+import { ownerHasPro } from '../plan.js'
 
 const router = Router()
-router.use(requireAuth)
+router.use(requireAuth, ownerOnly)
 
 function pick(source, keys) {
   const out = {}
@@ -57,9 +59,14 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  const fields = pick(req.body, ['name', 'description', 'currency', 'ordering', 'theme'])
+  const fields = pick(req.body, ['name', 'description', 'currency', 'ordering'])
   const slug = slugify(req.body?.slug || fields.name || '')
   validateSlug(slug)
+  // Menus with a shopping cart are a Pro feature; without Pro the default is
+  // a menu without a cart
+  const pro = await ownerHasPro(req.userId)
+  fields.ordering = fields.ordering === undefined ? pro : Boolean(fields.ordering)
+  if (fields.ordering && !pro) throw new HttpError(403, 'PRO_REQUIRED')
   const business = new Business({ ...fields, slug, owner: req.userId })
   await saveBusiness(business)
   res.status(201).json({ business: business.toOwnerJSON() })
@@ -72,7 +79,7 @@ router.get('/:id', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
   const business = await loadOwned(req)
-  const fields = pick(req.body, ['name', 'description', 'currency', 'theme', 'published'])
+  const fields = pick(req.body, ['name', 'description', 'currency', 'published'])
   if (req.body?.slug !== undefined) {
     fields.slug = slugify(req.body.slug)
     validateSlug(fields.slug)
@@ -95,9 +102,20 @@ router.delete('/:id', async (req, res) => {
 
 // ---------- Products ----------
 
+// Product photos are only for menus with a cart
+function productFields(business, body) {
+  const keys = ['name', 'description', 'category', 'available']
+  if (business.ordering) keys.push('imageUrl')
+  const fields = pick(body, keys)
+  if (fields.imageUrl !== undefined && !IMAGE_URL_PATTERN.test(String(fields.imageUrl))) {
+    throw new HttpError(400, 'INVALID_IMAGE_URL')
+  }
+  return fields
+}
+
 router.post('/:id/products', async (req, res) => {
   const business = await loadOwned(req)
-  const fields = pick(req.body, ['name', 'description', 'category', 'available'])
+  const fields = productFields(business, req.body)
   business.products.push({ ...fields, price: parsePrice(req.body?.price) })
   await business.save()
   res.status(201).json({ business: business.toOwnerJSON() })
@@ -106,7 +124,7 @@ router.post('/:id/products', async (req, res) => {
 router.patch('/:id/products/:productId', async (req, res) => {
   const business = await loadOwned(req)
   const product = findProduct(business, req.params.productId)
-  const fields = pick(req.body, ['name', 'description', 'category', 'available'])
+  const fields = productFields(business, req.body)
   if (req.body?.price !== undefined) fields.price = parsePrice(req.body.price)
   product.set(fields)
   await business.save()
@@ -142,23 +160,12 @@ router.delete('/:id/tables/:tableId', async (req, res) => {
 
 router.get('/:id/orders', async (req, res) => {
   const business = await loadOwned(req)
-  const filter = { business: business._id }
-  if (req.query.status === 'active') filter.status = { $in: ACTIVE_STATUSES }
-  const orders = await Order.find(filter).sort({ createdAt: -1 }).limit(200)
-  res.json({ orders })
+  res.json({ orders: await listOrders(business._id, req.query.status) })
 })
 
 router.patch('/:id/orders/:orderId', async (req, res) => {
   const business = await loadOwned(req)
-  const status = req.body?.status
-  if (!ORDER_STATUSES.includes(status)) throw new HttpError(400, 'INVALID_STATUS')
-  const order = await Order.findOneAndUpdate(
-    { _id: req.params.orderId, business: business._id },
-    { status },
-    { returnDocument: 'after' }
-  )
-  if (!order) throw new HttpError(404, 'NOT_FOUND')
+  const order = await updateOrderStatus(business._id, req.params.orderId, req.body?.status)
   res.json({ order })
 })
-
 export default router

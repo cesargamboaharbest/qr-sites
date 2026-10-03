@@ -17,6 +17,18 @@
     "open": "Abrir",
     "retry": "Reintentar"
   },
+  "plan": {
+    "proChip": "Parte del plan Pro",
+    "proBadge": "Plan Pro",
+    "lockedHint": "Los meseros son parte del plan Pro. Contáctanos para activarlo en tu cuenta."
+  },
+  "nav": {
+    "label": "Navegación principal",
+    "businesses": "Mis negocios",
+    "waiters": "Meseros",
+    "theme": "Tema",
+    "themeHint": "Estilo de todos tus sitios: menús y páginas con carrito de compras"
+  },
   "auth": {
     "loginTitle": "Iniciar sesión",
     "loginSubtitle": "Administra tus negocios, menús y pedidos.",
@@ -58,7 +70,6 @@
     "typeCartHint": "Los clientes ordenan desde su mesa y ves los pedidos en tu panel.",
     "typeMenuOnly": "Menú sin carrito de compras",
     "typeMenuOnlyHint": "Solo el menú con código QR: secciones, productos, precios y descripciones.",
-    "theme": "Estilo del menú",
     "submit": "Crear negocio",
     "submitMenuOnly": "Crear menú sin carrito de compras",
     "submitting": "Creando…"
@@ -68,6 +79,14 @@
     "kura": {
       "name": "Kura",
       "description": "cintas y dos columnas"
+    },
+    "tea": {
+      "name": "Tienda de té",
+      "description": "fondo crema, tarjetas pastel y títulos ligeros"
+    },
+    "boutique": {
+      "name": "Boutique",
+      "description": "blanco y negro, mayúsculas y portada elegante"
     }
   },
   "types": {
@@ -96,7 +115,6 @@
     "publishHint": "Agrega tus productos y presiona «Crear» para generar la dirección pública de tu menú.",
     "publishedNotice": "¡Listo! Tu menú ya es público. Ahora agrega mesas para generar sus códigos QR.",
     "publishedNoticeMenuOnly": "¡Listo! Tu menú ya es público. Ve a «Código QR» para descargarlo o imprimirlo.",
-    "theme": "Estilo",
     "publicUrl": "Dirección pública",
     "unpublish": "Despublicar",
     "unpublishConfirm": "¿Despublicar el menú? Los códigos QR dejarán de funcionar hasta que lo vuelvas a crear.",
@@ -120,6 +138,14 @@
     "description": "Descripción (opcional)",
     "descriptionPlaceholder": "Ej. Espresso con leche espumada",
     "uncategorized": "Otros",
+    "image": "Imagen",
+    "uploadImage": "Subir imagen",
+    "changeImage": "Cambiar imagen",
+    "removeImage": "Quitar imagen",
+    "uploadingImage": "Subiendo imagen…",
+    "imageHint": "JPG, PNG o WebP. Las fotos grandes se reducen automáticamente.",
+    "preview": "Vista previa",
+    "previewHint": "Así verán tu menú los clientes en su teléfono. Cambia el estilo con «Tema» arriba.",
     "soldOut": "Agotado",
     "markSoldOut": "Marcar agotado",
     "markAvailable": "Marcar disponible",
@@ -146,6 +172,23 @@
     "qrAlt": "Código QR del menú de {name}",
     "print": "Imprimir código"
   },
+  "waiters": {
+    "pageTitle": "Meseros",
+    "title": "Crear mesero",
+    "hint": "Los meseros inician sesión en {url} con su usuario y contraseña, y ven los pedidos de todos tus negocios.",
+    "username": "Usuario del mesero",
+    "password": "Contraseña",
+    "add": "Crear mesero",
+    "adding": "Creando…",
+    "createdNotice": "Mesero «{username}» creado. Comparte el usuario y la contraseña con tu mesero.",
+    "listTitle": "Meseros",
+    "empty": "Aún no hay meseros.",
+    "deleteConfirm": "¿Eliminar al mesero «{username}»? Ya no podrá iniciar sesión."
+  },
+  "waiter": {
+    "title": "Pedidos de todos los negocios",
+    "signedInAs": "Mesero: {username}"
+  },
   "orders": {
     "title": "Pedidos",
     "filterActive": "Activos",
@@ -171,6 +214,7 @@
   },
   "menu": {
     "categoriesLabel": "Categorías del menú",
+    "ourMenu": "Nuestro menú",
     "noTable": "Escanea el código QR de tu mesa para hacer un pedido.",
     "tableNotFound": "No encontramos esta mesa. Pide ayuda al personal.",
     "orderingAt": "Ordenando en {table}",
@@ -215,6 +259,11 @@
     "PRODUCT_UNAVAILABLE": "Uno de los productos ya no está disponible. Revisa tu pedido.",
     "INVALID_STATUS": "Estado de pedido inválido.",
     "ORDERING_DISABLED": "Este menú no recibe pedidos en línea.",
+    "FORBIDDEN": "No tienes permiso para hacer esto.",
+    "PRO_REQUIRED": "Esta función es parte del plan Pro.",
+    "INVALID_IMAGE": "Elige un archivo de imagen de menos de 20 MB.",
+    "INVALID_IMAGE_URL": "La imagen no es válida. Súbela de nuevo.",
+    "UPLOAD_FAILED": "No pudimos subir la imagen. Intenta de nuevo.",
     "DB_UNAVAILABLE": "El servidor no está disponible en este momento. Intenta de nuevo en unos minutos."
   }
 }

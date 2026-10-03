@@ -3,9 +3,11 @@ import { useParams } from 'react-router-dom'
 import { api } from '../api/client.js'
 import { errorMessage, t } from '../i18n/index.js'
 import { formatPrice } from '../utils/format.js'
-import { groupByCategory } from '../utils/products.js'
+import { PLACEHOLDER_IMAGE, groupByCategory } from '../utils/products.js'
 import KuraMenu from './KuraMenu.jsx'
-import { DEFAULT_THEME, MENU_THEMES } from '../themes/index.js'
+import { getTheme } from '../themes/index.js'
+import { useSectionNav, withPeriod } from '../themes/useSectionNav.js'
+import heroUrl from '../assets/kura-hero.png'
 import './PublicMenu.css'
 
 // Cart is { [productId]: quantity }, remembered per table so a reload keeps it
@@ -63,70 +65,27 @@ function QuantityControl({ product, quantity, onChange }) {
   )
 }
 
-export default function PublicMenuPage() {
-  const { slug, tableId } = useParams()
-  const [data, setData] = useState(null)
-  const [loadError, setLoadError] = useState(null)
-  const [cart, changeQuantity, setCart] = useCart(`qr-sites:cart:${slug}:${tableId ?? ''}`)
+// Menu with a shopping cart. The layout is shared by all themes; each theme
+// styles it through the `pm--<theme>` class (see PublicMenu.css).
+function CartMenu({ data, themeKey, tableId, reload }) {
+  const { business, table } = data
+  const [cart, changeQuantity, setCart] = useCart(`qr-sites:cart:${business.slug}:${tableId ?? ''}`)
   const [notes, setNotes] = useState('')
   const [sendError, setSendError] = useState('')
   const [sending, setSending] = useState(false)
   const [sentOrder, setSentOrder] = useState(null)
   const dialogRef = useRef(null)
-
-  const load = useCallback(async () => {
-    try {
-      const query = tableId ? `?table=${encodeURIComponent(tableId)}` : ''
-      setData(await api(`/public/${encodeURIComponent(slug)}${query}`))
-      setLoadError(null)
-    } catch (err) {
-      setLoadError(err.code)
-    }
-  }, [slug, tableId])
-
-  useEffect(() => {
-    load()
-  }, [load])
-
-  // The original hand-built Kura menu stays available at /kura until a
-  // "kura" business is published here, and whenever the API can't be reached,
-  // so the printed Kura QR codes keep working.
-  if (loadError && slug.toLowerCase() === 'kura') return <KuraMenu />
-
-  // Menus without a cart are read-only and use their chosen style
-  if (data && !data.business.ordering) {
-    const Theme = MENU_THEMES[data.business.theme] ?? MENU_THEMES[DEFAULT_THEME]
-    return <Theme business={data.business} />
-  }
-
-  if (!data) {
-    return (
-      <main className="pm-status">
-        {loadError ? (
-          <>
-            <p>{loadError === 'NOT_FOUND' ? t('menu.notFound') : errorMessage(loadError)}</p>
-            {loadError !== 'NOT_FOUND' && (
-              <button type="button" className="btn btn-primary" onClick={load}>
-                {t('app.retry')}
-              </button>
-            )}
-          </>
-        ) : (
-          <p>{t('app.loading')}</p>
-        )}
-      </main>
-    )
-  }
-
-  const { business, table } = data
-  const canOrder = Boolean(table)
   const groups = groupByCategory(business.products, t('products.uncategorized'))
+  const { rootRef, active, goToSection } = useSectionNav(groups, '.pm-section')
+
+  const canOrder = Boolean(table)
   const cartLines = business.products
     .filter((p) => cart[p._id])
     .map((p) => ({ product: p, quantity: cart[p._id] }))
   const itemCount = cartLines.reduce((sum, line) => sum + line.quantity, 0)
   const total = cartLines.reduce((sum, line) => sum + line.quantity * line.product.price, 0)
   const price = (amount) => formatPrice(amount, business.currency)
+  const productName = (name) => (themeKey === 'tea' ? withPeriod(name) : name)
 
   async function sendOrder(e) {
     e.preventDefault()
@@ -148,17 +107,18 @@ export default function PublicMenuPage() {
     } catch (err) {
       setSendError(errorMessage(err.code))
       // Refresh the menu so sold-out products drop out of the cart
-      if (err.code === 'PRODUCT_UNAVAILABLE') load()
+      if (err.code === 'PRODUCT_UNAVAILABLE') reload()
     } finally {
       setSending(false)
     }
   }
 
   return (
-    <div className="pm">
+    <div className={`pm pm--${themeKey}`} ref={rootRef} style={{ '--pm-hero-img': `url(${heroUrl})` }}>
+      {business.description && <p className="pm-band">{business.description}</p>}
       <header className="pm-hero">
-        <h1>{business.name}</h1>
-        {business.description && <p>{business.description}</p>}
+        <p className="pm-kicker">{t('menu.ourMenu')}</p>
+        <h1 className="pm-name">{business.name}</h1>
       </header>
 
       {tableId && !table && <p className="pm-banner pm-banner--warn">{t('menu.tableNotFound')}</p>}
@@ -170,7 +130,14 @@ export default function PublicMenuPage() {
           <ul>
             {groups.map((g) => (
               <li key={g.id}>
-                <a href={`#${g.id}`}>{g.category}</a>
+                <a
+                  href={`#${g.id}`}
+                  onClick={(e) => goToSection(e, g.id)}
+                  className={active === g.id ? 'is-active' : undefined}
+                  aria-current={active === g.id ? 'true' : undefined}
+                >
+                  {g.category}
+                </a>
               </li>
             ))}
           </ul>
@@ -193,17 +160,29 @@ export default function PublicMenuPage() {
         {groups.map((group) => (
           <section key={group.id} id={group.id} className="pm-section" aria-labelledby={`${group.id}-title`}>
             <h2 id={`${group.id}-title`} className="pm-category">
-              {group.category}
+              <span>{group.category}</span>
             </h2>
-            <ul className="pm-items">
+            <ul className="pm-grid">
               {group.items.map((product) => (
-                <li key={product._id} className="pm-item">
-                  <div className="pm-item-text">
-                    <span className="pm-item-name">{product.name}</span>
-                    {product.description && <p className="pm-item-desc">{product.description}</p>}
-                    <span className="pm-item-price">{price(product.price)}</span>
+                <li key={product._id} className="pm-card">
+                  <img
+                    className="pm-card-img"
+                    src={product.imageUrl || PLACEHOLDER_IMAGE}
+                    alt=""
+                    loading="lazy"
+                    width="600"
+                    height="600"
+                  />
+                  <div className="pm-card-body">
+                    <h3 className="pm-card-name">{productName(product.name)}</h3>
+                    {product.description && <p className="pm-card-desc">{product.description}</p>}
+                    <span className="pm-card-price">{price(product.price)}</span>
                   </div>
-                  {canOrder && <QuantityControl product={product} quantity={cart[product._id]} onChange={changeQuantity} />}
+                  {canOrder && (
+                    <div className="pm-card-action">
+                      <QuantityControl product={product} quantity={cart[product._id]} onChange={changeQuantity} />
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
@@ -269,4 +248,53 @@ export default function PublicMenuPage() {
       </dialog>
     </div>
   )
+}
+
+export default function PublicMenuPage() {
+  const { slug, tableId } = useParams()
+  const [data, setData] = useState(null)
+  const [loadError, setLoadError] = useState(null)
+
+  const load = useCallback(async () => {
+    try {
+      const query = tableId ? `?table=${encodeURIComponent(tableId)}` : ''
+      setData(await api(`/public/${encodeURIComponent(slug)}${query}`))
+      setLoadError(null)
+    } catch (err) {
+      setLoadError(err.code)
+    }
+  }, [slug, tableId])
+
+  useEffect(() => {
+    load()
+  }, [load])
+
+  // The original hand-built Kura menu stays available at /kura until a
+  // "kura" business is published here, and whenever the API can't be reached,
+  // so the printed Kura QR codes keep working.
+  if (loadError && slug.toLowerCase() === 'kura') return <KuraMenu />
+
+  if (!data) {
+    return (
+      <main className="pm-status">
+        {loadError ? (
+          <>
+            <p>{loadError === 'NOT_FOUND' ? t('menu.notFound') : errorMessage(loadError)}</p>
+            {loadError !== 'NOT_FOUND' && (
+              <button type="button" className="btn btn-primary" onClick={load}>
+                {t('app.retry')}
+              </button>
+            )}
+          </>
+        ) : (
+          <p>{t('app.loading')}</p>
+        )}
+      </main>
+    )
+  }
+
+  // The owner's theme styles both kinds of page
+  const theme = getTheme(data.theme)
+  if (!data.business.ordering) return <theme.Menu business={data.business} />
+  return <CartMenu data={data} themeKey={theme.key} tableId={tableId} reload={load} />
 }

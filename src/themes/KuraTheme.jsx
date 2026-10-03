@@ -1,10 +1,10 @@
 // "Kura" style for menus without a cart: photo header, ribbon section titles,
 // dotted price leaders and two columns on wide screens. Same look as the
 // original hand-built Kura menu (pages/KuraMenu.jsx), driven by API data.
-import { useEffect, useState } from 'react'
 import { t } from '../i18n/index.js'
 import { formatPrice } from '../utils/format.js'
 import { groupByCategory } from '../utils/products.js'
+import { useSectionNav } from './useSectionNav.js'
 import heroUrl from '../assets/kura-hero.png'
 import '../pages/KuraMenu.css'
 
@@ -23,23 +23,10 @@ function MenuItem({ product, currency }) {
 
 export default function KuraTheme({ business }) {
   const sections = groupByCategory(business.products, t('products.uncategorized'))
-  const [active, setActive] = useState(sections[0]?.id)
-
-  // Highlight the tab for the section currently in view
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting)
-        if (visible.length) setActive(visible[0].target.id)
-      },
-      { rootMargin: '-30% 0px -60% 0px' }
-    )
-    document.querySelectorAll('.kura-section').forEach((el) => observer.observe(el))
-    return () => observer.disconnect()
-  }, [business])
+  const { rootRef, active, goToSection } = useSectionNav(sections, '.kura-section')
 
   return (
-    <div className="kura">
+    <div className="kura" ref={rootRef}>
       <header
         className="kura-header"
         style={{ backgroundImage: `url(${heroUrl})` }}
@@ -55,6 +42,7 @@ export default function KuraTheme({ business }) {
               <li key={s.id}>
                 <a
                   href={`#${s.id}`}
+                  onClick={(e) => goToSection(e, s.id)}
                   className={active === s.id ? 'is-active' : undefined}
                   aria-current={active === s.id ? 'true' : undefined}
                 >

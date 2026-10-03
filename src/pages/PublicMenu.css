@@ -1,7 +1,28 @@
-/* Public menu customers open by scanning a table's QR code */
+/* Public menu with a shopping cart (CartMenu in PublicMenuPage.jsx).
+   The first part is the layout shared by every theme, driven by the --pm-*
+   variables; each `.pm--<theme>` block below sets them and adds its look. */
 .pm {
+  --pm-bg: var(--paper);
+  --pm-ink: var(--ink);
+  --pm-soft: var(--ink-soft);
+  --pm-line: rgba(43, 42, 38, 0.15);
+  --pm-surface: #fff;
+  --pm-accent: var(--leaf-deep);
+  --pm-accent-ink: var(--paper);
+  --pm-bar: var(--cherry);
+  --pm-bar-ink: #fff;
+  --pm-radius: 999px;
+  --pm-font: var(--font-body);
   min-height: 100vh;
   padding-bottom: 6rem;
+  background: var(--pm-bg);
+  color: var(--pm-ink);
+  font-family: var(--pm-font);
+}
+
+.pm .btn-primary {
+  background: var(--pm-accent);
+  color: var(--pm-accent-ink);
 }
 
 .pm-status {
@@ -14,32 +35,32 @@
   text-align: center;
 }
 
+.pm-band {
+  margin: 0;
+  padding: 0.6rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 .pm-hero {
-  padding: 2.5rem 1rem 2rem;
-  background: var(--leaf-deep);
-  color: var(--paper);
+  padding: 2rem 1rem;
   text-align: center;
 }
 
-.pm-hero h1 {
+.pm-kicker,
+.pm-name {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(2.75rem, 10vw, 4.5rem);
-  line-height: 1;
-}
-
-.pm-hero p {
-  margin: 0.5rem auto 0;
-  max-width: 32rem;
-  opacity: 0.85;
 }
 
 .pm-banner {
   margin: 0;
   padding: 0.6rem 1rem;
-  background: var(--paper-deep);
-  text-align: center;
+  background: var(--pm-line);
+  font-size: 0.9rem;
   font-weight: 500;
+  text-align: center;
 }
 
 .pm-banner--warn {
@@ -51,16 +72,17 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--paper);
-  border-bottom: 1px solid rgba(43, 42, 38, 0.15);
+  background: var(--pm-bg);
+  border-bottom: 1px solid var(--pm-line);
 }
 
 .pm-tabs ul {
   display: flex;
-  gap: 0.25rem;
-  max-width: 48rem;
+  justify-content: safe center;
+  gap: 0.5rem;
+  max-width: 80rem;
   margin: 0 auto;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1rem;
   list-style: none;
   overflow-x: auto;
   scrollbar-width: none;
@@ -69,114 +91,138 @@
 .pm-tabs a {
   display: block;
   padding: 0.35rem 0.85rem;
-  border-radius: 999px;
-  color: var(--ink-soft);
-  font-size: 0.9rem;
-  font-weight: 500;
+  color: var(--pm-soft);
+  font-size: 0.85rem;
   text-decoration: none;
   white-space: nowrap;
 }
 
-.pm-tabs a:hover {
-  background: var(--paper-deep);
-  color: var(--ink);
+.pm-tabs a.is-active {
+  color: var(--pm-ink);
 }
 
 .pm-sheet {
-  max-width: 48rem;
+  max-width: 80rem;
   margin: 0 auto;
-  padding: 1.5rem 1rem;
+  padding: 0 1rem;
 }
 
 .pm-section {
-  margin-bottom: 2rem;
   scroll-margin-top: 3.5rem;
 }
 
 .pm-category {
-  margin: 0 0 0.5rem;
-  font-family: var(--font-display);
-  font-size: 2.1rem;
-  color: var(--leaf-deep);
+  margin: 0;
+  padding: 2rem 0 1.25rem;
+  font-size: 1.6rem;
+  font-weight: 400;
+  text-align: center;
 }
 
-.pm-items {
+/* Product cards: picture, text, then the add / quantity control */
+.pm-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.75rem 0.85rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.pm-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.85rem 0;
-  border-top: 1px solid rgba(43, 42, 38, 0.12);
+@media (min-width: 48rem) {
+  .pm-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem 1.25rem;
+  }
 }
 
-.pm-item-text {
-  flex: 1;
+@media (min-width: 64rem) {
+  .pm-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.pm-card {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
 }
 
-.pm-item-name {
+.pm-card-img {
   display: block;
-  font-weight: 700;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: var(--pm-surface);
 }
 
-.pm-item-desc {
-  margin: 0.15rem 0 0.25rem;
-  color: var(--ink-soft);
-  font-size: 0.9rem;
-  line-height: 1.45;
+.pm-card-body {
+  flex: 1;
+  padding-top: 0.75rem;
 }
 
-.pm-item-price {
+.pm-card-name {
+  margin: 0;
+  font-size: 1rem;
   font-weight: 700;
+  line-height: 1.2;
+}
+
+.pm-card-desc {
+  margin: 0.3rem 0 0;
+  color: var(--pm-soft);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.pm-card-price {
+  display: inline-block;
+  margin-top: 0.4rem;
   font-variant-numeric: tabular-nums;
-  color: var(--leaf-deep);
+}
+
+.pm-card-action {
+  margin-top: 0.75rem;
 }
 
 .pm-empty {
-  color: var(--ink-soft);
+  padding: 3rem 0;
+  color: var(--pm-soft);
   text-align: center;
 }
 
 /* ---------- Quantity controls ---------- */
 .qty-add {
-  flex: none;
-  min-height: 2.5rem;
+  width: 100%;
+  min-height: 2.6rem;
   padding: 0 1rem;
-  border: 2px solid var(--leaf-deep);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--leaf-deep);
+  border: 0;
+  border-radius: var(--pm-radius);
+  background: var(--pm-accent);
+  color: var(--pm-accent-ink);
   font: inherit;
   font-weight: 700;
   cursor: pointer;
 }
 
-.qty-add:hover {
-  background: var(--leaf-deep);
-  color: var(--paper);
-}
-
 .qty {
-  flex: none;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  border-radius: 999px;
-  background: var(--leaf-deep);
-  color: var(--paper);
+  justify-content: space-between;
+  min-height: 2.6rem;
+  border-radius: var(--pm-radius);
+  background: var(--pm-accent);
+  color: var(--pm-accent-ink);
 }
 
 .qty button {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.6rem;
+  height: 2.6rem;
   border: 0;
   background: transparent;
   color: inherit;
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -196,7 +242,7 @@
   bottom: 0;
   z-index: 20;
   padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
-  background: linear-gradient(transparent, var(--paper) 35%);
+  background: linear-gradient(transparent, var(--pm-bg) 35%);
 }
 
 .pm-cartbar-btn {
@@ -209,13 +255,13 @@
   margin: 0 auto;
   padding: 0.9rem 1.25rem;
   border: 0;
-  border-radius: 999px;
-  background: var(--cherry);
-  color: #fff;
+  border-radius: var(--pm-radius);
+  background: var(--pm-bar);
+  color: var(--pm-bar-ink);
   font: inherit;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(43, 42, 38, 0.25);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 .pm-dialog {
@@ -224,12 +270,13 @@
   padding: 1.25rem;
   border: 0;
   border-radius: 1rem;
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--pm-bg);
+  color: var(--pm-ink);
+  font-family: var(--pm-font);
 }
 
 .pm-dialog::backdrop {
-  background: rgba(43, 42, 38, 0.5);
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .pm-dialog form {
@@ -262,7 +309,7 @@
 
 .pm-cart li {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) 8rem;
   align-items: center;
   gap: 0.25rem 0.75rem;
 }
@@ -276,7 +323,7 @@
 }
 
 .pm-cart-price {
-  color: var(--ink-soft);
+  color: var(--pm-soft);
   font-variant-numeric: tabular-nums;
 }
 
@@ -291,20 +338,369 @@
   display: grid;
   justify-items: center;
   gap: 0.25rem;
-  margin-bottom: 2rem;
+  margin-top: 1.5rem;
   padding: 1.5rem 1rem;
   border-radius: 1rem;
-  background: rgba(63, 107, 42, 0.12);
+  background: var(--pm-line);
   text-align: center;
 }
 
 .pm-sent h2 {
   margin: 0;
+  font-size: 1.75rem;
+}
+
+.pm-sent p {
+  margin: 0 0 0.75rem;
+}
+
+/* =====================================================================
+   Kura: photo header, ribbon titles, list rows like the printed menu
+   ===================================================================== */
+.pm--kura .pm-band {
+  background: var(--leaf-deep);
+  color: var(--paper);
+  font-weight: 500;
+  text-transform: none;
+}
+
+/* The header is the Kura photo; the name stays for screen readers */
+.pm--kura .pm-hero {
+  height: clamp(12rem, 40vw, 20rem);
+  padding: 0;
+  background: #525e33 var(--pm-hero-img) center / cover no-repeat;
+}
+
+.pm--kura .pm-hero > * {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.pm--kura .pm-tabs {
+  background: var(--paper-deep);
+}
+
+.pm--kura .pm-tabs a {
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+.pm--kura .pm-tabs a.is-active {
+  background: var(--leaf);
+  color: var(--paper);
+}
+
+.pm--kura .pm-sheet {
+  max-width: 64rem;
+}
+
+.pm--kura .pm-category {
+  padding: 2rem 0 1rem;
+  text-align: left;
+}
+
+.pm--kura .pm-category span {
+  position: relative;
+  display: inline-block;
+  margin-left: 0.75rem;
+  padding: 0.1rem 1.5rem 0.2rem;
+  background: var(--leaf);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.03em;
+  transform: rotate(-1.2deg);
+}
+
+.pm--kura .pm-category span::before,
+.pm--kura .pm-category span::after {
+  content: '';
+  position: absolute;
+  top: 0.35rem;
+  width: 1rem;
+  height: 100%;
+  background: var(--leaf-deep);
+  z-index: -1;
+}
+
+.pm--kura .pm-category span::before {
+  left: -0.75rem;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 40% 50%);
+}
+
+.pm--kura .pm-category span::after {
+  right: -0.75rem;
+  clip-path: polygon(0 0, 100% 0, 60% 50%, 100% 100%, 0 100%);
+}
+
+.pm--kura .pm-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+@media (min-width: 48rem) {
+  .pm--kura .pm-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 3rem;
+  }
+}
+
+.pm--kura .pm-card {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--pm-line);
+}
+
+.pm--kura .pm-card-img {
+  border-radius: 0.6rem;
+}
+
+.pm--kura .pm-card-body {
+  padding: 0;
+}
+
+.pm--kura .pm-card-price {
+  color: var(--leaf-deep);
+  font-weight: 700;
+}
+
+.pm--kura .pm-card-action {
+  margin: 0;
+}
+
+.pm--kura .pm-card-action .qty-add {
+  width: auto;
+  border: 2px solid var(--leaf-deep);
+  background: transparent;
+  color: var(--leaf-deep);
+}
+
+.pm--kura .pm-sent h2 {
   font-family: var(--font-display);
   font-size: 2.5rem;
   color: var(--leaf-deep);
 }
 
-.pm-sent p {
-  margin: 0 0 0.75rem;
+/* =====================================================================
+   Tienda de té: cream shop, brown band, spaced logo, soft grey pills
+   ===================================================================== */
+.pm--tea {
+  --pm-bg: #f7f5f1;
+  --pm-ink: rgba(0, 0, 0, 0.81);
+  --pm-soft: rgba(18, 18, 18, 0.62);
+  --pm-line: rgba(0, 0, 0, 0.08);
+  --pm-surface: #ecebe8;
+  --pm-accent: #e8e5df;
+  --pm-accent-ink: rgba(0, 0, 0, 0.81);
+  --pm-bar: #9a7b4f;
+  --pm-font: 'Almarai', system-ui, sans-serif;
+}
+
+.pm--tea .pm-band {
+  background: #9a7b4f;
+  color: #fff;
+  font-family: 'Archivo', sans-serif;
+  letter-spacing: 0.12em;
+}
+
+.pm--tea .pm-hero {
+  background: #fff;
+}
+
+.pm--tea .pm-kicker {
+  display: none;
+}
+
+.pm--tea .pm-name {
+  padding-left: 0.4em;
+  font-family: 'Archivo', sans-serif;
+  font-size: clamp(1rem, 4vw, 1.3rem);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+}
+
+.pm--tea .pm-tabs {
+  background: #fff;
+}
+
+.pm--tea .pm-tabs ul {
+  gap: 1.25rem;
+}
+
+.pm--tea .pm-tabs a {
+  padding: 0.2rem 0;
+  border-bottom: 1px solid transparent;
+  color: var(--pm-ink);
+  font-family: 'Archivo', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pm--tea .pm-tabs a.is-active {
+  border-bottom-color: var(--pm-ink);
+}
+
+.pm--tea .pm-category {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--pm-ink);
+  font-family: 'Catamaran', sans-serif;
+  font-size: clamp(1.6rem, 5vw, 2rem);
+}
+
+.pm--tea .pm-card-name {
+  font-family: 'Catamaran', sans-serif;
+  font-size: clamp(1.2rem, 4.5vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.pm--tea .pm-card-price {
+  font-size: 0.85rem;
+}
+
+.pm--tea .qty-add {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pm--tea .qty {
+  background: #fff;
+}
+
+.pm--tea .pm-sent h2 {
+  font-family: 'Catamaran', sans-serif;
+  font-weight: 400;
+}
+
+/* =====================================================================
+   Boutique: black and white, pink band, dark serif hero, square buttons
+   ===================================================================== */
+.pm--boutique {
+  --pm-bg: #fff;
+  --pm-ink: #000;
+  --pm-soft: #777;
+  --pm-line: #eee;
+  --pm-surface: #f4f4f4;
+  --pm-accent: #000;
+  --pm-accent-ink: #fff;
+  --pm-bar: #000;
+  --pm-radius: 0;
+  --pm-font: 'Montserrat', 'Lucida Grande', Tahoma, sans-serif;
+  color: #333;
+}
+
+.pm--boutique .pm-band {
+  background: #fbe8e8;
+  color: #000;
+}
+
+.pm--boutique .pm-hero {
+  display: grid;
+  gap: 0.25rem;
+  padding: clamp(2rem, 7vw, 4rem) 1rem;
+  /* Same restaurant photo as the read-only Boutique menu */
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    #4b453d url('/default-restaurant.jpg') center / cover no-repeat;
+  color: #fff;
+}
+
+.pm--boutique .pm-kicker {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.pm--boutique .pm-name {
+  font-family: 'Playfair Display', Didot, Georgia, serif;
+  font-size: clamp(2.5rem, 11vw, 5rem);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.pm--boutique .pm-banner {
+  background: #fafafa;
+}
+
+.pm--boutique .pm-tabs {
+  border-bottom: 0;
+}
+
+.pm--boutique .pm-tabs ul {
+  padding: 1rem;
+}
+
+.pm--boutique .pm-tabs a {
+  padding: 0.55rem 0.9rem;
+  border: 1px solid #ddd;
+  color: #000;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.pm--boutique .pm-tabs a.is-active {
+  border-color: #000;
+  background: #000;
+  color: #fff;
+}
+
+.pm--boutique .pm-section {
+  scroll-margin-top: 4.5rem;
+}
+
+.pm--boutique .pm-category {
+  color: #000;
+  font-size: clamp(1.25rem, 4.5vw, 1.75rem);
+  text-transform: uppercase;
+}
+
+.pm--boutique .pm-card {
+  text-align: center;
+}
+
+.pm--boutique .pm-card-name {
+  overflow: hidden;
+  color: #333;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pm--boutique .pm-card-price {
+  color: #000;
+  font-weight: 600;
+}
+
+.pm--boutique .qty-add {
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pm--boutique .pm-dialog {
+  border-radius: 0;
+}
+
+.pm--boutique .pm-sent {
+  border-radius: 0;
+  background: #fbe8e8;
+}
+
+.pm--boutique .pm-sent h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
 }

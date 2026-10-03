@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, ready, authenticate, logout }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, ready, authenticate, logout, setUser }}>{children}</AuthContext.Provider>
   )
 }
 
@@ -43,10 +43,17 @@ export function useAuth() {
   return useContext(AuthContext)
 }
 
-export function RequireAuth({ children }) {
+// Where each role lands after logging in
+export function homeFor(user) {
+  return user.role === 'waiter' ? '/mesero' : '/dashboard'
+}
+
+// `role` limits the route to owners or waiters; others go to their own home
+export function RequireAuth({ role, children }) {
   const { user, ready } = useAuth()
   const location = useLocation()
   if (!ready) return <p className="page-status">{t('app.loading')}</p>
   if (!user) return <Navigate to="/login" replace state={{ from: location }} />
+  if (role && (user.role ?? 'owner') !== role) return <Navigate to={homeFor(user)} replace />
   return children
 }

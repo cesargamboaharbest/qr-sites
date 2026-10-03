@@ -228,7 +228,7 @@ textarea {
   accent-color: var(--leaf-deep);
 }
 
-.choice span {
+.choice > span {
   display: grid;
   gap: 0.1rem;
 }
@@ -301,11 +301,54 @@ textarea {
   border-bottom: 1px solid var(--line);
 }
 
+.admin-header {
+  flex-wrap: wrap;
+}
+
+.admin-nav {
+  display: flex;
+  gap: 0.25rem;
+  margin-right: auto;
+}
+
+.admin-nav a {
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.admin-nav a:hover {
+  color: var(--ink);
+}
+
+.admin-nav a.active {
+  background: var(--leaf-deep);
+  color: var(--paper);
+}
+
 .admin-user {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
   min-width: 0;
+}
+
+.theme-select {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.theme-select select {
+  width: auto;
+  max-width: 15rem;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.85rem;
 }
 
 .admin-user .muted {
@@ -481,6 +524,60 @@ textarea {
   opacity: 0.55;
 }
 
+.product-info.has-thumb {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.product-thumb {
+  flex: none;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.4rem;
+  object-fit: cover;
+  background: #fff;
+}
+
+.image-field-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.image-field-preview {
+  flex: none;
+  width: 6rem;
+  height: 6rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  object-fit: cover;
+  background: #fff;
+}
+
+.image-field-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.image-field-actions small {
+  flex-basis: 100%;
+}
+
+.btn.is-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Keyboard focus on the hidden file input shows on its label button */
+.image-field input:focus-visible + .btn,
+.image-field label:has(+ input:focus-visible) {
+  outline: 3px solid var(--cherry);
+  outline-offset: 2px;
+}
+
 .product-info p {
   margin: 0.15rem 0 0;
   font-size: 0.9rem;
@@ -497,6 +594,47 @@ textarea {
 
 .product-row .row-actions {
   grid-column: 1 / -1;
+}
+
+/* ---------- Live menu preview (menus without a cart) ---------- */
+.products-layout {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.menu-preview h2 {
+  margin-bottom: 0.25rem;
+}
+
+.menu-preview > p {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+}
+
+
+/* Phone-sized frame: the menu inside lays out as on a real phone */
+.menu-preview-frame {
+  display: block;
+  width: min(100%, 24.5rem);
+  height: min(46rem, 80vh);
+  margin: 0 auto;
+  border: 0.6rem solid var(--ink);
+  border-radius: 2rem;
+  background: var(--paper);
+  box-shadow: 0 10px 30px rgba(43, 42, 38, 0.2);
+}
+
+@media (min-width: 64rem) {
+  .products-layout {
+    grid-template-columns: minmax(0, 1fr) 25.5rem;
+    align-items: start;
+  }
+
+  .menu-preview {
+    position: sticky;
+    top: 1rem;
+  }
 }
 
 /* ---------- Tables & QR ---------- */
@@ -654,6 +792,83 @@ textarea {
 
 .order-total {
   text-align: right;
+}
+
+/* ---------- Pro plan ---------- */
+.pro-chip {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: #c62828;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: normal;
+  line-height: 1.5;
+  text-transform: none;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.badge-pro {
+  background: #c62828;
+  color: #fff;
+}
+
+.choice.is-locked {
+  cursor: not-allowed;
+}
+
+.choice.is-locked input,
+.choice.is-locked small {
+  opacity: 0.55;
+}
+
+/* Fade the title with its colour, not opacity, so its chip stays bright */
+.choice.is-locked strong {
+  color: color-mix(in srgb, var(--ink) 55%, transparent);
+}
+
+/* Greyed-out Pro features: visible, but not usable */
+.admin-nav-locked {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  color: var(--ink-soft);
+  font-weight: 700;
+  cursor: not-allowed;
+}
+
+/* Only the feature fades; the red chip stays at full strength */
+.admin-nav-locked-label,
+.card.is-locked form {
+  opacity: 0.55;
+}
+
+fieldset.inline-form {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+fieldset:disabled .btn {
+  cursor: not-allowed;
+}
+
+.page-title {
+  margin: 0 0 1.25rem;
+}
+
+.order-business {
+  margin: -0.25rem 0 0;
+  color: var(--leaf-deep);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 /* ---------- Printing table QR codes ---------- */

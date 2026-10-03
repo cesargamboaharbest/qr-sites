@@ -9,6 +9,8 @@ import ProductsTab from './pages/business/ProductsTab.jsx'
 import TablesTab from './pages/business/TablesTab.jsx'
 import OrdersTab from './pages/business/OrdersTab.jsx'
 import MenuQrTab from './pages/business/MenuQrTab.jsx'
+import WaitersPage from './pages/WaitersPage.jsx'
+import WaiterPage from './pages/WaiterPage.jsx'
 import PublicMenuPage from './pages/PublicMenuPage.jsx'
 
 function NotFound() {
@@ -30,13 +32,23 @@ export default function App() {
       <Route path="/register" element={<AuthPage mode="register" />} />
 
       <Route
+        path="/mesero"
         element={
-          <RequireAuth>
+          <RequireAuth role="waiter">
+            <WaiterPage />
+          </RequireAuth>
+        }
+      />
+
+      <Route
+        element={
+          <RequireAuth role="owner">
             <AdminLayout />
           </RequireAuth>
         }
       >
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/meseros" element={<WaitersPage />} />
         <Route path="/negocios/:id" element={<BusinessLayout />}>
           <Route index element={<ProductsTab />} />
           <Route path="mesas" element={<TablesTab />} />

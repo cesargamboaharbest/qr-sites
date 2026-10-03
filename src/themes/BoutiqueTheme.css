@@ -1,0 +1,174 @@
+/* "Boutique" theme */
+.bq {
+  --bq-ink: #000;
+  --bq-text: #333;
+  --bq-soft: #777;
+  --bq-pink: #fbe8e8;
+  --bq-hero: #4b453d;
+  min-height: 100vh;
+  background: #fff;
+  color: var(--bq-text);
+  font-family: 'Montserrat', 'Lucida Grande', Tahoma, sans-serif;
+}
+
+.bq-band {
+  margin: 0;
+  padding: 0.65rem 1rem;
+  background: var(--bq-pink);
+  color: var(--bq-ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.bq-header {
+  padding: 1.25rem 1rem;
+  text-align: center;
+}
+
+.bq-logo {
+  color: var(--bq-ink);
+  font-size: clamp(1.4rem, 6vw, 1.9rem);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.bq-hero {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0 auto;
+  max-width: 85rem;
+  padding: clamp(2rem, 7vw, 4rem) 1rem;
+  /* Restaurant photo, darkened so the white title stays readable */
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    var(--bq-hero) url('/default-restaurant.jpg') center / cover no-repeat;
+  color: #fff;
+  text-align: center;
+}
+
+.bq-kicker {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.bq-hero-title {
+  margin: 0;
+  font-family: 'Playfair Display', Didot, Georgia, serif;
+  font-size: clamp(2.5rem, 11vw, 5rem);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.bq-chips {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #fff;
+}
+
+.bq-chips ul {
+  display: flex;
+  justify-content: safe center;
+  gap: 0.6rem;
+  max-width: 85rem;
+  margin: 0 auto;
+  padding: 1rem;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.bq-chips a {
+  display: block;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid #ddd;
+  color: var(--bq-ink);
+  font-size: 0.75rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.bq-chips a.is-active {
+  border-color: var(--bq-ink);
+  background: var(--bq-ink);
+  color: #fff;
+}
+
+.bq-main {
+  max-width: 85rem;
+  margin: 0 auto;
+  padding: 0 1rem 4rem;
+}
+
+.bq-section {
+  scroll-margin-top: 4.5rem;
+}
+
+.bq-title {
+  margin: 0;
+  padding: 2.25rem 0 1.5rem;
+  color: var(--bq-ink);
+  font-size: clamp(1.25rem, 4.5vw, 1.75rem);
+  font-weight: 400;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* Text-only cards: product pictures only appear in the cart version */
+.bq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48rem) {
+  .bq-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+.bq-card {
+  padding: 1.25rem 0.75rem;
+  border: 1px solid #eee;
+  text-align: center;
+}
+
+.bq-name {
+  margin: 0;
+  color: var(--bq-ink);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.bq-desc {
+  margin: 0.3rem 0 0;
+  color: var(--bq-soft);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.bq-price {
+  margin: 0.4rem 0 0;
+  color: var(--bq-ink);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.bq-empty {
+  padding: 3rem 0;
+  color: var(--bq-soft);
+  text-align: center;
+}

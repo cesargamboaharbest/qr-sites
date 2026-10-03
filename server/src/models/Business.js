@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
 
-export const MENU_THEMES = ['kura']
+// Empty, or a download URL from the project's Firebase Storage bucket
+export const IMAGE_URL_PATTERN =
+  /^$|^https:\/\/firebasestorage\.googleapis\.com\/v0\/b\/qr-sites-bc4aa\.firebasestorage\.app\/o\/products%2F[^\s]{1,900}$/
 
 export const SLUG_PATTERN = /^[a-z0-9](?:[a-z0-9-]{0,48}[a-z0-9])?$/
 
@@ -23,6 +25,8 @@ const productSchema = new mongoose.Schema({
   category: { type: String, trim: true, maxlength: 60, default: '' },
   price: { type: Number, required: true, min: 0 },
   available: { type: Boolean, default: true },
+  // Photo in Firebase Storage; only used by menus with a cart
+  imageUrl: { type: String, default: '', match: IMAGE_URL_PATTERN },
 })
 
 const tableSchema = new mongoose.Schema({
@@ -37,9 +41,9 @@ const businessSchema = new mongoose.Schema(
     description: { type: String, trim: true, maxlength: 300, default: '' },
     currency: { type: String, enum: ['CRC', 'USD'], default: 'CRC' },
     // false = "menú sin carrito": a read-only QR menu, no tables or orders
+    // (the visual theme is an owner setting, see User.theme)
+    // Creating one with a cart requires the owner's Pro plan (User.proPlan)
     ordering: { type: Boolean, default: true },
-    // Visual style of the read-only menu
-    theme: { type: String, enum: MENU_THEMES, default: MENU_THEMES[0] },
     published: { type: Boolean, default: false },
     products: [productSchema],
     tables: [tableSchema],

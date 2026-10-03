@@ -3,13 +3,29 @@ import { useOutletContext } from 'react-router-dom'
 import { errorMessage, t } from '../../i18n/index.js'
 import { formatPrice } from '../../utils/format.js'
 import { groupByCategory } from '../../utils/products.js'
+import { getTheme } from '../../themes/index.js'
+import { useAuth } from '../../auth/AuthContext.jsx'
+import PreviewFrame from '../../components/PreviewFrame.jsx'
+import ImageField from '../../components/ImageField.jsx'
+import { PLACEHOLDER_IMAGE } from '../../utils/products.js'
 
-const EMPTY_PRODUCT = { name: '', category: '', price: '', description: '' }
+const EMPTY_PRODUCT = { name: '', category: '', price: '', description: '', imageUrl: '' }
 
-function ProductForm({ initial = EMPTY_PRODUCT, categories, sections, submitLabel, pendingLabel, onSubmit, onCancel }) {
+// `imageBusinessId` turns on the photo upload (menus with a cart only)
+function ProductForm({
+  initial = EMPTY_PRODUCT,
+  categories,
+  sections,
+  imageBusinessId,
+  submitLabel,
+  pendingLabel,
+  onSubmit,
+  onCancel,
+}) {
   const [form, setForm] = useState(initial)
   const [error, setError] = useState('')
   const [pending, setPending] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const update = (field) => (e) => setForm({ ...form, [field]: e.target.value })
 
   async function handleSubmit(e) {
@@ -17,7 +33,12 @@ function ProductForm({ initial = EMPTY_PRODUCT, categories, sections, submitLabe
     setError('')
     setPending(true)
     try {
-      await onSubmit({ ...form, price: Number(form.price) })
+      const { imageUrl, ...fields } = form
+      await onSubmit({
+        ...fields,
+        price: Number(form.price),
+        ...(imageBusinessId && { imageUrl: imageUrl ?? '' }),
+      })
       if (!onCancel) setForm({ ...EMPTY_PRODUCT, category: form.category })
     } catch (err) {
       setError(errorMessage(err.code))
@@ -57,6 +78,16 @@ function ProductForm({ initial = EMPTY_PRODUCT, categories, sections, submitLabe
           maxLength={500}
         />
       </label>
+      {imageBusinessId && (
+        <div className="field-wide">
+          <ImageField
+            businessId={imageBusinessId}
+            value={form.imageUrl}
+            onChange={(imageUrl) => setForm((current) => ({ ...current, imageUrl }))}
+            onBusyChange={setUploading}
+          />
+        </div>
+      )}
       <datalist id="product-categories">
         {categories.map((c) => (
           <option key={c} value={c} />
@@ -64,7 +95,7 @@ function ProductForm({ initial = EMPTY_PRODUCT, categories, sections, submitLabe
       </datalist>
       {error && <p className="form-error field-wide" role="alert">{error}</p>}
       <div className="form-actions field-wide">
-        <button className="btn btn-primary" disabled={pending}>
+        <button className="btn btn-primary" disabled={pending || uploading}>
           {pending ? pendingLabel : submitLabel}
         </button>
         {onCancel && (
@@ -98,6 +129,7 @@ function ProductRow({ product, business, categories, mutate }) {
           initial={{ ...product, price: String(product.price) }}
           categories={categories}
           sections={!business.ordering}
+          imageBusinessId={business.ordering ? business.id : undefined}
           submitLabel={t('app.save')}
           pendingLabel={t('app.saving')}
           onSubmit={async (fields) => {
@@ -112,11 +144,14 @@ function ProductRow({ product, business, categories, mutate }) {
 
   return (
     <li className={`product-row ${product.available ? '' : 'is-sold-out'}`}>
-      <div className="product-info">
-        <strong>{product.name}</strong>
-        {!product.available && <span className="badge badge-warn">{t('products.soldOut')}</span>}
-        {product.description && <p className="muted">{product.description}</p>}
-        {error && <p className="form-error" role="alert">{error}</p>}
+      <div className={`product-info ${business.ordering ? 'has-thumb' : ''}`}>
+        {business.ordering && <img src={product.imageUrl || PLACEHOLDER_IMAGE} alt="" className="product-thumb" />}
+        <div>
+          <strong>{product.name}</strong>
+          {!product.available && <span className="badge badge-warn">{t('products.soldOut')}</span>}
+          {product.description && <p className="muted">{product.description}</p>}
+          {error && <p className="form-error" role="alert">{error}</p>}
+        </div>
       </div>
       <span className="product-price">{formatPrice(product.price, business.currency)}</span>
       <div className="row-actions">
@@ -146,10 +181,11 @@ function ProductRow({ product, business, categories, mutate }) {
 
 export default function ProductsTab() {
   const { business, mutate } = useOutletContext()
+  const { user } = useAuth()
   const groups = groupByCategory(business.products, t('products.uncategorized'))
   const categories = [...new Set(business.products.map((p) => p.category).filter(Boolean))]
 
-  return (
+  const editor = (
     <div className="stack">
       <section className="card">
         <h2>{t('products.addTitle')}</h2>
@@ -157,6 +193,7 @@ export default function ProductsTab() {
         <ProductForm
           categories={categories}
           sections={!business.ordering}
+          imageBusinessId={business.ordering ? business.id : undefined}
           submitLabel={t('products.add')}
           pendingLabel={t('products.adding')}
           onSubmit={(fields) => mutate('/products', 'POST', fields)}
@@ -177,6 +214,26 @@ export default function ProductsTab() {
           </div>
         ))}
       </section>
+    </div>
+  )
+
+  if (business.ordering) return editor
+
+  // Menus without a cart get a live preview of the public page, styled with
+  // the owner's theme (top navigation) and showing only what customers see
+  const { Menu } = getTheme(user.theme)
+  const previewBusiness = { ...business, products: business.products.filter((p) => p.available) }
+
+  return (
+    <div className="products-layout">
+      {editor}
+      <aside className="menu-preview" aria-label={t('products.preview')}>
+        <h2>{t('products.preview')}</h2>
+        <p className="muted">{t('products.previewHint')}</p>
+        <PreviewFrame title={t('products.preview')} className="menu-preview-frame">
+          <Menu business={previewBusiness} />
+        </PreviewFrame>
+      </aside>
     </div>
   )
 }
