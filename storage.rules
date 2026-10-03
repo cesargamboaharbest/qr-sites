@@ -1,0 +1,16 @@
+rules_version = '2';
+
+// Firebase Storage rules for qr-sites product photos.
+// Paste these in Firebase console → Storage → Rules (or `firebase deploy --only storage`).
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /products/{businessId}/{fileName} {
+      // Menus show the photos to everyone
+      allow read: if true;
+      // Uploads come from the admin app, which has no Firebase login, so they
+      // are limited to new image files under 5 MB (no overwrites or deletes)
+      allow create: if request.resource.size < 5 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+    }
+  }
+}

@@ -1,2 +1,9 @@
 node_modules
 dist
+
+.vercel
+
+# Local credentials (see server/config.example.js)
+server/config.js
+.env
+.env.*

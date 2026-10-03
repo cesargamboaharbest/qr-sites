@@ -1,0 +1,152 @@
+/* "Tienda de té" theme */
+.tt {
+  --tt-bg: #f7f5f1;
+  --tt-ink: rgba(0, 0, 0, 0.81);
+  --tt-soft: rgba(18, 18, 18, 0.62);
+  --tt-band: #9a7b4f;
+  --tt-pill: #e8e5df;
+  min-height: 100vh;
+  background: var(--tt-bg);
+  color: var(--tt-ink);
+  font-family: 'Almarai', system-ui, sans-serif;
+}
+
+.tt-band {
+  margin: 0;
+  padding: 0.7rem 1rem;
+  background: var(--tt-band);
+  color: #fff;
+  font-family: 'Archivo', 'Almarai', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.tt-header {
+  padding: 1.75rem 1rem 1.25rem;
+  background: #fff;
+  text-align: center;
+}
+
+.tt-logo {
+  margin: 0;
+  font-family: 'Archivo', 'Almarai', sans-serif;
+  font-size: clamp(1rem, 4vw, 1.3rem);
+  font-weight: 700;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  /* keep the visual centre despite the trailing letter-spacing */
+  padding-left: 0.4em;
+}
+
+.tt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.tt-nav ul {
+  display: flex;
+  justify-content: safe center;
+  gap: 1.5rem;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0.85rem 1rem;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tt-nav a {
+  display: block;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid transparent;
+  color: var(--tt-ink);
+  font-family: 'Archivo', 'Almarai', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tt-nav a.is-active {
+  border-bottom-color: var(--tt-ink);
+}
+
+.tt-main {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1rem 4rem;
+}
+
+.tt-section {
+  scroll-margin-top: 3.5rem;
+}
+
+.tt-title {
+  margin: 0 0 1.5rem;
+  padding: 2.25rem 0 1.25rem;
+  border-bottom: 1px solid var(--tt-ink);
+  font-family: 'Catamaran', 'Almarai', sans-serif;
+  font-size: clamp(1.6rem, 5vw, 2rem);
+  font-weight: 400;
+  text-align: center;
+}
+
+/* Text-only cards: product pictures only appear in the cart version */
+.tt-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.75rem 2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48rem) {
+  .tt-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 72rem) {
+  .tt-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.tt-name {
+  margin: 0;
+  font-family: 'Catamaran', 'Almarai', sans-serif;
+  font-size: clamp(1.25rem, 4.5vw, 1.6rem);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.tt-desc {
+  margin: 0.35rem 0 0;
+  color: var(--tt-soft);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.tt-price {
+  display: inline-block;
+  margin: 0.6rem 0 0;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: var(--tt-pill);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tt-empty {
+  padding: 3rem 0;
+  color: var(--tt-soft);
+  text-align: center;
+}
