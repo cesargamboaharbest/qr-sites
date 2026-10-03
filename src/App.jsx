@@ -1,23 +1,22 @@
-import { Routes, Route, Link } from 'react-router-dom'
-import KuraMenu from './pages/KuraMenu.jsx'
-import heroUrl from './assets/kura-hero.png'
-
-function Home() {
-  return (
-    <main className="home">
-      <h1>
-        <img src={heroUrl} alt="Kura Coffee Garden" className="home-logo" />
-      </h1>
-      <Link to="/Kura" className="home-link">Ver el menú</Link>
-    </main>
-  )
-}
+import { Routes, Route, Link, Navigate } from 'react-router-dom'
+import { RequireAuth } from './auth/AuthContext.jsx'
+import { t } from './i18n/index.js'
+import AdminLayout from './components/AdminLayout.jsx'
+import AuthPage from './pages/AuthPage.jsx'
+import DashboardPage from './pages/DashboardPage.jsx'
+import BusinessLayout from './pages/business/BusinessLayout.jsx'
+import ProductsTab from './pages/business/ProductsTab.jsx'
+import TablesTab from './pages/business/TablesTab.jsx'
+import OrdersTab from './pages/business/OrdersTab.jsx'
+import PublicMenuPage from './pages/PublicMenuPage.jsx'
 
 function NotFound() {
   return (
     <main className="home">
-      <h1>Esta página no existe</h1>
-      <Link to="/Kura" className="home-link">Ir al menú</Link>
+      <h1>{t('app.notFoundTitle')}</h1>
+      <Link to="/" className="home-link">
+        {t('app.notFoundAction')}
+      </Link>
     </main>
   )
 }
@@ -25,8 +24,28 @@ function NotFound() {
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/Kura" element={<KuraMenu />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/login" element={<AuthPage mode="login" />} />
+      <Route path="/register" element={<AuthPage mode="register" />} />
+
+      <Route
+        element={
+          <RequireAuth>
+            <AdminLayout />
+          </RequireAuth>
+        }
+      >
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/negocios/:id" element={<BusinessLayout />}>
+          <Route index element={<ProductsTab />} />
+          <Route path="mesas" element={<TablesTab />} />
+          <Route path="pedidos" element={<OrdersTab />} />
+        </Route>
+      </Route>
+
+      {/* Public menus live at the root: /<slug> and /<slug>/mesa/<tableId> */}
+      <Route path="/:slug" element={<PublicMenuPage />} />
+      <Route path="/:slug/mesa/:tableId" element={<PublicMenuPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )

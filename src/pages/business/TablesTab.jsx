@@ -1,0 +1,104 @@
+import { useEffect, useState } from 'react'
+import { Navigate, useOutletContext } from 'react-router-dom'
+import QRCode from 'qrcode'
+import { errorMessage, t } from '../../i18n/index.js'
+import { publicMenuUrl, slugify } from '../../utils/format.js'
+
+function TableCard({ business, table, onDelete }) {
+  const url = publicMenuUrl(business.slug, table._id)
+  const [qr, setQr] = useState('')
+
+  useEffect(() => {
+    QRCode.toDataURL(url, { width: 512, margin: 1 }).then(setQr)
+  }, [url])
+
+  return (
+    <li className="card table-card">
+      <p className="table-card-business">{business.name}</p>
+      <h3>{table.name}</h3>
+      {qr && <img src={qr} alt={t('tables.qrAlt', { name: table.name })} className="table-qr" />}
+      <p className="table-card-scan">{t('tables.scanToOrder')}</p>
+      <div className="row-actions no-print">
+        <a className="btn btn-ghost btn-sm" href={qr} download={`${business.slug}-${slugify(table.name)}.png`}>
+          {t('tables.download')}
+        </a>
+        <a className="btn btn-ghost btn-sm" href={url} target="_blank" rel="noreferrer">
+          {t('app.open')}
+        </a>
+        <button type="button" className="btn btn-danger btn-sm" onClick={onDelete}>
+          {t('app.delete')}
+        </button>
+      </div>
+    </li>
+  )
+}
+
+export default function TablesTab() {
+  const { business, mutate } = useOutletContext()
+  const nextName = t('tables.defaultName', { n: business.tables.length + 1 })
+  const [name, setName] = useState('')
+  const [error, setError] = useState('')
+  const [pending, setPending] = useState(false)
+
+  if (!business.published) return <Navigate to=".." relative="path" replace />
+
+  async function run(action) {
+    setError('')
+    setPending(true)
+    try {
+      await action()
+    } catch (err) {
+      setError(errorMessage(err.code))
+    } finally {
+      setPending(false)
+    }
+  }
+
+  function addTable(e) {
+    e.preventDefault()
+    run(async () => {
+      await mutate('/tables', 'POST', { name: name.trim() || nextName })
+      setName('')
+    })
+  }
+
+  function deleteTable(table) {
+    if (window.confirm(t('tables.deleteConfirm', { name: table.name }))) {
+      run(() => mutate(`/tables/${table._id}`, 'DELETE'))
+    }
+  }
+
+  return (
+    <div className="stack">
+      <section className="card no-print">
+        <h2>{t('tables.title')}</h2>
+        <p className="muted">{t('tables.hint')}</p>
+        <form className="inline-form" onSubmit={addTable}>
+          <label className="field">
+            <span>{t('tables.name')}</span>
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder={nextName} maxLength={40} />
+          </label>
+          <button className="btn btn-primary" disabled={pending}>
+            {t(pending ? 'tables.adding' : 'tables.add')}
+          </button>
+          {business.tables.length > 0 && (
+            <button type="button" className="btn btn-ghost" onClick={() => window.print()}>
+              {t('tables.print')}
+            </button>
+          )}
+        </form>
+        {error && <p className="form-error" role="alert">{error}</p>}
+      </section>
+
+      {business.tables.length === 0 ? (
+        <p className="muted">{t('tables.empty')}</p>
+      ) : (
+        <ul className="table-grid">
+          {business.tables.map((table) => (
+            <TableCard key={table._id} business={business} table={table} onDelete={() => deleteTable(table)} />
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}

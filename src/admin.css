@@ -1,0 +1,635 @@
+/* Shared UI for the admin area and forms. Colours come from index.css. */
+:root {
+  --card: #f3f5ef;
+  --line: rgba(43, 42, 38, 0.15);
+  --ok: #3f6b2a;
+  --warn: #9a6a00;
+  --radius: 0.75rem;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+}
+
+h2 {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+}
+
+h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.muted {
+  color: var(--ink-soft);
+}
+
+.stack {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.page-status {
+  padding: 2rem;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.brand {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--leaf-deep);
+  text-decoration: none;
+}
+
+/* ---------- Cards, badges, notices ---------- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: var(--paper-deep);
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.badge-ok,
+.badge-served {
+  background: var(--ok);
+  color: #fff;
+}
+
+.badge-warn,
+.badge-preparing {
+  background: var(--warn);
+  color: #fff;
+}
+
+.badge-pending {
+  background: var(--cherry);
+  color: #fff;
+}
+
+.notice {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--ok);
+  background: rgba(63, 107, 42, 0.12);
+  border-radius: 0.25rem;
+}
+
+.form-error {
+  margin: 0;
+  color: var(--cherry);
+  font-weight: 500;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--leaf-deep);
+  color: var(--paper);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--leaf);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--paper-deep);
+}
+
+.btn-danger {
+  background: transparent;
+  border-color: rgba(158, 42, 43, 0.4);
+  color: var(--cherry);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: rgba(158, 42, 43, 0.08);
+}
+
+.btn-sm {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* ---------- Forms ---------- */
+.field {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.field > span,
+.field > label {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.field small {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid rgba(43, 42, 38, 0.3);
+  border-radius: 0.5rem;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.form-actions,
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.inline-form .field {
+  flex: 1 1 14rem;
+}
+
+/* ---------- Auth ---------- */
+.auth {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem 1rem;
+}
+
+.auth-card {
+  width: min(24rem, 100%);
+  display: grid;
+  gap: 1rem;
+}
+
+.auth-card h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.auth-card .muted {
+  margin: -0.5rem 0 0.25rem;
+}
+
+.auth-switch {
+  margin: 0;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.auth-switch a {
+  color: var(--cherry);
+  font-weight: 700;
+}
+
+/* ---------- Admin shell ---------- */
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--paper-deep);
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.admin-user .muted {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-main {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+}
+
+/* ---------- Dashboard ---------- */
+.dashboard {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 52rem) {
+  .dashboard {
+    grid-template-columns: minmax(0, 1fr) 22rem;
+    align-items: start;
+  }
+}
+
+.dashboard h1 {
+  margin-top: 0;
+}
+
+.business-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.business-card {
+  display: grid;
+  gap: 0.2rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.business-card:hover {
+  border-color: var(--leaf);
+}
+
+.business-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+}
+
+/* ---------- Business page ---------- */
+.back-link {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.business-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.business-header h1 {
+  margin: 0 0 0.4rem;
+}
+
+.business-header p {
+  margin: 0;
+}
+
+.public-url {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.public-url a {
+  color: var(--cherry);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.business-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin: 1.25rem 0;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 0.6rem 1rem;
+  border-bottom: 3px solid transparent;
+  color: var(--ink-soft);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.tab.active {
+  color: var(--leaf-deep);
+  border-bottom-color: var(--leaf-deep);
+}
+
+.tab.is-locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---------- Products ---------- */
+.product-form {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+}
+
+.field-wide {
+  grid-column: 1 / -1;
+}
+
+.product-group + .product-group {
+  margin-top: 1.25rem;
+}
+
+.product-group h3 {
+  color: var(--leaf-deep);
+}
+
+.product-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.4rem 1rem;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.product-row.is-editing {
+  display: block;
+}
+
+.product-row.is-sold-out .product-info strong,
+.product-row.is-sold-out .product-price {
+  opacity: 0.55;
+}
+
+.product-info p {
+  margin: 0.15rem 0 0;
+  font-size: 0.9rem;
+}
+
+.product-info .badge {
+  margin-left: 0.5rem;
+}
+
+.product-price {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.product-row .row-actions {
+  grid-column: 1 / -1;
+}
+
+/* ---------- Tables & QR ---------- */
+.table-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.table-card {
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+  text-align: center;
+}
+
+.table-card h3 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.table-card-business {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--leaf-deep);
+}
+
+.table-card-scan {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+.table-qr {
+  width: 100%;
+  max-width: 12rem;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.table-card .row-actions {
+  justify-content: center;
+}
+
+/* ---------- Orders ---------- */
+.orders-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 0.2rem;
+  border-radius: 999px;
+  background: var(--paper-deep);
+}
+
+.segmented button {
+  padding: 0.4rem 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.segmented button.is-active {
+  background: var(--leaf-deep);
+  color: var(--paper);
+}
+
+.order-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order-card {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+  border-left: 4px solid var(--line);
+}
+
+.order-pending {
+  border-left-color: var(--cherry);
+}
+
+.order-preparing {
+  border-left-color: var(--warn);
+}
+
+.order-served {
+  border-left-color: var(--ok);
+}
+
+.order-cancelled {
+  opacity: 0.6;
+}
+
+.order-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.order-meta,
+.order-notes,
+.order-total {
+  margin: 0;
+}
+
+.order-items {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order-items li {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.order-items li .muted {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.order-qty {
+  font-weight: 700;
+}
+
+.order-notes {
+  padding: 0.5rem 0.75rem;
+  background: var(--paper-deep);
+  border-radius: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.order-total {
+  text-align: right;
+}
+
+/* ---------- Printing table QR codes ---------- */
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .admin-header,
+  .back-link,
+  .business-header,
+  .tabs,
+  .notice,
+  .no-print {
+    display: none !important;
+  }
+
+  .table-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .table-card {
+    break-inside: avoid;
+    background: #fff;
+  }
+}
