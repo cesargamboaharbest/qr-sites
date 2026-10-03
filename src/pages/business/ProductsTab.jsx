@@ -6,7 +6,7 @@ import { groupByCategory } from '../../utils/products.js'
 
 const EMPTY_PRODUCT = { name: '', category: '', price: '', description: '' }
 
-function ProductForm({ initial = EMPTY_PRODUCT, categories, submitLabel, pendingLabel, onSubmit, onCancel }) {
+function ProductForm({ initial = EMPTY_PRODUCT, categories, sections, submitLabel, pendingLabel, onSubmit, onCancel }) {
   const [form, setForm] = useState(initial)
   const [error, setError] = useState('')
   const [pending, setPending] = useState(false)
@@ -32,13 +32,15 @@ function ProductForm({ initial = EMPTY_PRODUCT, categories, submitLabel, pending
         <span>{t('products.name')}</span>
         <input value={form.name} onChange={update('name')} placeholder={t('products.namePlaceholder')} required maxLength={120} />
       </label>
+      {/* Menus without a cart call categories "sections", like the printed Kura menu */}
       <label className="field">
-        <span>{t('products.category')}</span>
+        <span>{t(sections ? 'products.section' : 'products.category')}</span>
         <input
           value={form.category}
           onChange={update('category')}
-          placeholder={t('products.categoryPlaceholder')}
+          placeholder={t(sections ? 'products.sectionPlaceholder' : 'products.categoryPlaceholder')}
           list="product-categories"
+          required={sections}
           maxLength={60}
         />
       </label>
@@ -95,6 +97,7 @@ function ProductRow({ product, business, categories, mutate }) {
         <ProductForm
           initial={{ ...product, price: String(product.price) }}
           categories={categories}
+          sections={!business.ordering}
           submitLabel={t('app.save')}
           pendingLabel={t('app.saving')}
           onSubmit={async (fields) => {
@@ -150,8 +153,10 @@ export default function ProductsTab() {
     <div className="stack">
       <section className="card">
         <h2>{t('products.addTitle')}</h2>
+        {!business.ordering && <p className="muted">{t('products.sectionHint')}</p>}
         <ProductForm
           categories={categories}
+          sections={!business.ordering}
           submitLabel={t('products.add')}
           pendingLabel={t('products.adding')}
           onSubmit={(fields) => mutate('/products', 'POST', fields)}

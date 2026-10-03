@@ -83,7 +83,7 @@ export default function OrdersTab() {
     return () => clearInterval(timer)
   }, [load])
 
-  if (!business.published) return <Navigate to=".." relative="path" replace />
+  if (!business.published || !business.ordering) return <Navigate to=".." relative="path" replace />
 
   async function updateStatus(order, status) {
     try {

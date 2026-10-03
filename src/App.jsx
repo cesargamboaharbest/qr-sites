@@ -8,6 +8,7 @@ import BusinessLayout from './pages/business/BusinessLayout.jsx'
 import ProductsTab from './pages/business/ProductsTab.jsx'
 import TablesTab from './pages/business/TablesTab.jsx'
 import OrdersTab from './pages/business/OrdersTab.jsx'
+import MenuQrTab from './pages/business/MenuQrTab.jsx'
 import PublicMenuPage from './pages/PublicMenuPage.jsx'
 
 function NotFound() {
@@ -40,6 +41,7 @@ export default function App() {
           <Route index element={<ProductsTab />} />
           <Route path="mesas" element={<TablesTab />} />
           <Route path="pedidos" element={<OrdersTab />} />
+          <Route path="qr" element={<MenuQrTab />} />
         </Route>
       </Route>
 

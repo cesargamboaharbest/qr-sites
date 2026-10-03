@@ -29,6 +29,8 @@ router.get('/:slug', async (req, res) => {
       slug: business.slug,
       description: business.description,
       currency: business.currency,
+      ordering: business.ordering,
+      theme: business.theme,
       products: business.products
         .filter((p) => p.available)
         .map(({ _id, name, description, category, price }) => ({ _id, name, description, category, price })),
@@ -39,6 +41,7 @@ router.get('/:slug', async (req, res) => {
 
 router.post('/:slug/orders', async (req, res) => {
   const business = await loadPublished(req.params.slug)
+  if (!business.ordering) throw new HttpError(400, 'ORDERING_DISABLED')
   const table = findTable(business, req.body?.tableId)
   if (!table) throw new HttpError(400, 'TABLE_NOT_FOUND')
 

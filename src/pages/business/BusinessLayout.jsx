@@ -59,8 +59,15 @@ export default function BusinessLayout() {
   }
 
   const url = publicMenuUrl(business.slug)
+  // Tabs unlocked by "Crear"; menus without a cart only get a single QR code
+  const extraTabs = business.ordering
+    ? [
+        { key: 'tables', path: 'mesas' },
+        { key: 'orders', path: 'pedidos' },
+      ]
+    : [{ key: 'qr', path: 'qr' }]
   const lockedTab = (key) => (
-    <span className="tab is-locked" title={t('business.lockedTab')} aria-disabled="true">
+    <span key={key} className="tab is-locked" title={t('business.lockedTab')} aria-disabled="true">
       {t(`business.tabs.${key}`)}
     </span>
   )
@@ -77,6 +84,10 @@ export default function BusinessLayout() {
             {business.name}{' '}
             <span className={`badge ${business.published ? 'badge-ok' : ''}`}>
               {t(business.published ? 'status.published' : 'status.draft')}
+            </span>{' '}
+            <span className="badge">
+              {t(business.ordering ? 'types.cart' : 'types.menuOnly')}
+              {!business.ordering && ` · ${t(`themes.${business.theme}.name`)}`}
             </span>
           </h1>
           {business.published ? (
@@ -110,7 +121,7 @@ export default function BusinessLayout() {
       {error && <p className="form-error" role="alert">{error}</p>}
       {justPublished && business.published && (
         <p className="notice" role="status">
-          {t('business.publishedNotice')}
+          {t(business.ordering ? 'business.publishedNotice' : 'business.publishedNoticeMenuOnly')}
         </p>
       )}
 
@@ -118,20 +129,14 @@ export default function BusinessLayout() {
         <NavLink to="" end className="tab">
           {t('business.tabs.products')}
         </NavLink>
-        {business.published ? (
-          <>
-            <NavLink to="mesas" className="tab">
-              {t('business.tabs.tables')}
+        {extraTabs.map((tab) =>
+          business.published ? (
+            <NavLink key={tab.key} to={tab.path} className="tab">
+              {t(`business.tabs.${tab.key}`)}
             </NavLink>
-            <NavLink to="pedidos" className="tab">
-              {t('business.tabs.orders')}
-            </NavLink>
-          </>
-        ) : (
-          <>
-            {lockedTab('tables')}
-            {lockedTab('orders')}
-          </>
+          ) : (
+            lockedTab(tab.key)
+          )
         )}
       </nav>
 

@@ -1,11 +1,10 @@
-import dns from 'node:dns'
+// Local development server. On Vercel the same app runs from api/index.js.
 import mongoose from 'mongoose'
 import app from './app.js'
 import config from './config.js'
+import { connectDb } from './db.js'
 
-if (config.dnsServers.length) dns.setServers(config.dnsServers)
-
-await mongoose.connect(config.mongodbUri)
+await connectDb()
 console.log(`Connected to MongoDB (${mongoose.connection.name})`)
 
 app.listen(config.port, () => {

@@ -5,6 +5,7 @@ import { errorMessage, t } from '../i18n/index.js'
 import { formatPrice } from '../utils/format.js'
 import { groupByCategory } from '../utils/products.js'
 import KuraMenu from './KuraMenu.jsx'
+import { DEFAULT_THEME, MENU_THEMES } from '../themes/index.js'
 import './PublicMenu.css'
 
 // Cart is { [productId]: quantity }, remembered per table so a reload keeps it
@@ -88,8 +89,15 @@ export default function PublicMenuPage() {
   }, [load])
 
   // The original hand-built Kura menu stays available at /kura until a
-  // "kura" business is published here.
-  if (loadError === 'NOT_FOUND' && slug.toLowerCase() === 'kura') return <KuraMenu />
+  // "kura" business is published here, and whenever the API can't be reached,
+  // so the printed Kura QR codes keep working.
+  if (loadError && slug.toLowerCase() === 'kura') return <KuraMenu />
+
+  // Menus without a cart are read-only and use their chosen style
+  if (data && !data.business.ordering) {
+    const Theme = MENU_THEMES[data.business.theme] ?? MENU_THEMES[DEFAULT_THEME]
+    return <Theme business={data.business} />
+  }
 
   if (!data) {
     return (

@@ -1,35 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Navigate, useOutletContext } from 'react-router-dom'
-import QRCode from 'qrcode'
 import { errorMessage, t } from '../../i18n/index.js'
 import { publicMenuUrl, slugify } from '../../utils/format.js'
+import QrCard from '../../components/QrCard.jsx'
 
 function TableCard({ business, table, onDelete }) {
-  const url = publicMenuUrl(business.slug, table._id)
-  const [qr, setQr] = useState('')
-
-  useEffect(() => {
-    QRCode.toDataURL(url, { width: 512, margin: 1 }).then(setQr)
-  }, [url])
-
   return (
-    <li className="card table-card">
-      <p className="table-card-business">{business.name}</p>
-      <h3>{table.name}</h3>
-      {qr && <img src={qr} alt={t('tables.qrAlt', { name: table.name })} className="table-qr" />}
-      <p className="table-card-scan">{t('tables.scanToOrder')}</p>
-      <div className="row-actions no-print">
-        <a className="btn btn-ghost btn-sm" href={qr} download={`${business.slug}-${slugify(table.name)}.png`}>
-          {t('tables.download')}
-        </a>
-        <a className="btn btn-ghost btn-sm" href={url} target="_blank" rel="noreferrer">
-          {t('app.open')}
-        </a>
-        <button type="button" className="btn btn-danger btn-sm" onClick={onDelete}>
-          {t('app.delete')}
-        </button>
-      </div>
-    </li>
+    <QrCard
+      businessName={business.name}
+      title={table.name}
+      caption={t('tables.scanToOrder')}
+      alt={t('tables.qrAlt', { name: table.name })}
+      url={publicMenuUrl(business.slug, table._id)}
+      filename={`${business.slug}-${slugify(table.name)}.png`}
+    >
+      <button type="button" className="btn btn-danger btn-sm" onClick={onDelete}>
+        {t('app.delete')}
+      </button>
+    </QrCard>
   )
 }
 
@@ -40,7 +28,7 @@ export default function TablesTab() {
   const [error, setError] = useState('')
   const [pending, setPending] = useState(false)
 
-  if (!business.published) return <Navigate to=".." relative="path" replace />
+  if (!business.published || !business.ordering) return <Navigate to=".." relative="path" replace />
 
   async function run(action) {
     setError('')

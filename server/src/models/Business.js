@@ -1,5 +1,7 @@
 import mongoose from 'mongoose'
 
+export const MENU_THEMES = ['kura']
+
 export const SLUG_PATTERN = /^[a-z0-9](?:[a-z0-9-]{0,48}[a-z0-9])?$/
 
 // Slugs live at the root of the site (/<slug>), so they can't shadow app routes.
@@ -34,6 +36,10 @@ const businessSchema = new mongoose.Schema(
     slug: { type: String, required: true, unique: true, lowercase: true, match: SLUG_PATTERN },
     description: { type: String, trim: true, maxlength: 300, default: '' },
     currency: { type: String, enum: ['CRC', 'USD'], default: 'CRC' },
+    // false = "menú sin carrito": a read-only QR menu, no tables or orders
+    ordering: { type: Boolean, default: true },
+    // Visual style of the read-only menu
+    theme: { type: String, enum: MENU_THEMES, default: MENU_THEMES[0] },
     published: { type: Boolean, default: false },
     products: [productSchema],
     tables: [tableSchema],

@@ -57,7 +57,7 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  const fields = pick(req.body, ['name', 'description', 'currency'])
+  const fields = pick(req.body, ['name', 'description', 'currency', 'ordering', 'theme'])
   const slug = slugify(req.body?.slug || fields.name || '')
   validateSlug(slug)
   const business = new Business({ ...fields, slug, owner: req.userId })
@@ -72,7 +72,7 @@ router.get('/:id', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
   const business = await loadOwned(req)
-  const fields = pick(req.body, ['name', 'description', 'currency', 'published'])
+  const fields = pick(req.body, ['name', 'description', 'currency', 'theme', 'published'])
   if (req.body?.slug !== undefined) {
     fields.slug = slugify(req.body.slug)
     validateSlug(fields.slug)
