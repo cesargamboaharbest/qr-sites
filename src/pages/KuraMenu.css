@@ -243,3 +243,33 @@
     align-items: flex-end;
   }
 }
+
+/* ---------- Two columns on every screen (Business.twoColumns) ---------- */
+.kura-sheet.is-two-col {
+  columns: 2;
+  column-gap: clamp(1.25rem, 5vw, 4rem);
+}
+
+@media (max-width: 48rem) {
+  .kura-sheet.is-two-col {
+    padding-inline: 0.75rem;
+    font-size: 0.85rem;
+  }
+  .is-two-col .kura-section {
+    margin-bottom: 1.75rem;
+  }
+  .is-two-col .kura-ribbon {
+    margin-bottom: 0.75rem;
+    padding-inline: 0.75rem;
+    font-size: 1.2rem;
+  }
+  .is-two-col .kura-item-name {
+    overflow-wrap: anywhere;
+  }
+  .is-two-col .kura-leader {
+    min-width: 0.5rem;
+  }
+  .is-two-col .kura-item-desc {
+    font-size: 0.75rem;
+  }
+}

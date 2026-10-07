@@ -145,6 +145,8 @@
     "imageHint": "JPG, PNG o WebP. Las fotos grandes se reducen automáticamente.",
     "preview": "Vista previa",
     "previewHint": "Así verán tu menú los clientes en su teléfono. Cambia el estilo con «Tema» arriba.",
+    "twoColumns": "Mostrar en dos columnas",
+    "twoColumnsHint": "Las categorías se reparten en dos columnas, también en el teléfono. Ideal para menús largos.",
     "soldOut": "Agotado",
     "markSoldOut": "Marcar agotado",
     "markAvailable": "Marcar disponible",

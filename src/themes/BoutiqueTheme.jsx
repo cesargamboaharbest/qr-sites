@@ -43,7 +43,7 @@ export default function BoutiqueTheme({ business }) {
         </nav>
       )}
 
-      <main className="bq-main">
+      <main className={business.twoColumns ? 'bq-main is-two-col' : 'bq-main'}>
         {sections.length === 0 && <p className="bq-empty">{t('menu.emptyMenu')}</p>}
         {sections.map((s) => (
           <section key={s.id} id={s.id} className="bq-section" aria-labelledby={`${s.id}-title`}>

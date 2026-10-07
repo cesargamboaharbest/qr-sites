@@ -622,6 +622,34 @@ textarea {
   font-size: 0.9rem;
 }
 
+.preview-option {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0 0 1rem;
+}
+
+.preview-option label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.preview-option input {
+  accent-color: var(--leaf-deep);
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+}
+
+.preview-option small {
+  font-size: 0.85rem;
+}
+
+.preview-option .form-error {
+  margin: 0.25rem 0 0;
+}
 
 /* Phone-sized frame: the menu inside lays out as on a real phone */
 .menu-preview-frame {

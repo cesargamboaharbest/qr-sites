@@ -38,7 +38,7 @@ export default function TeaTheme({ business }) {
         </nav>
       )}
 
-      <main className="tt-main">
+      <main className={business.twoColumns ? 'tt-main is-two-col' : 'tt-main'}>
         {sections.length === 0 && <p className="tt-empty">{t('menu.emptyMenu')}</p>}
         {sections.map((s) => (
           <section key={s.id} id={s.id} className="tt-section" aria-labelledby={`${s.id}-title`}>

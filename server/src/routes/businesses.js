@@ -79,7 +79,7 @@ router.get('/:id', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
   const business = await loadOwned(req)
-  const fields = pick(req.body, ['name', 'description', 'currency', 'published'])
+  const fields = pick(req.body, ['name', 'description', 'currency', 'published', 'twoColumns'])
   if (req.body?.slug !== undefined) {
     fields.slug = slugify(req.body.slug)
     validateSlug(fields.slug)
@@ -88,6 +88,7 @@ router.patch('/:id', async (req, res) => {
   if (fields.published === true && business.products.length === 0) {
     throw new HttpError(400, 'NO_PRODUCTS')
   }
+  if (fields.twoColumns !== undefined) fields.twoColumns = Boolean(fields.twoColumns)
   business.set(fields)
   await saveBusiness(business)
   res.json({ business: business.toOwnerJSON() })

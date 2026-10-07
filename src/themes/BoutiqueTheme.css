@@ -172,3 +172,50 @@
   color: var(--bq-soft);
   text-align: center;
 }
+
+/* ---------- Two columns on every screen (Business.twoColumns) ---------- */
+.bq-main.is-two-col {
+  columns: 2;
+  column-gap: clamp(1rem, 4vw, 3rem);
+}
+
+.is-two-col .bq-section {
+  break-inside: avoid;
+}
+
+.is-two-col .bq-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 48rem) {
+  .is-two-col .bq-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .bq-main.is-two-col {
+    padding-inline: 0.75rem;
+  }
+  .is-two-col .bq-title {
+    padding: 1.5rem 0 1rem;
+    font-size: 1rem;
+  }
+  .is-two-col .bq-grid {
+    gap: 0.6rem;
+  }
+  .is-two-col .bq-card {
+    padding: 0.85rem 0.5rem;
+  }
+  .is-two-col .bq-name {
+    font-size: 0.8rem;
+    overflow-wrap: anywhere;
+  }
+  .is-two-col .bq-desc {
+    font-size: 0.7rem;
+  }
+  .is-two-col .bq-price {
+    font-size: 0.85rem;
+  }
+}
