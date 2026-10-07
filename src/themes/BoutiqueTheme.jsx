@@ -8,7 +8,7 @@ import { useSectionNav } from './useSectionNav.js'
 import './BoutiqueTheme.css'
 
 export default function BoutiqueTheme({ business }) {
-  const sections = groupByCategory(business.products, t('products.uncategorized'))
+  const sections = groupByCategory(business.products, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(sections, '.bq-section')
 
   return (

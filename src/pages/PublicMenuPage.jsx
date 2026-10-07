@@ -67,7 +67,7 @@ function QuantityControl({ product, quantity, onChange }) {
 
 // Menu with a shopping cart. The layout is shared by all themes; each theme
 // styles it through the `pm--<theme>` class (see PublicMenu.css).
-function CartMenu({ data, themeKey, tableId, reload }) {
+export function CartMenu({ data, themeKey, tableId, reload }) {
   const { business, table } = data
   const [cart, changeQuantity, setCart] = useCart(`qr-sites:cart:${business.slug}:${tableId ?? ''}`)
   const [notes, setNotes] = useState('')
@@ -75,7 +75,7 @@ function CartMenu({ data, themeKey, tableId, reload }) {
   const [sending, setSending] = useState(false)
   const [sentOrder, setSentOrder] = useState(null)
   const dialogRef = useRef(null)
-  const groups = groupByCategory(business.products, t('products.uncategorized'))
+  const groups = groupByCategory(business.products, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(groups, '.pm-section')
 
   const canOrder = Boolean(table)

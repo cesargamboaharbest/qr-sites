@@ -36,6 +36,7 @@ router.get('/:slug', async (req, res) => {
       currency: business.currency,
       ordering: business.ordering,
       twoColumns: business.twoColumns,
+      categoryOrder: business.categoryOrder,
       products: business.products
         .filter((p) => p.available)
         .map(({ _id, name, description, category, price, imageUrl }) => ({

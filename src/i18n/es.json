@@ -105,7 +105,8 @@
       "products": "Productos",
       "tables": "Mesas y QR",
       "orders": "Pedidos",
-      "qr": "Código QR"
+      "qr": "Código QR",
+      "preview": "Vista previa"
     },
     "tabsLabel": "Secciones del negocio",
     "lockedTab": "Disponible después de presionar «Crear»",
@@ -132,7 +133,14 @@
     "categoryPlaceholder": "Ej. Bebidas calientes",
     "section": "Sección",
     "sectionPlaceholder": "Ej. Para empezar",
-    "sectionHint": "Escribe una sección nueva o elige una existente. Las secciones aparecen en el orden en que las creas.",
+    "sectionHint": "Escribe una sección nueva o elige una existente. Puedes cambiar el orden de las secciones con ↑ y ↓ en la lista de productos.",
+    "sectionCount": { "one": "1 sección", "other": "{count} secciones" },
+    "categoryCount": { "one": "1 categoría", "other": "{count} categorías" },
+    "productCount": { "one": "1 producto", "other": "{count} productos" },
+    "expandAll": "Expandir todo",
+    "collapseAll": "Contraer todo",
+    "moveUp": "Subir {name}",
+    "moveDown": "Bajar {name}",
     "price": "Precio",
     "description": "Descripción (opcional)",
     "descriptionPlaceholder": "Ej. Espresso con leche espumada",
@@ -172,6 +180,23 @@
     "scanToView": "Escanea para ver el menú",
     "qrAlt": "Código QR del menú de {name}",
     "print": "Imprimir código"
+  },
+  "preview": {
+    "settings": "Textos y diseño",
+    "message": "Mensaje del menú",
+    "messageHint": "Con el tema Kura aparece al final del menú; con los demás temas, en la franja de arriba. Déjalo vacío para no mostrar nada.",
+    "save": "Guardar mensaje",
+    "saving": "Guardando…",
+    "saved": "Guardado",
+    "deviceLabel": "Ver como",
+    "devices": {
+      "phone": "Teléfono",
+      "desktop": "Computadora"
+    },
+    "print": "Imprimir / Descargar PDF",
+    "preparing": "Preparando…",
+    "printHint": "Para descargarlo, elige «Guardar como PDF» como destino en la ventana de impresión.",
+    "frameTitle": "Vista previa del menú"
   },
   "waiters": {
     "pageTitle": "Meseros",

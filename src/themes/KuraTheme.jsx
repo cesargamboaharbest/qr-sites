@@ -22,7 +22,7 @@ function MenuItem({ product, currency }) {
 }
 
 export default function KuraTheme({ business }) {
-  const sections = groupByCategory(business.products, t('products.uncategorized'))
+  const sections = groupByCategory(business.products, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(sections, '.kura-section')
 
   return (

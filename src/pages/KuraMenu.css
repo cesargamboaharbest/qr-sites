@@ -273,3 +273,24 @@
     font-size: 0.75rem;
   }
 }
+
+/* ---------- Printing / PDF (Vista previa tab) ---------- */
+@media print {
+  .kura {
+    min-height: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .kura-tabs {
+    display: none;
+  }
+  .kura-header {
+    height: 12rem;
+  }
+  .kura-ribbon {
+    break-after: avoid;
+  }
+  .kura-item {
+    break-inside: avoid;
+  }
+}

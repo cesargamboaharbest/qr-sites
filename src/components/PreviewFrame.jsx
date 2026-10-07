@@ -6,9 +6,14 @@ const BLANK_DOC = '<!doctype html><html lang="es"><head></head><body></body></ht
 // Renders children inside an iframe so they lay out (and hit media queries)
 // at the iframe's width, like on a phone. The app's stylesheets are mirrored
 // into the frame, including the ones Vite injects/updates in development.
-export default function PreviewFrame({ title, className, children }) {
+// `frameRef` gives the parent the <iframe> (e.g. to print it).
+export default function PreviewFrame({ title, className, style, frameRef, children }) {
   const ref = useRef(null)
   const [body, setBody] = useState(null)
+
+  useEffect(() => {
+    if (frameRef) frameRef.current = ref.current
+  }, [frameRef])
 
   useEffect(() => {
     if (!body) return
@@ -28,6 +33,7 @@ export default function PreviewFrame({ title, className, children }) {
       ref={ref}
       title={title}
       className={className}
+      style={style}
       srcDoc={BLANK_DOC}
       onLoad={() => setBody(ref.current.contentDocument.body)}
     >
