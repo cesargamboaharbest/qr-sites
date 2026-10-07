@@ -105,7 +105,8 @@
       "products": "Productos",
       "tables": "Mesas y QR",
       "orders": "Pedidos",
-      "qr": "Código QR"
+      "qr": "Código QR",
+      "preview": "Vista previa"
     },
     "tabsLabel": "Secciones del negocio",
     "lockedTab": "Disponible después de presionar «Crear»",
@@ -172,6 +173,23 @@
     "scanToView": "Escanea para ver el menú",
     "qrAlt": "Código QR del menú de {name}",
     "print": "Imprimir código"
+  },
+  "preview": {
+    "settings": "Textos y diseño",
+    "message": "Mensaje del menú",
+    "messageHint": "Con el tema Kura aparece al final del menú; con los demás temas, en la franja de arriba. Déjalo vacío para no mostrar nada.",
+    "save": "Guardar mensaje",
+    "saving": "Guardando…",
+    "saved": "Guardado",
+    "deviceLabel": "Ver como",
+    "devices": {
+      "phone": "Teléfono",
+      "desktop": "Computadora"
+    },
+    "print": "Imprimir / Descargar PDF",
+    "preparing": "Preparando…",
+    "printHint": "Para descargarlo, elige «Guardar como PDF» como destino en la ventana de impresión.",
+    "frameTitle": "Vista previa del menú"
   },
   "waiters": {
     "pageTitle": "Meseros",

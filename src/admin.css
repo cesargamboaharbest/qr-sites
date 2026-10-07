@@ -675,6 +675,64 @@ textarea {
   }
 }
 
+/* ---------- Preview tab: phone / computer view and printing ---------- */
+.preview-layout {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 64rem) {
+  .preview-layout {
+    grid-template-columns: 22rem minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.preview-save {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.preview-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.preview-hint {
+  margin: 0.5rem 0 1rem;
+  font-size: 0.85rem;
+}
+
+/* Phone: same frame as the preview next to the products */
+.preview-stage--phone .preview-device {
+  display: block;
+  width: min(100%, 24.5rem);
+  height: min(46rem, 80vh);
+  margin: 0 auto;
+  border: 0.6rem solid var(--ink);
+  border-radius: 2rem;
+  background: var(--paper);
+  box-shadow: 0 10px 30px rgba(43, 42, 38, 0.2);
+}
+
+/* Computer: laid out at a laptop's size (set inline), scaled to fit */
+.preview-stage--desktop {
+  overflow: hidden;
+}
+
+.preview-stage--desktop .preview-device {
+  display: block;
+  border: 1rem solid var(--ink);
+  border-radius: 1rem;
+  background: var(--paper);
+  transform-origin: 0 0;
+}
+
 /* ---------- Tables & QR ---------- */
 .table-grid {
   display: grid;

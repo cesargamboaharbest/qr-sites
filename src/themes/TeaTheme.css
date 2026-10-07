@@ -195,3 +195,20 @@
     font-size: 0.75rem;
   }
 }
+
+/* ---------- Printing / PDF (Vista previa tab) ---------- */
+@media print {
+  .tt {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .tt-nav {
+    display: none;
+  }
+  .tt-title {
+    break-after: avoid;
+  }
+  .tt-card {
+    break-inside: avoid;
+  }
+}

@@ -704,3 +704,24 @@
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 400;
 }
+
+/* ---------- Printing / PDF (Vista previa tab) ---------- */
+@media print {
+  .pm {
+    min-height: 0;
+    padding-bottom: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pm-tabs,
+  .pm-banner,
+  .pm-cartbar {
+    display: none;
+  }
+  .pm-category {
+    break-after: avoid;
+  }
+  .pm-card {
+    break-inside: avoid;
+  }
+}

@@ -7,6 +7,7 @@ import { getTheme } from '../../themes/index.js'
 import { useAuth } from '../../auth/AuthContext.jsx'
 import PreviewFrame from '../../components/PreviewFrame.jsx'
 import ImageField from '../../components/ImageField.jsx'
+import TwoColumnsToggle from '../../components/TwoColumnsToggle.jsx'
 import { PLACEHOLDER_IMAGE } from '../../utils/products.js'
 
 const EMPTY_PRODUCT = { name: '', category: '', price: '', description: '', imageUrl: '' }
@@ -176,35 +177,6 @@ function ProductRow({ product, business, categories, mutate }) {
         </button>
       </div>
     </li>
-  )
-}
-
-// Layout option of menus without a cart, saved right away
-function TwoColumnsToggle({ business, mutate }) {
-  const [pending, setPending] = useState(false)
-  const [error, setError] = useState('')
-
-  async function toggle(e) {
-    setPending(true)
-    setError('')
-    try {
-      await mutate('', 'PATCH', { twoColumns: e.target.checked })
-    } catch (err) {
-      setError(errorMessage(err.code))
-    } finally {
-      setPending(false)
-    }
-  }
-
-  return (
-    <div className="preview-option">
-      <label>
-        <input type="checkbox" checked={Boolean(business.twoColumns)} onChange={toggle} disabled={pending} />
-        <span>{t('products.twoColumns')}</span>
-      </label>
-      <small className="muted">{t('products.twoColumnsHint')}</small>
-      {error && <p className="form-error" role="alert">{error}</p>}
-    </div>
   )
 }
 

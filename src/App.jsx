@@ -6,6 +6,7 @@ import AuthPage from './pages/AuthPage.jsx'
 import DashboardPage from './pages/DashboardPage.jsx'
 import BusinessLayout from './pages/business/BusinessLayout.jsx'
 import ProductsTab from './pages/business/ProductsTab.jsx'
+import PreviewTab from './pages/business/PreviewTab.jsx'
 import TablesTab from './pages/business/TablesTab.jsx'
 import OrdersTab from './pages/business/OrdersTab.jsx'
 import MenuQrTab from './pages/business/MenuQrTab.jsx'
@@ -51,6 +52,7 @@ export default function App() {
         <Route path="/meseros" element={<WaitersPage />} />
         <Route path="/negocios/:id" element={<BusinessLayout />}>
           <Route index element={<ProductsTab />} />
+          <Route path="vista-previa" element={<PreviewTab />} />
           <Route path="mesas" element={<TablesTab />} />
           <Route path="pedidos" element={<OrdersTab />} />
           <Route path="qr" element={<MenuQrTab />} />
