@@ -502,12 +502,99 @@ textarea {
   grid-column: 1 / -1;
 }
 
-.product-group + .product-group {
-  margin-top: 1.25rem;
+/* Sections: collapsible panels, each with its own products */
+.section-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
-.product-group h3 {
+.section-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.section-panel {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--leaf);
+  border-radius: 0.6rem;
+  background: var(--paper);
+}
+
+.section-panel.is-open {
+  border-left-color: var(--leaf-deep);
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.section-toggle {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  padding: 0.75rem 0.9rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.section-chevron {
+  color: var(--ink-soft);
+  transition: transform 0.15s ease;
+}
+
+.is-open .section-chevron {
+  transform: rotate(90deg);
+}
+
+.section-number {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: var(--leaf-deep);
+  color: var(--paper);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.section-name {
+  overflow: hidden;
   color: var(--leaf-deep);
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.section-move {
+  display: flex;
+  flex: none;
+  gap: 0.25rem;
+}
+
+.section-move .btn {
+  min-width: 2.2rem;
+}
+
+.section-body {
+  padding: 0 0.9rem 0.25rem;
 }
 
 .product-list {

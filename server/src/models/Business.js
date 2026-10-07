@@ -47,6 +47,9 @@ const businessSchema = new mongoose.Schema(
     // Menus without a cart: lay the categories out in two columns (also on
     // phones) so long menus need less scrolling
     twoColumns: { type: Boolean, default: false },
+    // Order of the categories (sections) on the menu, by name. Categories not
+    // listed keep the order in which they first appear, after the listed ones
+    categoryOrder: { type: [String], default: [] },
     published: { type: Boolean, default: false },
     products: [productSchema],
     tables: [tableSchema],

@@ -22,6 +22,14 @@ function validateSlug(slug) {
   if (RESERVED_SLUGS.has(slug)) throw new HttpError(400, 'SLUG_RESERVED')
 }
 
+const MAX_CATEGORIES = 100
+
+function parseCategoryOrder(value) {
+  if (!Array.isArray(value) || value.length > MAX_CATEGORIES) throw new HttpError(400, 'VALIDATION')
+  const names = value.map((name) => String(name).trim().slice(0, 60)).filter(Boolean)
+  return [...new Set(names)]
+}
+
 function parsePrice(value) {
   const price = Number(value)
   if (value === '' || value == null || !Number.isFinite(price) || price < 0) {
@@ -89,6 +97,7 @@ router.patch('/:id', async (req, res) => {
     throw new HttpError(400, 'NO_PRODUCTS')
   }
   if (fields.twoColumns !== undefined) fields.twoColumns = Boolean(fields.twoColumns)
+  if (req.body?.categoryOrder !== undefined) fields.categoryOrder = parseCategoryOrder(req.body.categoryOrder)
   business.set(fields)
   await saveBusiness(business)
   res.json({ business: business.toOwnerJSON() })

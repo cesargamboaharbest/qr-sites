@@ -8,7 +8,7 @@ import { useSectionNav, withPeriod } from './useSectionNav.js'
 import './TeaTheme.css'
 
 export default function TeaTheme({ business }) {
-  const sections = groupByCategory(business.products, t('products.uncategorized'))
+  const sections = groupByCategory(business.products, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(sections, '.tt-section')
 
   return (

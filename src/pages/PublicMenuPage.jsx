@@ -75,7 +75,7 @@ export function CartMenu({ data, themeKey, tableId, reload }) {
   const [sending, setSending] = useState(false)
   const [sentOrder, setSentOrder] = useState(null)
   const dialogRef = useRef(null)
-  const groups = groupByCategory(business.products, t('products.uncategorized'))
+  const groups = groupByCategory(business.products, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(groups, '.pm-section')
 
   const canOrder = Boolean(table)
