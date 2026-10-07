@@ -44,6 +44,9 @@ const businessSchema = new mongoose.Schema(
     // (the visual theme is an owner setting, see User.theme)
     // Creating one with a cart requires the owner's Pro plan (User.proPlan)
     ordering: { type: Boolean, default: true },
+    // Menus without a cart: lay the categories out in two columns (also on
+    // phones) so long menus need less scrolling
+    twoColumns: { type: Boolean, default: false },
     published: { type: Boolean, default: false },
     products: [productSchema],
     tables: [tableSchema],

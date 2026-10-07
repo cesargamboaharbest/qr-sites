@@ -54,7 +54,7 @@ export default function KuraTheme({ business }) {
         </nav>
       )}
 
-      <main className="kura-sheet">
+      <main className={business.twoColumns ? 'kura-sheet is-two-col' : 'kura-sheet'}>
         {sections.length === 0 && <p className="kura-note">{t('menu.emptyMenu')}</p>}
         {sections.map((s) => (
           <section key={s.id} id={s.id} className="kura-section" aria-labelledby={`${s.id}-title`}>

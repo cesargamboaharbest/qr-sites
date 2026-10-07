@@ -1,6 +1,6 @@
 // Turns the Pro plan on or off for an owner account (there's no billing yet).
 // Pro unlocks menus with a shopping cart and waiters ("meseros").
-// Usage: npm run set-pro -- <username> [on|off]     (default: on)
+// Usage: npm run set-pro -- <email> [on|off]     (default: on)
 // Uses the same database as the server (server/config.js or MONGODB_URI).
 import mongoose from 'mongoose'
 import User from '../src/models/User.js'
@@ -8,7 +8,7 @@ import { connectDb } from '../src/db.js'
 
 const [username, state = 'on'] = process.argv.slice(2)
 if (!username || !['on', 'off'].includes(state)) {
-  console.error('Usage: npm run set-pro -- <username> [on|off]')
+  console.error('Usage: npm run set-pro -- <email> [on|off]')
   process.exit(1)
 }
 

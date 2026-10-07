@@ -3,6 +3,7 @@ import { api } from '../api/client.js'
 import { errorMessage, t } from '../i18n/index.js'
 import Field from '../components/Field.jsx'
 import ProChip from '../components/ProChip.jsx'
+import { fieldOfError, validateCredentials } from '../utils/credentials.js'
 import { useAuth } from '../auth/AuthContext.jsx'
 
 const EMPTY_FORM = { username: '', password: '' }
@@ -16,6 +17,7 @@ export default function WaitersPage() {
   const [form, setForm] = useState(EMPTY_FORM)
   const [created, setCreated] = useState('')
   const [error, setError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState({})
   const [pending, setPending] = useState(false)
 
   useEffect(() => {
@@ -24,18 +26,28 @@ export default function WaitersPage() {
       .catch((err) => setError(errorMessage(err.code)))
   }, [])
 
+  const update = (field) => (e) => {
+    setForm({ ...form, [field]: e.target.value })
+    if (fieldErrors[field]) setFieldErrors({ ...fieldErrors, [field]: undefined })
+  }
+
   async function createWaiter(e) {
     e.preventDefault()
     setError('')
     setCreated('')
+    const found = validateCredentials(form, { newAccount: true })
+    setFieldErrors(found)
+    if (Object.keys(found).length) return
     setPending(true)
     try {
-      const { waiter } = await api('/waiters', { method: 'POST', body: form })
+      const { waiter } = await api('/waiters', { method: 'POST', body: { ...form, username: form.username.trim() } })
       setWaiters((current) => [...(current ?? []), waiter])
       setCreated(waiter.username)
       setForm(EMPTY_FORM)
     } catch (err) {
-      setError(errorMessage(err.code))
+      const field = fieldOfError(err.code)
+      if (field === 'form') setError(errorMessage(err.code))
+      else setFieldErrors({ [field]: err.code })
     } finally {
       setPending(false)
     }
@@ -63,28 +75,29 @@ export default function WaitersPage() {
           {locked ? t('plan.lockedHint') : t('waiters.hint', { url: `${window.location.origin}/login` })}
         </p>
         {/* Without the Pro plan the whole form is disabled (greyed out) */}
-        <form onSubmit={createWaiter}>
+        <form onSubmit={createWaiter} noValidate>
           <fieldset className="inline-form" disabled={locked}>
-          <Field label={t('waiters.username')} hint={t('auth.usernameHint')}>
+          <Field
+            label={t('waiters.username')}
+            error={fieldErrors.username && errorMessage(fieldErrors.username)}
+          >
             <input
+              type="email"
               value={form.username}
-              onChange={(e) => setForm({ ...form, username: e.target.value })}
+              onChange={update('username')}
+              placeholder={t('auth.emailPlaceholder')}
               autoComplete="off"
               autoCapitalize="none"
-              required
-              minLength={3}
-              maxLength={40}
+              maxLength={254}
             />
           </Field>
           {/* Shown in plain text: the owner has to pass it on to the waiter */}
-          <Field label={t('waiters.password')} hint={t('auth.passwordHint')}>
-            <input
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              autoComplete="new-password"
-              required
-              minLength={6}
-            />
+          <Field
+            label={t('waiters.password')}
+            hint={t('auth.passwordHint')}
+            error={fieldErrors.password && errorMessage(fieldErrors.password)}
+          >
+            <input value={form.password} onChange={update('password')} autoComplete="new-password" />
           </Field>
           <button className="btn btn-primary" disabled={pending}>
             {t(pending ? 'waiters.adding' : 'waiters.add')}

@@ -179,6 +179,35 @@ function ProductRow({ product, business, categories, mutate }) {
   )
 }
 
+// Layout option of menus without a cart, saved right away
+function TwoColumnsToggle({ business, mutate }) {
+  const [pending, setPending] = useState(false)
+  const [error, setError] = useState('')
+
+  async function toggle(e) {
+    setPending(true)
+    setError('')
+    try {
+      await mutate('', 'PATCH', { twoColumns: e.target.checked })
+    } catch (err) {
+      setError(errorMessage(err.code))
+    } finally {
+      setPending(false)
+    }
+  }
+
+  return (
+    <div className="preview-option">
+      <label>
+        <input type="checkbox" checked={Boolean(business.twoColumns)} onChange={toggle} disabled={pending} />
+        <span>{t('products.twoColumns')}</span>
+      </label>
+      <small className="muted">{t('products.twoColumnsHint')}</small>
+      {error && <p className="form-error" role="alert">{error}</p>}
+    </div>
+  )
+}
+
 export default function ProductsTab() {
   const { business, mutate } = useOutletContext()
   const { user } = useAuth()
@@ -230,6 +259,7 @@ export default function ProductsTab() {
       <aside className="menu-preview" aria-label={t('products.preview')}>
         <h2>{t('products.preview')}</h2>
         <p className="muted">{t('products.previewHint')}</p>
+        <TwoColumnsToggle business={business} mutate={mutate} />
         <PreviewFrame title={t('products.preview')} className="menu-preview-frame">
           <Menu business={previewBusiness} />
         </PreviewFrame>

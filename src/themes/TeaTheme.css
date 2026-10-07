@@ -150,3 +150,48 @@
   color: var(--tt-soft);
   text-align: center;
 }
+
+/* ---------- Two columns on every screen (Business.twoColumns) ---------- */
+.tt-main.is-two-col {
+  columns: 2;
+  column-gap: clamp(1rem, 4vw, 3rem);
+}
+
+.is-two-col .tt-section {
+  break-inside: avoid;
+}
+
+.is-two-col .tt-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 72rem) {
+  .is-two-col .tt-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 48rem) {
+  .tt-main.is-two-col {
+    padding-inline: 0.75rem;
+  }
+  .is-two-col .tt-title {
+    margin-bottom: 1rem;
+    padding: 1.5rem 0 0.75rem;
+    font-size: 1.2rem;
+  }
+  .is-two-col .tt-grid {
+    gap: 1.1rem;
+  }
+  .is-two-col .tt-name {
+    font-size: 1.05rem;
+    overflow-wrap: anywhere;
+  }
+  .is-two-col .tt-desc {
+    font-size: 0.72rem;
+  }
+  .is-two-col .tt-price {
+    padding: 0.25rem 0.65rem;
+    font-size: 0.75rem;
+  }
+}

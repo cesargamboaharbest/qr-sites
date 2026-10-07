@@ -2,7 +2,7 @@ import { Router } from 'express'
 import bcrypt from 'bcryptjs'
 import User from '../models/User.js'
 import { HttpError } from '../errors.js'
-import { createUser, readCredentials } from '../credentials.js'
+import { createUser, isValidEmail, readCredentials } from '../credentials.js'
 import { ownerOnly, requireAuth, signToken } from '../middleware/auth.js'
 import { THEMES } from '../themes.js'
 
@@ -24,12 +24,16 @@ router.post('/register', async (req, res) => {
   res.status(201).json({ token: signToken(user), user: await publicUser(user) })
 })
 
+// Errors say which field is wrong so the form can point at it. (Sign-up
+// already reveals whether an email has an account, so this hides nothing.)
 router.post('/login', async (req, res) => {
   const { username, password } = readCredentials(req.body)
+  if (!username) throw new HttpError(400, 'EMAIL_REQUIRED')
+  if (!isValidEmail(username)) throw new HttpError(400, 'INVALID_EMAIL')
+  if (!password) throw new HttpError(400, 'PASSWORD_REQUIRED')
   const user = await User.findOne({ username })
-  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
-    throw new HttpError(401, 'INVALID_CREDENTIALS')
-  }
+  if (!user) throw new HttpError(401, 'USER_NOT_FOUND')
+  if (!(await bcrypt.compare(password, user.passwordHash))) throw new HttpError(401, 'WRONG_PASSWORD')
   res.json({ token: signToken(user), user: await publicUser(user) })
 })
 

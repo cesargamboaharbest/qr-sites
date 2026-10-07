@@ -1,6 +1,6 @@
 # qr-sites
 
-Digital menus with QR codes. Owners sign up, create a business (negocio), add
+Digital menus with QR codes. Owners sign up (with their email), create a business (negocio), add
 products and publish it with **Crear**. Two kinds of menu:
 
 - **Con carrito de compras** (Pro plan): products with photos, tables with a QR
@@ -37,8 +37,8 @@ Open http://localhost:5173. It redirects to `/login`.
 There's no billing yet. Pro is a flag on the owner account, switched with:
 
 ```bash
-npm run set-pro -- <username>        # on
-npm run set-pro -- <username> off    # off
+npm run set-pro -- <email>        # on
+npm run set-pro -- <email> off    # off
 ```
 
 It uses the same database as the server. The owner sees the change the next
