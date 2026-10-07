@@ -593,8 +593,15 @@ textarea {
   min-width: 2.2rem;
 }
 
-.section-body {
-  padding: 0 0.9rem 0.25rem;
+/* Beats .product-list's `padding: 0`; rows are indented under the header */
+.section-panel .section-body {
+  padding: 0 0.9rem 0.25rem 2.6rem;
+}
+
+@media (max-width: 30rem) {
+  .section-panel .section-body {
+    padding-left: 1.25rem;
+  }
 }
 
 .product-list {
