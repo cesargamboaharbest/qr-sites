@@ -863,6 +863,16 @@ textarea {
   font-size: 0.85rem;
 }
 
+.table-card-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-weight: 700;
+}
+
 .table-qr {
   width: 100%;
   max-width: 12rem;

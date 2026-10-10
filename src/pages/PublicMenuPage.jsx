@@ -250,10 +250,29 @@ export function CartMenu({ data, themeKey, tableId, reload }) {
   )
 }
 
+// Counts the scan of a table's QR code once per browser session (reloads and
+// React's double effects in development don't count again)
+function useCountScan(slug, tableId) {
+  useEffect(() => {
+    if (!tableId) return
+    const key = `qr-sites:scanned:${slug}:${tableId}`
+    try {
+      if (sessionStorage.getItem(key)) return
+      sessionStorage.setItem(key, '1')
+    } catch {
+      // Storage unavailable: count this visit anyway
+    }
+    api(`/public/${encodeURIComponent(slug)}/tables/${encodeURIComponent(tableId)}/scans`, {
+      method: 'POST',
+    }).catch(() => {})
+  }, [slug, tableId])
+}
+
 export default function PublicMenuPage() {
   const { slug, tableId } = useParams()
   const [data, setData] = useState(null)
   const [loadError, setLoadError] = useState(null)
+  useCountScan(slug, tableId)
 
   const load = useCallback(async () => {
     try {

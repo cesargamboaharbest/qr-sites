@@ -31,6 +31,8 @@ const productSchema = new mongoose.Schema({
 
 const tableSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true, maxlength: 40 },
+  // How many times the table's QR menu was opened (once per browser session)
+  scans: { type: Number, default: 0, min: 0 },
 })
 
 const businessSchema = new mongoose.Schema(

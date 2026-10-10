@@ -171,6 +171,9 @@
     "download": "Descargar QR",
     "print": "Imprimir códigos",
     "scanToOrder": "Escanea para ordenar",
+    "scans": "{n} escaneos",
+    "scansOne": "1 escaneo",
+    "mostScanned": "Más escaneada",
     "qrAlt": "Código QR de {name}",
     "deleteConfirm": "¿Eliminar «{name}»? Su código QR dejará de funcionar."
   },
