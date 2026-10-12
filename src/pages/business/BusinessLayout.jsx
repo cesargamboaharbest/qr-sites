@@ -4,6 +4,7 @@ import { api } from '../../api/client.js'
 import { errorMessage, t } from '../../i18n/index.js'
 import { publicMenuUrl } from '../../utils/format.js'
 import CopyButton from '../../components/CopyButton.jsx'
+import DeleteBusinessDialog from '../../components/DeleteBusinessDialog.jsx'
 
 export default function BusinessLayout() {
   const { id } = useParams()
@@ -12,6 +13,7 @@ export default function BusinessLayout() {
   const [error, setError] = useState('')
   const [pending, setPending] = useState(false)
   const [justPublished, setJustPublished] = useState(false)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
 
   useEffect(() => {
     api(`/businesses/${id}`)
@@ -44,14 +46,10 @@ export default function BusinessLayout() {
     }
   }
 
-  async function deleteBusiness() {
-    if (!window.confirm(t('business.deleteConfirm', { name: business.name }))) return
-    try {
-      await api(`/businesses/${id}`, { method: 'DELETE' })
-      navigate('/dashboard')
-    } catch (err) {
-      setError(errorMessage(err.code))
-    }
+  // Errors are shown inside the dialog
+  async function deleteBusiness(confirmName) {
+    await api(`/businesses/${id}`, { method: 'DELETE', body: { confirmName } })
+    navigate('/dashboard')
   }
 
   if (!business) {
@@ -64,6 +62,7 @@ export default function BusinessLayout() {
     ? [
         { key: 'tables', path: 'mesas' },
         { key: 'orders', path: 'pedidos' },
+        { key: 'topProducts', path: 'mas-vendidos' },
       ]
     : [{ key: 'qr', path: 'qr' }]
   const lockedTab = (key) => (
@@ -109,11 +108,18 @@ export default function BusinessLayout() {
               {t(pending ? 'business.publishing' : 'business.publish')}
             </button>
           )}
-          <button type="button" className="btn btn-danger btn-sm" onClick={deleteBusiness}>
+          <button type="button" className="btn btn-danger btn-sm" onClick={() => setConfirmingDelete(true)}>
             {t('business.deleteBusiness')}
           </button>
         </div>
       </header>
+
+      <DeleteBusinessDialog
+        name={business.name}
+        open={confirmingDelete}
+        onClose={() => setConfirmingDelete(false)}
+        onConfirm={deleteBusiness}
+      />
 
       {error && <p className="form-error" role="alert">{error}</p>}
       {justPublished && business.published && (

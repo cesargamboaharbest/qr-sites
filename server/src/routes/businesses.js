@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import Business, { IMAGE_URL_PATTERN, RESERVED_SLUGS, SLUG_PATTERN, slugify } from '../models/Business.js'
 import Order from '../models/Order.js'
+import PurchasedProduct from '../models/PurchasedProduct.js'
 import { HttpError } from '../errors.js'
 import { ownerOnly, requireAuth } from '../middleware/auth.js'
 import { listOrders, updateOrderStatus } from '../orders.js'
@@ -103,9 +104,15 @@ router.patch('/:id', async (req, res) => {
   res.json({ business: business.toOwnerJSON() })
 })
 
+// Deleting is irreversible: the owner must type the business name (checked in
+// the dashboard's confirmation dialog and again here)
 router.delete('/:id', async (req, res) => {
   const business = await loadOwned(req)
+  if (String(req.body?.confirmName ?? '').trim() !== business.name) {
+    throw new HttpError(400, 'CONFIRM_NAME_MISMATCH')
+  }
   await Order.deleteMany({ business: business._id })
+  await PurchasedProduct.deleteMany({ business: business._id })
   await business.deleteOne()
   res.status(204).end()
 })
@@ -167,6 +174,19 @@ router.delete('/:id/tables/:tableId', async (req, res) => {
   table.deleteOne()
   await business.save()
   res.json({ business: business.toOwnerJSON() })
+})
+
+// ---------- Most purchased products ("Más vendidos") ----------
+
+router.get('/:id/purchased-products', async (req, res) => {
+  const business = await loadOwned(req)
+  const products = await PurchasedProduct.find(
+    { business: business._id, quantity: { $gt: 0 } },
+    { product: 1, name: 1, quantity: 1, orders: 1, revenue: 1, lastPurchasedAt: 1 }
+  )
+    .sort({ quantity: -1, revenue: -1 })
+    .limit(100)
+  res.json({ products })
 })
 
 // ---------- Orders ----------

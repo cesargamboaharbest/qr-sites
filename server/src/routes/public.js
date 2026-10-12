@@ -6,6 +6,7 @@ import Order from '../models/Order.js'
 import User from '../models/User.js'
 import { THEMES } from '../themes.js'
 import { HttpError } from '../errors.js'
+import { recordPurchases } from '../purchases.js'
 
 const MAX_QUANTITY = 99
 
@@ -108,6 +109,9 @@ router.post('/:slug/orders', async (req, res) => {
     notes: String(req.body?.notes ?? '').slice(0, 300),
     total,
   })
+  // The order is already saved: don't make the customer resend it if only the
+  // stats fail (`npm run rebuild-purchases` fixes them)
+  await recordPurchases(order).catch((err) => console.error('recordPurchases failed', order._id, err))
   res.status(201).json({ order: { number: order.number, total: order.total } })
 })
 

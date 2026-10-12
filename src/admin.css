@@ -84,6 +84,142 @@ h3 {
   color: #fff;
 }
 
+/* ---------- "Más vendidos" tab ---------- */
+.top-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.top-head h2,
+.top-head p {
+  margin: 0;
+}
+
+.top-head p {
+  margin-top: 0.25rem;
+}
+
+.top-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.top-summary div {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+  background: var(--paper);
+}
+
+.top-summary dt {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.top-summary dd {
+  margin: 0.2rem 0 0;
+  color: var(--leaf-deep);
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.top-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.top-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.top-rank {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--paper-deep);
+  color: var(--ink-soft);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.top-rank.is-podium {
+  background: var(--leaf-deep);
+  color: var(--paper);
+}
+
+.top-name {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.5rem;
+  min-width: 0;
+}
+
+.top-name strong {
+  overflow-wrap: anywhere;
+}
+
+.top-name .muted {
+  flex-basis: 100%;
+  font-size: 0.85rem;
+}
+
+.top-figures {
+  display: grid;
+  flex: none;
+  justify-items: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.top-figures .muted {
+  font-size: 0.85rem;
+}
+
+/* ---------- Confirmation dialogs ---------- */
+.confirm-dialog {
+  width: min(28rem, calc(100% - 2rem));
+  max-height: calc(100% - 2rem);
+  padding: 1.5rem;
+  border: 0;
+  border-top: 4px solid var(--cherry);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--ink);
+}
+
+.confirm-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.confirm-dialog h2 {
+  margin: 0;
+}
+
+.confirm-dialog-warning {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--cherry);
+  background: rgba(158, 42, 43, 0.08);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .notice {
   margin: 0;
   padding: 0.75rem 1rem;

@@ -106,6 +106,7 @@
       "tables": "Mesas y QR",
       "orders": "Pedidos",
       "qr": "Código QR",
+      "topProducts": "Más vendidos",
       "preview": "Vista previa"
     },
     "tabsLabel": "Secciones del negocio",
@@ -119,7 +120,11 @@
     "unpublish": "Despublicar",
     "unpublishConfirm": "¿Despublicar el menú? Los códigos QR dejarán de funcionar hasta que lo vuelvas a crear.",
     "deleteBusiness": "Eliminar negocio",
-    "deleteConfirm": "¿Eliminar «{name}»? Se borrarán sus productos, mesas y pedidos."
+    "deleteTitle": "Eliminar negocio",
+    "deleteWarning": "Este proceso es irreversible. Se borrarán «{name}», su menú, productos, mesas, pedidos y códigos QR, y no se podrán recuperar.",
+    "deleteTypeName": "Ingresa el nombre del negocio a eliminar («{name}») para confirmar",
+    "deleteForever": "Eliminar definitivamente",
+    "deleting": "Eliminando…"
   },
   "products": {
     "title": "Productos",
@@ -179,6 +184,17 @@
     "mostScanned": "Más escaneada",
     "qrAlt": "Código QR de {name}",
     "deleteConfirm": "¿Eliminar «{name}»? Su código QR dejará de funcionar."
+  },
+  "topProducts": {
+    "title": "Productos más vendidos",
+    "hint": "Ordenados por unidades vendidas desde que el menú recibe pedidos. Los pedidos cancelados no cuentan.",
+    "refresh": "Actualizar",
+    "empty": "Aún no hay ventas. Cuando tus clientes hagan pedidos, aquí verás sus productos favoritos.",
+    "totalUnits": "Unidades vendidas",
+    "totalRevenue": "Total vendido",
+    "units": { "one": "1 unidad", "other": "{count} unidades" },
+    "orders": { "one": "en 1 pedido", "other": "en {count} pedidos" },
+    "removed": "Ya no está en el menú"
   },
   "menuQr": {
     "title": "Código QR del menú",
@@ -290,6 +306,7 @@
     "SLUG_RESERVED": "Esa dirección no está disponible. Elige otra.",
     "SLUG_TAKEN": "Esa dirección ya está en uso. Elige otra.",
     "VALIDATION": "Revisa los datos ingresados.",
+    "CONFIRM_NAME_MISMATCH": "El nombre no coincide con el del negocio.",
     "INVALID_PRICE": "Ingresa un precio válido.",
     "NOT_FOUND": "No encontramos lo que buscas.",
     "NO_PRODUCTS": "Agrega al menos un producto antes de crear el menú.",
