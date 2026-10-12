@@ -9,6 +9,7 @@ import ProductsTab from './pages/business/ProductsTab.jsx'
 import PreviewTab from './pages/business/PreviewTab.jsx'
 import TablesTab from './pages/business/TablesTab.jsx'
 import OrdersTab from './pages/business/OrdersTab.jsx'
+import TopProductsTab from './pages/business/TopProductsTab.jsx'
 import MenuQrTab from './pages/business/MenuQrTab.jsx'
 import WaitersPage from './pages/WaitersPage.jsx'
 import WaiterPage from './pages/WaiterPage.jsx'
@@ -55,6 +56,7 @@ export default function App() {
           <Route path="vista-previa" element={<PreviewTab />} />
           <Route path="mesas" element={<TablesTab />} />
           <Route path="pedidos" element={<OrdersTab />} />
+          <Route path="mas-vendidos" element={<TopProductsTab />} />
           <Route path="qr" element={<MenuQrTab />} />
         </Route>
       </Route>
