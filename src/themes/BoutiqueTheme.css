@@ -167,6 +167,98 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ---------- "Platillo agotado" ---------- */
+.bq-card.is-sold-out {
+  background: #f6f6f6;
+}
+
+.bq-card.is-sold-out > :not(.bq-sold-out) {
+  opacity: 0.4;
+}
+
+.bq-card.is-sold-out .bq-price {
+  text-decoration: line-through;
+}
+
+.bq-sold-out {
+  margin: 0.5rem 0 0;
+  color: var(--bq-ink);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ---------- "Producto de temporada" ---------- */
+.bq-seasonal {
+  max-width: 85rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.bq-seasonal-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bq-seasonal-card {
+  padding: clamp(2rem, 7vw, 3rem) 1.5rem;
+  /* thin inner frame, like a printed card */
+  outline: 1px solid rgba(255, 255, 255, 0.35);
+  outline-offset: -0.5rem;
+  background: var(--bq-ink);
+  color: #fff;
+  text-align: center;
+}
+
+.bq-seasonal-kicker {
+  display: inline-block;
+  margin: 0;
+  padding: 0.3rem 0.8rem;
+  background: var(--bq-pink);
+  color: var(--bq-ink);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.bq-seasonal-name {
+  margin: 0.9rem 0 0;
+  font-family: 'Playfair Display', Didot, Georgia, serif;
+  font-size: clamp(2rem, 8vw, 3rem);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.bq-seasonal-desc {
+  max-width: 30rem;
+  margin: 0.6rem auto 0;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.bq-seasonal-price {
+  margin: 1rem 0 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.bq-seasonal-card.is-sold-out {
+  opacity: 0.55;
+}
+
+.bq-seasonal-card .bq-sold-out {
+  color: #fff;
+}
+
 .bq-empty {
   padding: 3rem 0;
   color: var(--bq-soft);
@@ -217,5 +309,23 @@
   }
   .is-two-col .bq-price {
     font-size: 0.85rem;
+  }
+}
+
+/* ---------- Printing / PDF (Vista previa tab) ---------- */
+@media print {
+  .bq {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .bq-chips {
+    display: none;
+  }
+  .bq-title {
+    break-after: avoid;
+  }
+  .bq-card,
+  .bq-seasonal-card {
+    break-inside: avoid;
   }
 }

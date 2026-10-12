@@ -67,7 +67,7 @@ function QuantityControl({ product, quantity, onChange }) {
 
 // Menu with a shopping cart. The layout is shared by all themes; each theme
 // styles it through the `pm--<theme>` class (see PublicMenu.css).
-function CartMenu({ data, themeKey, tableId, reload }) {
+export function CartMenu({ data, themeKey, tableId, reload }) {
   const { business, table } = data
   const [cart, changeQuantity, setCart] = useCart(`qr-sites:cart:${business.slug}:${tableId ?? ''}`)
   const [notes, setNotes] = useState('')
@@ -75,12 +75,13 @@ function CartMenu({ data, themeKey, tableId, reload }) {
   const [sending, setSending] = useState(false)
   const [sentOrder, setSentOrder] = useState(null)
   const dialogRef = useRef(null)
-  const groups = groupByCategory(business.products, t('products.uncategorized'))
+  const groups = groupByCategory(business.products, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(groups, '.pm-section')
 
   const canOrder = Boolean(table)
+  // A remembered cart can hold products that sold out since
   const cartLines = business.products
-    .filter((p) => cart[p._id])
+    .filter((p) => p.available && cart[p._id])
     .map((p) => ({ product: p, quantity: cart[p._id] }))
   const itemCount = cartLines.reduce((sum, line) => sum + line.quantity, 0)
   const total = cartLines.reduce((sum, line) => sum + line.quantity * line.product.price, 0)
@@ -164,7 +165,7 @@ function CartMenu({ data, themeKey, tableId, reload }) {
             </h2>
             <ul className="pm-grid">
               {group.items.map((product) => (
-                <li key={product._id} className="pm-card">
+                <li key={product._id} className={product.available ? 'pm-card' : 'pm-card is-sold-out'}>
                   <img
                     className="pm-card-img"
                     src={product.imageUrl || PLACEHOLDER_IMAGE}
@@ -177,8 +178,9 @@ function CartMenu({ data, themeKey, tableId, reload }) {
                     <h3 className="pm-card-name">{productName(product.name)}</h3>
                     {product.description && <p className="pm-card-desc">{product.description}</p>}
                     <span className="pm-card-price">{price(product.price)}</span>
+                    {!product.available && <p className="pm-sold-out">{t('menu.soldOut')}</p>}
                   </div>
-                  {canOrder && (
+                  {canOrder && product.available && (
                     <div className="pm-card-action">
                       <QuantityControl product={product} quantity={cart[product._id]} onChange={changeQuantity} />
                     </div>
@@ -250,10 +252,29 @@ function CartMenu({ data, themeKey, tableId, reload }) {
   )
 }
 
+// Counts the scan of a QR code once per browser session (reloads and React's
+// double effects in development don't count again): a table's QR, or the
+// single QR of a menu without a cart (the server ignores it for cart menus)
+function useCountScan(slug, tableId) {
+  useEffect(() => {
+    const key = `qr-sites:scanned:${slug}:${tableId ?? ''}`
+    try {
+      if (sessionStorage.getItem(key)) return
+      sessionStorage.setItem(key, '1')
+    } catch {
+      // Storage unavailable: count this visit anyway
+    }
+    const base = `/public/${encodeURIComponent(slug)}`
+    const path = tableId ? `${base}/tables/${encodeURIComponent(tableId)}/scans` : `${base}/scans`
+    api(path, { method: 'POST' }).catch(() => {})
+  }, [slug, tableId])
+}
+
 export default function PublicMenuPage() {
   const { slug, tableId } = useParams()
   const [data, setData] = useState(null)
   const [loadError, setLoadError] = useState(null)
+  useCountScan(slug, tableId)
 
   const load = useCallback(async () => {
     try {

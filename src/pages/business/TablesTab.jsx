@@ -4,12 +4,19 @@ import { errorMessage, t } from '../../i18n/index.js'
 import { publicMenuUrl, slugify } from '../../utils/format.js'
 import QrCard from '../../components/QrCard.jsx'
 
-function TableCard({ business, table, onDelete }) {
+function TableCard({ business, table, mostScanned, onDelete }) {
+  const scans = table.scans ?? 0
   return (
     <QrCard
       businessName={business.name}
       title={table.name}
       caption={t('tables.scanToOrder')}
+      stats={
+        <>
+          {t(scans === 1 ? 'tables.scansOne' : 'tables.scans', { n: scans })}
+          {mostScanned && <span className="badge badge-ok">{t('tables.mostScanned')}</span>}
+        </>
+      }
       alt={t('tables.qrAlt', { name: table.name })}
       url={publicMenuUrl(business.slug, table._id)}
       filename={`${business.slug}-${slugify(table.name)}.png`}
@@ -27,6 +34,9 @@ export default function TablesTab() {
   const [name, setName] = useState('')
   const [error, setError] = useState('')
   const [pending, setPending] = useState(false)
+  // Tag the table(s) with the most scans, once there's something to compare
+  const maxScans = Math.max(0, ...business.tables.map((table) => table.scans ?? 0))
+  const showTop = business.tables.length > 1 && maxScans > 0
 
   if (!business.published || !business.ordering) return <Navigate to=".." relative="path" replace />
 
@@ -83,7 +93,13 @@ export default function TablesTab() {
       ) : (
         <ul className="table-grid">
           {business.tables.map((table) => (
-            <TableCard key={table._id} business={business} table={table} onDelete={() => deleteTable(table)} />
+            <TableCard
+              key={table._id}
+              business={business}
+              table={table}
+              mostScanned={showTop && (table.scans ?? 0) === maxScans}
+              onDelete={() => deleteTable(table)}
+            />
           ))}
         </ul>
       )}

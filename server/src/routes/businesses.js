@@ -22,6 +22,14 @@ function validateSlug(slug) {
   if (RESERVED_SLUGS.has(slug)) throw new HttpError(400, 'SLUG_RESERVED')
 }
 
+const MAX_CATEGORIES = 100
+
+function parseCategoryOrder(value) {
+  if (!Array.isArray(value) || value.length > MAX_CATEGORIES) throw new HttpError(400, 'VALIDATION')
+  const names = value.map((name) => String(name).trim().slice(0, 60)).filter(Boolean)
+  return [...new Set(names)]
+}
+
 function parsePrice(value) {
   const price = Number(value)
   if (value === '' || value == null || !Number.isFinite(price) || price < 0) {
@@ -89,6 +97,7 @@ router.patch('/:id', async (req, res) => {
     throw new HttpError(400, 'NO_PRODUCTS')
   }
   if (fields.twoColumns !== undefined) fields.twoColumns = Boolean(fields.twoColumns)
+  if (req.body?.categoryOrder !== undefined) fields.categoryOrder = parseCategoryOrder(req.body.categoryOrder)
   business.set(fields)
   await saveBusiness(business)
   res.json({ business: business.toOwnerJSON() })
@@ -103,11 +112,14 @@ router.delete('/:id', async (req, res) => {
 
 // ---------- Products ----------
 
-// Product photos are only for menus with a cart
+// Product photos are only for menus with a cart, seasonal products only for
+// menus without one
 function productFields(business, body) {
   const keys = ['name', 'description', 'category', 'available']
-  if (business.ordering) keys.push('imageUrl')
+  keys.push(business.ordering ? 'imageUrl' : 'seasonal')
   const fields = pick(body, keys)
+  if (fields.available !== undefined) fields.available = Boolean(fields.available)
+  if (fields.seasonal !== undefined) fields.seasonal = Boolean(fields.seasonal)
   if (fields.imageUrl !== undefined && !IMAGE_URL_PATTERN.test(String(fields.imageUrl))) {
     throw new HttpError(400, 'INVALID_IMAGE_URL')
   }

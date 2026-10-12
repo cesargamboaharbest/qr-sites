@@ -36,19 +36,43 @@ router.get('/:slug', async (req, res) => {
       currency: business.currency,
       ordering: business.ordering,
       twoColumns: business.twoColumns,
-      products: business.products
-        .filter((p) => p.available)
-        .map(({ _id, name, description, category, price, imageUrl }) => ({
-          _id,
-          name,
-          description,
-          category,
-          price,
-          imageUrl,
-        })),
+      categoryOrder: business.categoryOrder,
+      // Sold-out products are included so the menu can show them grayed out
+      products: business.products.map(({ _id, name, description, category, price, available, seasonal, imageUrl }) => ({
+        _id,
+        name,
+        description,
+        category,
+        price,
+        available,
+        seasonal: !business.ordering && seasonal,
+        imageUrl,
+      })),
     },
     table: table && { id: table._id, name: table.name },
   })
+})
+
+// Counts a scan of a table's QR code. The page calls it once per browser
+// session, so reloads and placing orders don't inflate the count.
+router.post('/:slug/tables/:tableId/scans', async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.tableId)) throw new HttpError(404, 'NOT_FOUND')
+  const { matchedCount } = await Business.updateOne(
+    { slug: String(req.params.slug).toLowerCase(), published: true, 'tables._id': req.params.tableId },
+    { $inc: { 'tables.$.scans': 1 } }
+  )
+  if (!matchedCount) throw new HttpError(404, 'NOT_FOUND')
+  res.status(204).end()
+})
+
+// Same for the single QR code of a menu without a cart
+router.post('/:slug/scans', async (req, res) => {
+  const { matchedCount } = await Business.updateOne(
+    { slug: String(req.params.slug).toLowerCase(), published: true, ordering: false },
+    { $inc: { menuScans: 1 } }
+  )
+  if (!matchedCount) throw new HttpError(404, 'NOT_FOUND')
+  res.status(204).end()
 })
 
 router.post('/:slug/orders', async (req, res) => {

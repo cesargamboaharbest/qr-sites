@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 import QRCode from 'qrcode'
 import { t } from '../i18n/index.js'
 
-// Printable card with a QR code pointing at `url`, plus download/open actions
-export default function QrCard({ businessName, title, caption, alt, url, filename, children }) {
+// Printable card with a QR code pointing at `url`, plus download/open actions.
+// `stats` is shown under the caption on screen only (not printed).
+export default function QrCard({ businessName, title, caption, alt, url, filename, stats, children }) {
   const [qr, setQr] = useState('')
 
   useEffect(() => {
@@ -16,6 +17,7 @@ export default function QrCard({ businessName, title, caption, alt, url, filenam
       {title && <h3>{title}</h3>}
       {qr && <img src={qr} alt={alt} className="table-qr" />}
       <p className="table-card-scan">{caption}</p>
+      {stats && <p className="table-card-stats no-print">{stats}</p>}
       <div className="row-actions no-print">
         <a className="btn btn-ghost btn-sm" href={qr} download={filename}>
           {t('tables.download')}

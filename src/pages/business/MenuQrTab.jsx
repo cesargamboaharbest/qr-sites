@@ -7,6 +7,7 @@ import QrCard from '../../components/QrCard.jsx'
 export default function MenuQrTab() {
   const { business } = useOutletContext()
   if (!business.published) return <Navigate to=".." relative="path" replace />
+  const scans = business.menuScans ?? 0
 
   return (
     <div className="stack">
@@ -21,6 +22,7 @@ export default function MenuQrTab() {
         <QrCard
           businessName={business.name}
           caption={t('menuQr.scanToView')}
+          stats={t(scans === 1 ? 'tables.scansOne' : 'tables.scans', { n: scans })}
           alt={t('menuQr.qrAlt', { name: business.name })}
           url={publicMenuUrl(business.slug)}
           filename={`${business.slug}-qr.png`}

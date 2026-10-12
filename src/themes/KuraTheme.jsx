@@ -3,26 +3,51 @@
 // original hand-built Kura menu (pages/KuraMenu.jsx), driven by API data.
 import { t } from '../i18n/index.js'
 import { formatPrice } from '../utils/format.js'
-import { groupByCategory } from '../utils/products.js'
+import { groupByCategory, splitSeasonal } from '../utils/products.js'
 import { useSectionNav } from './useSectionNav.js'
 import heroUrl from '../assets/kura-hero.png'
 import '../pages/KuraMenu.css'
 
 function MenuItem({ product, currency }) {
   return (
-    <li className="kura-item">
+    <li className={product.available ? 'kura-item' : 'kura-item is-sold-out'}>
       <div className="kura-item-line">
         <span className="kura-item-name">{product.name}</span>
         <span className="kura-leader" aria-hidden="true" />
         <span className="kura-price">{formatPrice(product.price, currency)}</span>
       </div>
       {product.description && <p className="kura-item-desc">{product.description}</p>}
+      {!product.available && <p className="kura-sold-out">{t('menu.soldOut')}</p>}
     </li>
   )
 }
 
+// "Producto de temporada": big cards on a leaf-green panel above the sections
+function SeasonalBlock({ products, currency }) {
+  if (products.length === 0) return null
+  return (
+    <section className="kura-seasonal" aria-labelledby="kura-seasonal-title">
+      <h2 id="kura-seasonal-title" className="kura-seasonal-title">
+        {t('menu.seasonal', { count: products.length })}
+      </h2>
+      <ul className="kura-seasonal-list">
+        {products.map((p) => (
+          <li key={p._id} className={p.available ? 'kura-seasonal-card' : 'kura-seasonal-card is-sold-out'}>
+            <span className="kura-seasonal-kicker">★ {t('menu.seasonalKicker')}</span>
+            <h3 className="kura-seasonal-name">{p.name}</h3>
+            {p.description && <p className="kura-seasonal-desc">{p.description}</p>}
+            <p className="kura-seasonal-price">{formatPrice(p.price, currency)}</p>
+            {!p.available && <p className="kura-sold-out">{t('menu.soldOut')}</p>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
 export default function KuraTheme({ business }) {
-  const sections = groupByCategory(business.products, t('products.uncategorized'))
+  const { seasonal, regular } = splitSeasonal(business.products)
+  const sections = groupByCategory(regular, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(sections, '.kura-section')
 
   return (
@@ -54,8 +79,10 @@ export default function KuraTheme({ business }) {
         </nav>
       )}
 
+      <SeasonalBlock products={seasonal} currency={business.currency} />
+
       <main className={business.twoColumns ? 'kura-sheet is-two-col' : 'kura-sheet'}>
-        {sections.length === 0 && <p className="kura-note">{t('menu.emptyMenu')}</p>}
+        {business.products.length === 0 && <p className="kura-note">{t('menu.emptyMenu')}</p>}
         {sections.map((s) => (
           <section key={s.id} id={s.id} className="kura-section" aria-labelledby={`${s.id}-title`}>
             <h2 id={`${s.id}-title`} className="kura-ribbon">

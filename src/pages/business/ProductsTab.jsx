@@ -1,17 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { errorMessage, t } from '../../i18n/index.js'
 import { formatPrice } from '../../utils/format.js'
-import { groupByCategory } from '../../utils/products.js'
+import { groupByCategory, splitSeasonal } from '../../utils/products.js'
 import { getTheme } from '../../themes/index.js'
 import { useAuth } from '../../auth/AuthContext.jsx'
 import PreviewFrame from '../../components/PreviewFrame.jsx'
 import ImageField from '../../components/ImageField.jsx'
+import TwoColumnsToggle from '../../components/TwoColumnsToggle.jsx'
 import { PLACEHOLDER_IMAGE } from '../../utils/products.js'
 
-const EMPTY_PRODUCT = { name: '', category: '', price: '', description: '', imageUrl: '' }
+const EMPTY_PRODUCT = { name: '', category: '', price: '', description: '', imageUrl: '', seasonal: false }
 
-// `imageBusinessId` turns on the photo upload (menus with a cart only)
+// Key of the "De temporada" group; categories are trimmed, so none can match
+const SEASONAL_KEY = ' seasonal'
+
+// `imageBusinessId` turns on the photo upload (menus with a cart only);
+// `sections` (menus without a cart) turns on "Producto de temporada"
 function ProductForm({
   initial = EMPTY_PRODUCT,
   categories,
@@ -33,11 +38,12 @@ function ProductForm({
     setError('')
     setPending(true)
     try {
-      const { imageUrl, ...fields } = form
+      const { imageUrl, seasonal, ...fields } = form
       await onSubmit({
         ...fields,
         price: Number(form.price),
         ...(imageBusinessId && { imageUrl: imageUrl ?? '' }),
+        ...(sections && { seasonal: Boolean(seasonal) }),
       })
       if (!onCancel) setForm({ ...EMPTY_PRODUCT, category: form.category })
     } catch (err) {
@@ -61,7 +67,7 @@ function ProductForm({
           onChange={update('category')}
           placeholder={t(sections ? 'products.sectionPlaceholder' : 'products.categoryPlaceholder')}
           list="product-categories"
-          required={sections}
+          required={sections && !form.seasonal}
           maxLength={60}
         />
       </label>
@@ -78,6 +84,19 @@ function ProductForm({
           maxLength={500}
         />
       </label>
+      {sections && (
+        <div className="preview-option field-wide">
+          <label>
+            <input
+              type="checkbox"
+              checked={Boolean(form.seasonal)}
+              onChange={(e) => setForm({ ...form, seasonal: e.target.checked })}
+            />
+            <span>{t('products.seasonal')}</span>
+          </label>
+          <small className="muted">{t('products.seasonalHint')}</small>
+        </div>
+      )}
       {imageBusinessId && (
         <div className="field-wide">
           <ImageField
@@ -179,16 +198,36 @@ function ProductRow({ product, business, categories, mutate }) {
   )
 }
 
-// Layout option of menus without a cart, saved right away
-function TwoColumnsToggle({ business, mutate }) {
+// Products grouped in collapsible sections that can be moved up and down
+// (saved as Business.categoryOrder). Products without a section stay last.
+// The "De temporada" group (menus without a cart) is always first.
+// `added` ({ key }) opens the section a product was just added to.
+function SectionList({ groups, business, categories, mutate, added }) {
+  const [open, setOpen] = useState(() => new Set(groups.length === 1 ? [groups[0].key] : []))
   const [pending, setPending] = useState(false)
   const [error, setError] = useState('')
+  const named = groups.filter((g) => g.key !== '' && g.key !== SEASONAL_KEY)
 
-  async function toggle(e) {
+  useEffect(() => {
+    if (added) setOpen((current) => new Set(current).add(added.key))
+  }, [added])
+
+  function toggle(key) {
+    setOpen((current) => {
+      const next = new Set(current)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
+
+  async function move(index, delta) {
+    const order = named.map((g) => g.key)
+    ;[order[index], order[index + delta]] = [order[index + delta], order[index]]
     setPending(true)
     setError('')
     try {
-      await mutate('', 'PATCH', { twoColumns: e.target.checked })
+      await mutate('', 'PATCH', { categoryOrder: order })
     } catch (err) {
       setError(errorMessage(err.code))
     } finally {
@@ -196,23 +235,109 @@ function TwoColumnsToggle({ business, mutate }) {
     }
   }
 
+  if (groups.length === 0) return null
+  const allOpen = groups.every((g) => open.has(g.key))
+
   return (
-    <div className="preview-option">
-      <label>
-        <input type="checkbox" checked={Boolean(business.twoColumns)} onChange={toggle} disabled={pending} />
-        <span>{t('products.twoColumns')}</span>
-      </label>
-      <small className="muted">{t('products.twoColumnsHint')}</small>
+    <>
+      <div className="section-toolbar">
+        <span className="muted">
+          {t(business.ordering ? 'products.categoryCount' : 'products.sectionCount', { count: groups.length })}
+        </span>
+        <button
+          type="button"
+          className="btn btn-ghost btn-sm"
+          onClick={() => setOpen(new Set(allOpen ? [] : groups.map((g) => g.key)))}
+        >
+          {t(allOpen ? 'products.collapseAll' : 'products.expandAll')}
+        </button>
+      </div>
       {error && <p className="form-error" role="alert">{error}</p>}
-    </div>
+      <ol className="section-list">
+        {groups.map((group) => {
+          const index = named.indexOf(group)
+          const isOpen = open.has(group.key)
+          const panelId = `section-panel-${group.id}`
+          return (
+            <li
+              key={group.key}
+              className={`section-panel ${isOpen ? 'is-open' : ''} ${group.key === SEASONAL_KEY ? 'is-seasonal' : ''}`}
+            >
+              <div className="section-head">
+                <button
+                  type="button"
+                  className="section-toggle"
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
+                  onClick={() => toggle(group.key)}
+                >
+                  <span className="section-chevron" aria-hidden="true">
+                    ▸
+                  </span>
+                  {index !== -1 && <span className="section-number">{index + 1}</span>}
+                  <span className="section-name">{group.category}</span>
+                  <span className="badge">{t('products.productCount', { count: group.items.length })}</span>
+                </button>
+                {index !== -1 && named.length > 1 && (
+                  <span className="section-move">
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => move(index, -1)}
+                      disabled={pending || index === 0}
+                      aria-label={t('products.moveUp', { name: group.category })}
+                      title={t('products.moveUp', { name: group.category })}
+                    >
+                      ↑
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => move(index, 1)}
+                      disabled={pending || index === named.length - 1}
+                      aria-label={t('products.moveDown', { name: group.category })}
+                      title={t('products.moveDown', { name: group.category })}
+                    >
+                      ↓
+                    </button>
+                  </span>
+                )}
+              </div>
+              {isOpen && (
+                <ul id={panelId} className="product-list section-body">
+                  {group.items.map((p) => (
+                    <ProductRow key={p._id} product={p} business={business} categories={categories} mutate={mutate} />
+                  ))}
+                </ul>
+              )}
+            </li>
+          )
+        })}
+      </ol>
+    </>
   )
 }
 
 export default function ProductsTab() {
   const { business, mutate } = useOutletContext()
   const { user } = useAuth()
-  const groups = groupByCategory(business.products, t('products.uncategorized'))
+  // Seasonal products only exist in menus without a cart
+  const { seasonal, regular } = business.ordering
+    ? { seasonal: [], regular: business.products }
+    : splitSeasonal(business.products)
+  const groups = [
+    ...(seasonal.length > 0
+      ? [{ id: 'seasonal', key: SEASONAL_KEY, category: `★ ${t('products.seasonalGroup')}`, items: seasonal }]
+      : []),
+    ...groupByCategory(regular, t('products.uncategorized'), business.categoryOrder),
+  ]
   const categories = [...new Set(business.products.map((p) => p.category).filter(Boolean))]
+  const [added, setAdded] = useState(null)
+
+  async function addProduct(fields) {
+    await mutate('/products', 'POST', fields)
+    setAdded({ key: fields.seasonal ? SEASONAL_KEY : fields.category.trim() })
+  }
 
   const editor = (
     <div className="stack">
@@ -225,23 +350,14 @@ export default function ProductsTab() {
           imageBusinessId={business.ordering ? business.id : undefined}
           submitLabel={t('products.add')}
           pendingLabel={t('products.adding')}
-          onSubmit={(fields) => mutate('/products', 'POST', fields)}
+          onSubmit={addProduct}
         />
       </section>
 
       <section className="card">
         <h2>{t('products.title')}</h2>
         {business.products.length === 0 && <p className="muted">{t('products.empty')}</p>}
-        {groups.map((group) => (
-          <div key={group.category} className="product-group">
-            <h3>{group.category}</h3>
-            <ul className="product-list">
-              {group.items.map((p) => (
-                <ProductRow key={p._id} product={p} business={business} categories={categories} mutate={mutate} />
-              ))}
-            </ul>
-          </div>
-        ))}
+        <SectionList groups={groups} business={business} categories={categories} mutate={mutate} added={added} />
       </section>
     </div>
   )
@@ -249,9 +365,8 @@ export default function ProductsTab() {
   if (business.ordering) return editor
 
   // Menus without a cart get a live preview of the public page, styled with
-  // the owner's theme (top navigation) and showing only what customers see
+  // the owner's theme (top navigation), sold-out products grayed out
   const { Menu } = getTheme(user.theme)
-  const previewBusiness = { ...business, products: business.products.filter((p) => p.available) }
 
   return (
     <div className="products-layout">
@@ -261,7 +376,7 @@ export default function ProductsTab() {
         <p className="muted">{t('products.previewHint')}</p>
         <TwoColumnsToggle business={business} mutate={mutate} />
         <PreviewFrame title={t('products.preview')} className="menu-preview-frame">
-          <Menu business={previewBusiness} />
+          <Menu business={business} />
         </PreviewFrame>
       </aside>
     </div>

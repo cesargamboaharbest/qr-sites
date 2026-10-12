@@ -105,7 +105,8 @@
       "products": "Productos",
       "tables": "Mesas y QR",
       "orders": "Pedidos",
-      "qr": "Código QR"
+      "qr": "Código QR",
+      "preview": "Vista previa"
     },
     "tabsLabel": "Secciones del negocio",
     "lockedTab": "Disponible después de presionar «Crear»",
@@ -132,7 +133,14 @@
     "categoryPlaceholder": "Ej. Bebidas calientes",
     "section": "Sección",
     "sectionPlaceholder": "Ej. Para empezar",
-    "sectionHint": "Escribe una sección nueva o elige una existente. Las secciones aparecen en el orden en que las creas.",
+    "sectionHint": "Escribe una sección nueva o elige una existente. Puedes cambiar el orden de las secciones con ↑ y ↓ en la lista de productos.",
+    "sectionCount": { "one": "1 sección", "other": "{count} secciones" },
+    "categoryCount": { "one": "1 categoría", "other": "{count} categorías" },
+    "productCount": { "one": "1 producto", "other": "{count} productos" },
+    "expandAll": "Expandir todo",
+    "collapseAll": "Contraer todo",
+    "moveUp": "Subir {name}",
+    "moveDown": "Bajar {name}",
     "price": "Precio",
     "description": "Descripción (opcional)",
     "descriptionPlaceholder": "Ej. Espresso con leche espumada",
@@ -147,6 +155,9 @@
     "previewHint": "Así verán tu menú los clientes en su teléfono. Cambia el estilo con «Tema» arriba.",
     "twoColumns": "Mostrar en dos columnas",
     "twoColumnsHint": "Las categorías se reparten en dos columnas, también en el teléfono. Ideal para menús largos.",
+    "seasonal": "Producto de temporada",
+    "seasonalHint": "Aparece destacado al inicio del menú, con un estilo más visual. La sección es opcional.",
+    "seasonalGroup": "De temporada",
     "soldOut": "Agotado",
     "markSoldOut": "Marcar agotado",
     "markAvailable": "Marcar disponible",
@@ -163,6 +174,9 @@
     "download": "Descargar QR",
     "print": "Imprimir códigos",
     "scanToOrder": "Escanea para ordenar",
+    "scans": "{n} escaneos",
+    "scansOne": "1 escaneo",
+    "mostScanned": "Más escaneada",
     "qrAlt": "Código QR de {name}",
     "deleteConfirm": "¿Eliminar «{name}»? Su código QR dejará de funcionar."
   },
@@ -172,6 +186,23 @@
     "scanToView": "Escanea para ver el menú",
     "qrAlt": "Código QR del menú de {name}",
     "print": "Imprimir código"
+  },
+  "preview": {
+    "settings": "Textos y diseño",
+    "message": "Mensaje del menú",
+    "messageHint": "Con el tema Kura aparece al final del menú; con los demás temas, en la franja de arriba. Déjalo vacío para no mostrar nada.",
+    "save": "Guardar mensaje",
+    "saving": "Guardando…",
+    "saved": "Guardado",
+    "deviceLabel": "Ver como",
+    "devices": {
+      "phone": "Teléfono",
+      "desktop": "Computadora"
+    },
+    "print": "Imprimir / Descargar PDF",
+    "preparing": "Preparando…",
+    "printHint": "Para descargarlo, elige «Guardar como PDF» como destino en la ventana de impresión.",
+    "frameTitle": "Vista previa del menú"
   },
   "waiters": {
     "pageTitle": "Meseros",
@@ -237,7 +268,10 @@
     "sentBody": "Tu pedido #{n} llegó a la cocina. Total: {total}.",
     "orderMore": "Hacer otro pedido",
     "notFound": "Este menú no existe o aún no está publicado.",
-    "emptyMenu": "Este menú todavía no tiene productos."
+    "emptyMenu": "Este menú todavía no tiene productos.",
+    "soldOut": "Platillo agotado",
+    "seasonal": { "one": "Producto de temporada", "other": "Productos de temporada" },
+    "seasonalKicker": "De temporada"
   },
   "errors": {
     "GENERIC": "Algo salió mal. Intenta de nuevo.",

@@ -126,6 +126,9 @@ export default function BusinessLayout() {
         <NavLink to="" end className="tab">
           {t('business.tabs.products')}
         </NavLink>
+        <NavLink to="vista-previa" className="tab">
+          {t('business.tabs.preview')}
+        </NavLink>
         {extraTabs.map((tab) =>
           business.published ? (
             <NavLink key={tab.key} to={tab.path} className="tab">

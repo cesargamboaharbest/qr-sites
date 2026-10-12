@@ -186,6 +186,27 @@
   margin-top: 0.75rem;
 }
 
+/* "Platillo agotado": still listed, grayed out, no quantity control */
+.pm-card.is-sold-out .pm-card-img {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.pm-card.is-sold-out .pm-card-name,
+.pm-card.is-sold-out .pm-card-desc,
+.pm-card.is-sold-out .pm-card-price {
+  opacity: 0.5;
+}
+
+.pm-sold-out {
+  margin: 0.6rem 0 0;
+  color: var(--pm-soft);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .pm-empty {
   padding: 3rem 0;
   color: var(--pm-soft);
@@ -703,4 +724,25 @@
 .pm--boutique .pm-sent h2 {
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 400;
+}
+
+/* ---------- Printing / PDF (Vista previa tab) ---------- */
+@media print {
+  .pm {
+    min-height: 0;
+    padding-bottom: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pm-tabs,
+  .pm-banner,
+  .pm-cartbar {
+    display: none;
+  }
+  .pm-category {
+    break-after: avoid;
+  }
+  .pm-card {
+    break-inside: avoid;
+  }
 }

@@ -3,12 +3,36 @@
 // The cart version of this theme is `.pm--tea` in pages/PublicMenu.css.
 import { t } from '../i18n/index.js'
 import { formatPrice } from '../utils/format.js'
-import { groupByCategory } from '../utils/products.js'
+import { groupByCategory, splitSeasonal } from '../utils/products.js'
 import { useSectionNav, withPeriod } from './useSectionNav.js'
 import './TeaTheme.css'
 
+// "Producto de temporada": wide caramel cards with oversized titles above the sections
+function SeasonalBlock({ products, currency }) {
+  if (products.length === 0) return null
+  return (
+    <section className="tt-seasonal" aria-labelledby="tt-seasonal-title">
+      <h2 id="tt-seasonal-title" className="tt-seasonal-title">
+        {t('menu.seasonal', { count: products.length })}
+      </h2>
+      <ul className="tt-seasonal-list">
+        {products.map((p) => (
+          <li key={p._id} className={p.available ? 'tt-seasonal-card' : 'tt-seasonal-card is-sold-out'}>
+            <p className="tt-seasonal-kicker">{t('menu.seasonalKicker')}</p>
+            <h3 className="tt-seasonal-name">{withPeriod(p.name)}</h3>
+            {p.description && <p className="tt-seasonal-desc">{p.description}</p>}
+            <p className="tt-seasonal-price">{formatPrice(p.price, currency)}</p>
+            {!p.available && <p className="tt-sold-out">{t('menu.soldOut')}</p>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
 export default function TeaTheme({ business }) {
-  const sections = groupByCategory(business.products, t('products.uncategorized'))
+  const { seasonal, regular } = splitSeasonal(business.products)
+  const sections = groupByCategory(regular, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(sections, '.tt-section')
 
   return (
@@ -38,8 +62,10 @@ export default function TeaTheme({ business }) {
         </nav>
       )}
 
+      <SeasonalBlock products={seasonal} currency={business.currency} />
+
       <main className={business.twoColumns ? 'tt-main is-two-col' : 'tt-main'}>
-        {sections.length === 0 && <p className="tt-empty">{t('menu.emptyMenu')}</p>}
+        {business.products.length === 0 && <p className="tt-empty">{t('menu.emptyMenu')}</p>}
         {sections.map((s) => (
           <section key={s.id} id={s.id} className="tt-section" aria-labelledby={`${s.id}-title`}>
             <h2 id={`${s.id}-title`} className="tt-title">
@@ -47,10 +73,11 @@ export default function TeaTheme({ business }) {
             </h2>
             <ul className="tt-grid">
               {s.items.map((p) => (
-                <li key={p._id} className="tt-card">
+                <li key={p._id} className={p.available ? 'tt-card' : 'tt-card is-sold-out'}>
                   <h3 className="tt-name">{withPeriod(p.name)}</h3>
                   {p.description && <p className="tt-desc">{p.description}</p>}
                   <p className="tt-price">{formatPrice(p.price, business.currency)}</p>
+                  {!p.available && <p className="tt-sold-out">{t('menu.soldOut')}</p>}
                 </li>
               ))}
             </ul>
