@@ -155,6 +155,9 @@
     "previewHint": "Así verán tu menú los clientes en su teléfono. Cambia el estilo con «Tema» arriba.",
     "twoColumns": "Mostrar en dos columnas",
     "twoColumnsHint": "Las categorías se reparten en dos columnas, también en el teléfono. Ideal para menús largos.",
+    "seasonal": "Producto de temporada",
+    "seasonalHint": "Aparece destacado al inicio del menú, con un estilo más visual. La sección es opcional.",
+    "seasonalGroup": "De temporada",
     "soldOut": "Agotado",
     "markSoldOut": "Marcar agotado",
     "markAvailable": "Marcar disponible",
@@ -265,7 +268,10 @@
     "sentBody": "Tu pedido #{n} llegó a la cocina. Total: {total}.",
     "orderMore": "Hacer otro pedido",
     "notFound": "Este menú no existe o aún no está publicado.",
-    "emptyMenu": "Este menú todavía no tiene productos."
+    "emptyMenu": "Este menú todavía no tiene productos.",
+    "soldOut": "Platillo agotado",
+    "seasonal": { "one": "Producto de temporada", "other": "Productos de temporada" },
+    "seasonalKicker": "De temporada"
   },
   "errors": {
     "GENERIC": "Algo salió mal. Intenta de nuevo.",

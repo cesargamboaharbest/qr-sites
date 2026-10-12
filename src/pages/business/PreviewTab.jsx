@@ -104,8 +104,6 @@ export default function PreviewTab() {
   const scale = useFitScale(stageRef, DESKTOP.width)
 
   const theme = getTheme(user.theme)
-  // Only what customers see
-  const shown = { ...business, products: business.products.filter((p) => p.available) }
   const desktop = device === 'desktop'
 
   async function printMenu() {
@@ -164,9 +162,9 @@ export default function PreviewTab() {
             style={desktop ? { width: DESKTOP.width, height: DESKTOP.height, transform: `scale(${scale})` } : undefined}
           >
             {business.ordering ? (
-              <CartMenu data={{ business: shown, table: null }} themeKey={theme.key} reload={() => {}} />
+              <CartMenu data={{ business, table: null }} themeKey={theme.key} reload={() => {}} />
             ) : (
-              <theme.Menu business={shown} />
+              <theme.Menu business={business} />
             )}
           </PreviewFrame>
         </div>

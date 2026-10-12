@@ -145,6 +145,105 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ---------- "Platillo agotado" ---------- */
+.tt-card.is-sold-out > :not(.tt-sold-out) {
+  opacity: 0.4;
+}
+
+.tt-card.is-sold-out .tt-price {
+  text-decoration: line-through;
+}
+
+.tt-sold-out {
+  margin: 0.5rem 0 0;
+  color: var(--tt-band);
+  font-family: 'Archivo', 'Almarai', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ---------- "Producto de temporada" ---------- */
+.tt-seasonal {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 2.25rem 1rem 0;
+}
+
+.tt-seasonal-title {
+  margin: 0 0 1.25rem;
+  font-family: 'Archivo', 'Almarai', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.tt-seasonal-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tt-seasonal-card {
+  padding: clamp(1.75rem, 6vw, 2.75rem) 1.5rem;
+  border-radius: 1.25rem;
+  background: linear-gradient(160deg, #b8956a 0%, var(--tt-band) 55%, #7d6140 100%);
+  color: #fff;
+  text-align: center;
+}
+
+.tt-seasonal-kicker {
+  margin: 0;
+  font-family: 'Archivo', 'Almarai', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.tt-seasonal-name {
+  margin: 0.5rem 0 0;
+  font-family: 'Catamaran', 'Almarai', sans-serif;
+  font-size: clamp(2rem, 8vw, 3rem);
+  font-weight: 300;
+  line-height: 1.05;
+}
+
+.tt-seasonal-desc {
+  max-width: 30rem;
+  margin: 0.6rem auto 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.tt-seasonal-price {
+  display: inline-block;
+  margin: 1rem 0 0;
+  padding: 0.45rem 1.2rem;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--tt-ink);
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tt-seasonal-card.is-sold-out {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.tt-seasonal-card .tt-sold-out {
+  color: #fff;
+}
+
 .tt-empty {
   padding: 3rem 0;
   color: var(--tt-soft);
@@ -208,7 +307,8 @@
   .tt-title {
     break-after: avoid;
   }
-  .tt-card {
+  .tt-card,
+  .tt-seasonal-card {
     break-inside: avoid;
   }
 }

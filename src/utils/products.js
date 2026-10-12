@@ -1,6 +1,15 @@
 // Shown for products (in menus with a cart) that have no photo yet
 export const PLACEHOLDER_IMAGE = '/generic-product.png'
 
+// Menus without a cart show seasonal products ("Producto de temporada") in
+// their own block at the top, outside their section
+export function splitSeasonal(products) {
+  return {
+    seasonal: products.filter((p) => p.seasonal),
+    regular: products.filter((p) => !p.seasonal),
+  }
+}
+
 // Groups products by category. Categories follow `order` (Business.categoryOrder,
 // by name); the rest keep the order in which they first appear, after those.
 // Products without a category go last, under `fallbackLabel`.

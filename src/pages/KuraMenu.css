@@ -195,6 +195,113 @@
   line-height: 1.45;
 }
 
+/* ---------- "Platillo agotado" ---------- */
+.kura-item.is-sold-out .kura-item-line,
+.kura-item.is-sold-out .kura-item-desc {
+  opacity: 0.45;
+}
+
+.kura-item.is-sold-out .kura-price {
+  text-decoration: line-through;
+}
+
+.kura-sold-out {
+  margin: 0.2rem 0 0;
+  color: var(--cherry);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ---------- "Producto de temporada" ---------- */
+.kura-seasonal {
+  max-width: 64rem;
+  margin: 2rem auto 0;
+  padding: 0 1.25rem;
+}
+
+.kura-seasonal-title {
+  margin: 0 0 1rem;
+  color: var(--leaf-deep);
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  line-height: 1;
+  text-align: center;
+}
+
+.kura-seasonal-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kura-seasonal-card {
+  position: relative;
+  padding: 1.5rem 1.5rem 1.25rem;
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at 100% 0, rgba(255, 255, 255, 0.14) 0 6rem, transparent 6rem),
+    linear-gradient(135deg, var(--leaf) 0%, var(--leaf-deep) 100%);
+  box-shadow: 0 0.75rem 1.75rem -1rem rgba(43, 42, 38, 0.6);
+  color: var(--paper);
+  text-align: center;
+}
+
+.kura-seasonal-kicker {
+  display: inline-block;
+  padding: 0.2rem 0.75rem;
+  border-radius: 999px;
+  background: var(--cherry);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.kura-seasonal-name {
+  margin: 0.6rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 8vw, 3rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.kura-seasonal-desc {
+  max-width: 28rem;
+  margin: 0.5rem auto 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  opacity: 0.9;
+}
+
+.kura-seasonal-price {
+  display: inline-block;
+  margin: 0.9rem 0 0;
+  padding: 0.3rem 1.1rem;
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--leaf-deep);
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.kura-seasonal-card.is-sold-out {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.kura-seasonal-card .kura-sold-out {
+  margin-top: 0.6rem;
+  color: var(--paper);
+}
+
 /* ---------- Sides ---------- */
 .kura-sides {
   margin-top: 1.25rem;
@@ -290,7 +397,11 @@
   .kura-ribbon {
     break-after: avoid;
   }
-  .kura-item {
+  .kura-item,
+  .kura-seasonal-card {
     break-inside: avoid;
+  }
+  .kura-seasonal-card {
+    box-shadow: none;
   }
 }

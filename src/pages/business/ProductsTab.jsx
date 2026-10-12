@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { errorMessage, t } from '../../i18n/index.js'
 import { formatPrice } from '../../utils/format.js'
-import { groupByCategory } from '../../utils/products.js'
+import { groupByCategory, splitSeasonal } from '../../utils/products.js'
 import { getTheme } from '../../themes/index.js'
 import { useAuth } from '../../auth/AuthContext.jsx'
 import PreviewFrame from '../../components/PreviewFrame.jsx'
@@ -10,9 +10,13 @@ import ImageField from '../../components/ImageField.jsx'
 import TwoColumnsToggle from '../../components/TwoColumnsToggle.jsx'
 import { PLACEHOLDER_IMAGE } from '../../utils/products.js'
 
-const EMPTY_PRODUCT = { name: '', category: '', price: '', description: '', imageUrl: '' }
+const EMPTY_PRODUCT = { name: '', category: '', price: '', description: '', imageUrl: '', seasonal: false }
 
-// `imageBusinessId` turns on the photo upload (menus with a cart only)
+// Key of the "De temporada" group; categories are trimmed, so none can match
+const SEASONAL_KEY = ' seasonal'
+
+// `imageBusinessId` turns on the photo upload (menus with a cart only);
+// `sections` (menus without a cart) turns on "Producto de temporada"
 function ProductForm({
   initial = EMPTY_PRODUCT,
   categories,
@@ -34,11 +38,12 @@ function ProductForm({
     setError('')
     setPending(true)
     try {
-      const { imageUrl, ...fields } = form
+      const { imageUrl, seasonal, ...fields } = form
       await onSubmit({
         ...fields,
         price: Number(form.price),
         ...(imageBusinessId && { imageUrl: imageUrl ?? '' }),
+        ...(sections && { seasonal: Boolean(seasonal) }),
       })
       if (!onCancel) setForm({ ...EMPTY_PRODUCT, category: form.category })
     } catch (err) {
@@ -62,7 +67,7 @@ function ProductForm({
           onChange={update('category')}
           placeholder={t(sections ? 'products.sectionPlaceholder' : 'products.categoryPlaceholder')}
           list="product-categories"
-          required={sections}
+          required={sections && !form.seasonal}
           maxLength={60}
         />
       </label>
@@ -79,6 +84,19 @@ function ProductForm({
           maxLength={500}
         />
       </label>
+      {sections && (
+        <div className="preview-option field-wide">
+          <label>
+            <input
+              type="checkbox"
+              checked={Boolean(form.seasonal)}
+              onChange={(e) => setForm({ ...form, seasonal: e.target.checked })}
+            />
+            <span>{t('products.seasonal')}</span>
+          </label>
+          <small className="muted">{t('products.seasonalHint')}</small>
+        </div>
+      )}
       {imageBusinessId && (
         <div className="field-wide">
           <ImageField
@@ -182,12 +200,13 @@ function ProductRow({ product, business, categories, mutate }) {
 
 // Products grouped in collapsible sections that can be moved up and down
 // (saved as Business.categoryOrder). Products without a section stay last.
+// The "De temporada" group (menus without a cart) is always first.
 // `added` ({ key }) opens the section a product was just added to.
 function SectionList({ groups, business, categories, mutate, added }) {
   const [open, setOpen] = useState(() => new Set(groups.length === 1 ? [groups[0].key] : []))
   const [pending, setPending] = useState(false)
   const [error, setError] = useState('')
-  const named = groups.filter((g) => g.key !== '')
+  const named = groups.filter((g) => g.key !== '' && g.key !== SEASONAL_KEY)
 
   useEffect(() => {
     if (added) setOpen((current) => new Set(current).add(added.key))
@@ -240,7 +259,10 @@ function SectionList({ groups, business, categories, mutate, added }) {
           const isOpen = open.has(group.key)
           const panelId = `section-panel-${group.id}`
           return (
-            <li key={group.key} className={`section-panel ${isOpen ? 'is-open' : ''}`}>
+            <li
+              key={group.key}
+              className={`section-panel ${isOpen ? 'is-open' : ''} ${group.key === SEASONAL_KEY ? 'is-seasonal' : ''}`}
+            >
               <div className="section-head">
                 <button
                   type="button"
@@ -299,13 +321,22 @@ function SectionList({ groups, business, categories, mutate, added }) {
 export default function ProductsTab() {
   const { business, mutate } = useOutletContext()
   const { user } = useAuth()
-  const groups = groupByCategory(business.products, t('products.uncategorized'), business.categoryOrder)
+  // Seasonal products only exist in menus without a cart
+  const { seasonal, regular } = business.ordering
+    ? { seasonal: [], regular: business.products }
+    : splitSeasonal(business.products)
+  const groups = [
+    ...(seasonal.length > 0
+      ? [{ id: 'seasonal', key: SEASONAL_KEY, category: `★ ${t('products.seasonalGroup')}`, items: seasonal }]
+      : []),
+    ...groupByCategory(regular, t('products.uncategorized'), business.categoryOrder),
+  ]
   const categories = [...new Set(business.products.map((p) => p.category).filter(Boolean))]
   const [added, setAdded] = useState(null)
 
   async function addProduct(fields) {
     await mutate('/products', 'POST', fields)
-    setAdded({ key: fields.category.trim() })
+    setAdded({ key: fields.seasonal ? SEASONAL_KEY : fields.category.trim() })
   }
 
   const editor = (
@@ -334,9 +365,8 @@ export default function ProductsTab() {
   if (business.ordering) return editor
 
   // Menus without a cart get a live preview of the public page, styled with
-  // the owner's theme (top navigation) and showing only what customers see
+  // the owner's theme (top navigation), sold-out products grayed out
   const { Menu } = getTheme(user.theme)
-  const previewBusiness = { ...business, products: business.products.filter((p) => p.available) }
 
   return (
     <div className="products-layout">
@@ -346,7 +376,7 @@ export default function ProductsTab() {
         <p className="muted">{t('products.previewHint')}</p>
         <TwoColumnsToggle business={business} mutate={mutate} />
         <PreviewFrame title={t('products.preview')} className="menu-preview-frame">
-          <Menu business={previewBusiness} />
+          <Menu business={business} />
         </PreviewFrame>
       </aside>
     </div>

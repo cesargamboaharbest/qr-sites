@@ -37,16 +37,17 @@ router.get('/:slug', async (req, res) => {
       ordering: business.ordering,
       twoColumns: business.twoColumns,
       categoryOrder: business.categoryOrder,
-      products: business.products
-        .filter((p) => p.available)
-        .map(({ _id, name, description, category, price, imageUrl }) => ({
-          _id,
-          name,
-          description,
-          category,
-          price,
-          imageUrl,
-        })),
+      // Sold-out products are included so the menu can show them grayed out
+      products: business.products.map(({ _id, name, description, category, price, available, seasonal, imageUrl }) => ({
+        _id,
+        name,
+        description,
+        category,
+        price,
+        available,
+        seasonal: !business.ordering && seasonal,
+        imageUrl,
+      })),
     },
     table: table && { id: table._id, name: table.name },
   })
@@ -59,6 +60,16 @@ router.post('/:slug/tables/:tableId/scans', async (req, res) => {
   const { matchedCount } = await Business.updateOne(
     { slug: String(req.params.slug).toLowerCase(), published: true, 'tables._id': req.params.tableId },
     { $inc: { 'tables.$.scans': 1 } }
+  )
+  if (!matchedCount) throw new HttpError(404, 'NOT_FOUND')
+  res.status(204).end()
+})
+
+// Same for the single QR code of a menu without a cart
+router.post('/:slug/scans', async (req, res) => {
+  const { matchedCount } = await Business.updateOne(
+    { slug: String(req.params.slug).toLowerCase(), published: true, ordering: false },
+    { $inc: { menuScans: 1 } }
   )
   if (!matchedCount) throw new HttpError(404, 'NOT_FOUND')
   res.status(204).end()

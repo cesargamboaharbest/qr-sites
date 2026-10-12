@@ -24,7 +24,10 @@ const productSchema = new mongoose.Schema({
   description: { type: String, trim: true, maxlength: 500, default: '' },
   category: { type: String, trim: true, maxlength: 60, default: '' },
   price: { type: Number, required: true, min: 0 },
+  // false = "Platillo agotado": still listed on the menu, grayed out and not orderable
   available: { type: Boolean, default: true },
+  // "Producto de temporada": highlighted at the top of menus without a cart
+  seasonal: { type: Boolean, default: false },
   // Photo in Firebase Storage; only used by menus with a cart
   imageUrl: { type: String, default: '', match: IMAGE_URL_PATTERN },
 })
@@ -53,6 +56,9 @@ const businessSchema = new mongoose.Schema(
     // listed keep the order in which they first appear, after the listed ones
     categoryOrder: { type: [String], default: [] },
     published: { type: Boolean, default: false },
+    // Menus without a cart: how many times the menu QR was opened (once per
+    // browser session). Menus with a cart count scans per table instead.
+    menuScans: { type: Number, default: 0, min: 0 },
     products: [productSchema],
     tables: [tableSchema],
     // Incremented atomically to give each order a short, human-friendly number

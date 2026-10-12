@@ -530,6 +530,15 @@ textarea {
   border-left-color: var(--leaf-deep);
 }
 
+/* "De temporada": pinned first, not reorderable */
+.section-panel.is-seasonal {
+  border-left-color: var(--cherry);
+}
+
+.section-panel.is-seasonal .section-name {
+  color: var(--cherry);
+}
+
 .section-head {
   display: flex;
   align-items: center;

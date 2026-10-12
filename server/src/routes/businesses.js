@@ -112,11 +112,14 @@ router.delete('/:id', async (req, res) => {
 
 // ---------- Products ----------
 
-// Product photos are only for menus with a cart
+// Product photos are only for menus with a cart, seasonal products only for
+// menus without one
 function productFields(business, body) {
   const keys = ['name', 'description', 'category', 'available']
-  if (business.ordering) keys.push('imageUrl')
+  keys.push(business.ordering ? 'imageUrl' : 'seasonal')
   const fields = pick(body, keys)
+  if (fields.available !== undefined) fields.available = Boolean(fields.available)
+  if (fields.seasonal !== undefined) fields.seasonal = Boolean(fields.seasonal)
   if (fields.imageUrl !== undefined && !IMAGE_URL_PATTERN.test(String(fields.imageUrl))) {
     throw new HttpError(400, 'INVALID_IMAGE_URL')
   }
