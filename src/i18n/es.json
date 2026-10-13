@@ -26,8 +26,8 @@
     "label": "Navegación principal",
     "businesses": "Mis negocios",
     "waiters": "Meseros",
-    "theme": "Tema",
-    "themeHint": "Estilo de todos tus sitios: menús y páginas con carrito de compras"
+    "theme": "Tema del menú",
+    "themeHint": "Estilo de todos tus menús, con y sin carrito de compras. El panel de administración no cambia."
   },
   "auth": {
     "loginTitle": "Iniciar sesión",
@@ -46,7 +46,23 @@
     "noAccount": "¿No tienes cuenta?",
     "goToRegister": "Regístrate",
     "haveAccount": "¿Ya tienes cuenta?",
-    "goToLogin": "Inicia sesión"
+    "goToLogin": "Inicia sesión",
+    "heroTitle": "Pedidos de la mesa a la cocina,",
+    "heroHighlight": "al instante.",
+    "heroLead": "Un código QR en cada mesa. El cliente escanea, arma su pedido y tu equipo lo ve en pantalla, listo para preparar y llevar a la mesa correcta.",
+    "heroChips": {
+      "noApps": "Sin descargar apps",
+      "noFees": "Sin comisiones por pedido",
+      "thisWeek": "Listo esta misma semana"
+    },
+    "ticket": {
+      "order": "Pedido #27",
+      "table": "Mesa 4",
+      "status": "Nuevo",
+      "item1": "2 × Chifrijo",
+      "item2": "1 × Casado",
+      "served": "Servido en Terraza 2"
+    }
   },
   "dashboard": {
     "title": "Mis negocios",
@@ -86,6 +102,10 @@
     "boutique": {
       "name": "Boutique",
       "description": "blanco y negro, mayúsculas y portada elegante"
+    },
+    "dashi": {
+      "name": "Dashi",
+      "description": "portada oscura, naranja vivo y tarjetas divertidas"
     }
   },
   "types": {
@@ -157,7 +177,7 @@
     "uploadingImage": "Subiendo imagen…",
     "imageHint": "JPG, PNG o WebP. Las fotos grandes se reducen automáticamente.",
     "preview": "Vista previa",
-    "previewHint": "Así verán tu menú los clientes en su teléfono. Cambia el estilo con «Tema» arriba.",
+    "previewHint": "Así verán tu menú los clientes en su teléfono. Cambia el estilo con «Tema del menú» arriba.",
     "twoColumns": "Mostrar en dos columnas",
     "twoColumnsHint": "Las categorías se reparten en dos columnas, también en el teléfono. Ideal para menús largos.",
     "seasonal": "Producto de temporada",

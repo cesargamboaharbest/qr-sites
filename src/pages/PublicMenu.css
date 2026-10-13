@@ -726,6 +726,258 @@
   font-weight: 400;
 }
 
+/* =====================================================================
+   Dashi: dark rounded header with a bowl, orange accents, white card rows
+   ===================================================================== */
+.pm--dashi {
+  --pm-bg: #fff6ef;
+  --pm-ink: #1b1716;
+  --pm-soft: #7d716a;
+  --pm-line: #f1e1d4;
+  --pm-surface: #fce3d4;
+  --pm-accent: #1b1716;
+  --pm-accent-ink: #fff;
+  --pm-bar: #1b1716;
+  --pm-font: 'Poppins', system-ui, sans-serif;
+}
+
+.pm--dashi .pm-band {
+  background: #f07a2b;
+  color: #1b1716;
+  letter-spacing: 0.08em;
+}
+
+.pm--dashi .pm-hero {
+  padding: clamp(2rem, 7vw, 3.5rem) clamp(7rem, 22vw, 11rem) clamp(2rem, 7vw, 3.5rem) clamp(1.25rem, 5vw, 3rem);
+  border-radius: 0 0 2rem 2rem;
+  /* Steaming Dashi bowl, as in components/DashiLogo.jsx */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23f07a2b' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M20 27c-4-4 4-7 0-11s4-7 0-11'/%3E%3Cpath d='M32 27c-4-4 4-7 0-11s4-7 0-11'/%3E%3Cpath d='M44 27c-4-4 4-7 0-11s4-7 0-11'/%3E%3C/g%3E%3Cg fill='%23f07a2b'%3E%3Crect x='5' y='32' width='54' height='5' rx='2.5'/%3E%3Cpath d='M9 37h46a23 22 0 0 1-46 0z'/%3E%3C/g%3E%3C/svg%3E")
+      right clamp(1.25rem, 5vw, 3rem) center / clamp(4.5rem, 16vw, 8rem) no-repeat,
+    radial-gradient(50% 80% at 100% 100%, rgba(240, 122, 43, 0.35), transparent 70%),
+    #1b1716;
+  color: #fff;
+  text-align: left;
+}
+
+.pm--dashi .pm-kicker {
+  margin-bottom: 0.4rem;
+  color: #f07a2b;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.pm--dashi .pm-name {
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+
+/* "Ordenando en Mesa 4": peach strip like the Dashi deck */
+.pm--dashi .pm-banner {
+  width: fit-content;
+  max-width: calc(100% - 2rem);
+  margin: 1rem auto 0;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  background: #fce3d4;
+  color: #a3470f;
+  font-weight: 600;
+}
+
+.pm--dashi .pm-banner--warn {
+  background: #f6dcd6;
+  color: #9c3a26;
+}
+
+.pm--dashi .pm-tabs {
+  border-bottom: 0;
+  background: color-mix(in srgb, #fff6ef 88%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.pm--dashi .pm-tabs a {
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: #f3ece7;
+  color: var(--pm-ink);
+  font-weight: 600;
+}
+
+.pm--dashi .pm-tabs a.is-active {
+  background: var(--pm-ink);
+  color: #fff;
+}
+
+.pm--dashi .pm-sheet {
+  max-width: 64rem;
+}
+
+.pm--dashi .pm-category {
+  padding: 2rem 0 1rem;
+  font-size: clamp(1.4rem, 5vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-align: left;
+}
+
+/* Orange "dashi dot" after every section title */
+.pm--dashi .pm-category span::after {
+  content: '';
+  display: inline-block;
+  width: 0.35em;
+  height: 0.35em;
+  margin-left: 0.15em;
+  border-radius: 50%;
+  background: #f07a2b;
+}
+
+.pm--dashi .pm-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 48rem) {
+  .pm--dashi .pm-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.pm--dashi .pm-card {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem;
+  border: 1px solid var(--pm-line);
+  border-radius: 1.25rem;
+  background: #fff;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pm--dashi .pm-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 30px -20px rgba(180, 86, 31, 0.45);
+}
+
+.pm--dashi .pm-card-img {
+  border-radius: 1rem;
+}
+
+.pm--dashi .pm-card-body {
+  padding: 0;
+}
+
+.pm--dashi .pm-card-name {
+  font-weight: 600;
+}
+
+.pm--dashi .pm-card-price {
+  color: #a3470f;
+  font-weight: 700;
+}
+
+.pm--dashi .pm-card-action {
+  margin: 0;
+}
+
+.pm--dashi .qty-add {
+  width: auto;
+  min-height: 2.4rem;
+  background: #f07a2b;
+  color: #1b1716;
+  font-size: 0.85rem;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.pm--dashi .qty-add:hover {
+  background: #f58a42;
+  transform: scale(1.05);
+}
+
+.pm--dashi .qty-add:active,
+.pm--dashi .qty button:active {
+  transform: scale(0.92);
+}
+
+.pm--dashi .qty {
+  min-width: 7.5rem;
+}
+
+.pm--dashi .pm-sold-out {
+  width: fit-content;
+  margin-top: 0.4rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: #f6dcd6;
+  color: #9c3a26;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.pm--dashi .pm-card.is-sold-out {
+  background: #faf6f3;
+}
+
+.pm--dashi .pm-cartbar-btn {
+  box-shadow: 0 14px 30px -12px rgba(240, 122, 43, 0.7);
+}
+
+.pm--dashi .pm-cartbar-btn strong {
+  padding: 0.2rem 0.75rem;
+  border-radius: 999px;
+  background: #f07a2b;
+  color: #1b1716;
+}
+
+.pm--dashi .pm-dialog {
+  border-radius: 1.5rem;
+}
+
+.pm--dashi .pm-dialog textarea {
+  border: 1.5px solid var(--pm-line);
+  border-radius: 0.9rem;
+}
+
+.pm--dashi .pm-dialog .btn-primary {
+  padding: 0.85rem 1.25rem;
+  background: #f07a2b;
+  color: #1b1716;
+}
+
+.pm--dashi .pm-sent {
+  border-radius: 1.5rem;
+  background: #fce3d4;
+  animation: pm-dashi-pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.4) backwards;
+}
+
+.pm--dashi .pm-sent h2 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.pm--dashi .pm-sent h2::before {
+  content: '🎉 ' / '';
+}
+
+@keyframes pm-dashi-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pm--dashi :is(.pm-card, .qty-add, .pm-sent) {
+    transition: none;
+    animation: none;
+  }
+}
+
 /* ---------- Printing / PDF (Vista previa tab) ---------- */
 @media print {
   .pm {

@@ -1,5 +1,6 @@
-// Site themes. An owner picks one in the top navigation and it applies to all
-// their public pages:
+// Menu themes. An owner picks one in the top navigation and it applies to all
+// their public pages (the admin area always has the Dashi look, see
+// adminThemes.css):
 //  - Menu: the read-only menu (businesses without a cart, no product pictures)
 //  - the cart page (PublicMenuPage) gets the class `pm--<key>`; its styles
 //    live in pages/PublicMenu.css
@@ -10,11 +11,13 @@ import { t } from '../i18n/index.js'
 import KuraTheme from './KuraTheme.jsx'
 import TeaTheme from './TeaTheme.jsx'
 import BoutiqueTheme from './BoutiqueTheme.jsx'
+import DashiTheme from './DashiTheme.jsx'
 
 export const THEMES = {
   kura: { Menu: KuraTheme },
   tea: { Menu: TeaTheme },
   boutique: { Menu: BoutiqueTheme },
+  dashi: { Menu: DashiTheme },
 }
 
 export const DEFAULT_THEME = Object.keys(THEMES)[0]
