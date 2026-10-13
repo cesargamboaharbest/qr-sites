@@ -1,0 +1,480 @@
+/* "Dashi" theme */
+.dsh {
+  --dsh-orange: #f07a2b;
+  --dsh-orange-d: #d9601a;
+  --dsh-peach: #fce3d4;
+  --dsh-cream: #fff6ef;
+  --dsh-ink: #1b1716;
+  --dsh-soft: #7d716a;
+  --dsh-line: #f1e1d4;
+  --dsh-pill: #f3ece7;
+  min-height: 100vh;
+  background:
+    radial-gradient(60% 30rem at 100% 0%, #ffe2cc 0%, transparent 70%),
+    var(--dsh-cream);
+  color: var(--dsh-ink);
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+
+/* ---------- Header: dark card with a steaming bowl ---------- */
+.dsh-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(2rem, 7vw, 3.5rem) clamp(1.25rem, 5vw, 3rem) clamp(2.25rem, 7vw, 3.75rem);
+  overflow: hidden;
+  border-radius: 0 0 2rem 2rem;
+  background:
+    radial-gradient(50% 80% at 100% 100%, rgba(240, 122, 43, 0.35), transparent 70%),
+    var(--dsh-ink);
+  color: #fff;
+}
+
+.dsh-hero-text {
+  position: relative;
+  min-width: 0;
+  max-width: 80rem;
+}
+
+.dsh-kicker {
+  margin: 0 0 0.4rem;
+  color: var(--dsh-orange);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.dsh-name {
+  margin: 0;
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+
+.dsh-band {
+  display: inline-block;
+  margin: 0.9rem 0 0;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #f5ece6;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.dsh-hero-bowl {
+  flex: none;
+  width: clamp(4.5rem, 16vw, 8rem);
+  height: auto;
+  animation: dsh-bob 4s ease-in-out infinite;
+}
+
+@keyframes dsh-bob {
+  50% {
+    transform: translateY(-6px) rotate(-3deg);
+  }
+}
+
+/* ---------- Section pills ---------- */
+.dsh-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--dsh-cream) 88%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.dsh-nav ul {
+  display: flex;
+  justify-content: safe center;
+  gap: 0.5rem;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0.85rem 1rem;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.dsh-nav a {
+  display: block;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: var(--dsh-pill);
+  color: var(--dsh-ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+
+.dsh-nav a:hover {
+  transform: translateY(-2px);
+}
+
+.dsh-nav a.is-active {
+  background: var(--dsh-ink);
+  color: #fff;
+}
+
+/* ---------- Sections ---------- */
+.dsh-main {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+.dsh-section {
+  scroll-margin-top: 4rem;
+}
+
+.dsh-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 2rem 0 1rem;
+  font-size: clamp(1.4rem, 5vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Orange "dashi dot" after every section title */
+.dsh-title::after {
+  content: '';
+  width: 0.35em;
+  height: 0.35em;
+  margin-left: -0.3rem;
+  border-radius: 50%;
+  background: var(--dsh-orange);
+  order: 1;
+}
+
+.dsh-count {
+  order: 2;
+  margin-left: auto;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: var(--dsh-peach);
+  color: #a3470f;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* ---------- Product cards: colour tile, text, orange price ---------- */
+.dsh-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48rem) {
+  .dsh-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.dsh-card {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem;
+  border: 1px solid var(--dsh-line);
+  border-radius: 1.25rem;
+  background: #fff;
+  animation: dsh-pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.3) backwards;
+  animation-delay: calc(min(var(--i, 0), 12) * 45ms);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dsh-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 30px -20px rgba(180, 86, 31, 0.45);
+}
+
+@keyframes dsh-pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+}
+
+.dsh-tile {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  aspect-ratio: 1;
+  border-radius: 1rem;
+  background: linear-gradient(145deg, #f7a463, var(--dsh-orange));
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.5);
+}
+
+/* Same swatches as the Dashi deck: cas, hierbabuena, horchata, café, mora */
+.dsh-card:nth-child(6n + 2) .dsh-tile { background: linear-gradient(145deg, #ecc96f, #d4a03f); }
+.dsh-card:nth-child(6n + 3) .dsh-tile { background: linear-gradient(145deg, #a3c77a, #5f8f3e); }
+.dsh-card:nth-child(6n + 4) .dsh-tile { background: linear-gradient(145deg, #e8b98c, #c98a57); }
+.dsh-card:nth-child(6n + 5) .dsh-tile { background: linear-gradient(145deg, #d4824e, #9c4c27); }
+.dsh-card:nth-child(6n + 6) .dsh-tile { background: linear-gradient(145deg, #e3a1b0, #b85870); }
+
+.dsh-card:hover .dsh-tile {
+  transform: rotate(-8deg) scale(1.08);
+}
+
+.dsh-card-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.dsh-card-desc {
+  margin: 0.2rem 0 0;
+  color: var(--dsh-soft);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.dsh-price {
+  margin: 0;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: var(--dsh-peach);
+  color: #a3470f;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---------- "Platillo agotado" ---------- */
+.dsh-card.is-sold-out {
+  background: #faf6f3;
+}
+
+.dsh-card.is-sold-out .dsh-tile {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.dsh-card.is-sold-out :is(.dsh-card-name, .dsh-card-desc, .dsh-price) {
+  opacity: 0.5;
+}
+
+.dsh-card.is-sold-out .dsh-price {
+  text-decoration: line-through;
+}
+
+.dsh-sold-out {
+  display: inline-block;
+  margin: 0.4rem 0 0;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: #f6dcd6;
+  color: #9c3a26;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* ---------- "Producto de temporada" ---------- */
+.dsh-seasonal {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.dsh-seasonal-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dsh-seasonal-card {
+  position: relative;
+  padding: 1.75rem 1.5rem;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  background: linear-gradient(150deg, #f7a463 0%, var(--dsh-orange) 45%, #c2410c 100%);
+  color: #fff;
+  box-shadow: 0 24px 40px -24px rgba(194, 65, 12, 0.7);
+}
+
+.dsh-seasonal-bowl {
+  position: absolute;
+  right: -0.75rem;
+  bottom: -1rem;
+  width: 7rem;
+  height: auto;
+  color: rgba(255, 255, 255, 0.22);
+}
+
+.dsh-seasonal-kicker {
+  display: inline-block;
+  margin: 0;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: var(--dsh-ink);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dsh-seasonal-name {
+  position: relative;
+  margin: 0.75rem 0 0;
+  font-size: clamp(1.6rem, 6vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.dsh-seasonal-desc {
+  position: relative;
+  max-width: 28rem;
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.dsh-seasonal-price {
+  position: relative;
+  display: inline-block;
+  margin: 1rem 0 0;
+  padding: 0.4rem 1.1rem;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--dsh-ink);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.dsh-seasonal-card.is-sold-out {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.dsh-seasonal-card .dsh-sold-out {
+  position: relative;
+  display: block;
+  width: fit-content;
+  margin-top: 0.6rem;
+}
+
+.dsh-empty {
+  padding: 3rem 0;
+  color: var(--dsh-soft);
+  text-align: center;
+}
+
+.dsh-footer {
+  display: grid;
+  place-items: center;
+  padding: 1rem 0 3rem;
+}
+
+.dsh-footer .dashi-bowl {
+  width: 2.5rem;
+  height: auto;
+  opacity: 0.6;
+}
+
+/* ---------- Two columns on every screen (Business.twoColumns) ---------- */
+.dsh-main.is-two-col {
+  max-width: 80rem;
+  columns: 2;
+  column-gap: clamp(1rem, 4vw, 2.5rem);
+}
+
+.is-two-col .dsh-section {
+  break-inside: avoid;
+}
+
+.is-two-col .dsh-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (max-width: 48rem) {
+  .dsh-main.is-two-col {
+    padding-inline: 0.75rem;
+  }
+  .is-two-col .dsh-title {
+    padding: 1.5rem 0 0.75rem;
+    font-size: 1.15rem;
+  }
+  .is-two-col .dsh-count {
+    display: none;
+  }
+  .is-two-col .dsh-card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.4rem;
+    padding: 0.7rem;
+  }
+  .is-two-col .dsh-tile {
+    width: 2.25rem;
+    border-radius: 0.7rem;
+    font-size: 1rem;
+  }
+  .is-two-col .dsh-card-name {
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+  }
+  .is-two-col .dsh-card-desc {
+    font-size: 0.72rem;
+  }
+  .is-two-col .dsh-price {
+    justify-self: start;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dsh-hero-bowl,
+  .dsh-card {
+    animation: none;
+  }
+  .dsh-card,
+  .dsh-tile,
+  .dsh-nav a {
+    transition: none;
+  }
+}
+
+/* ---------- Printing / PDF (Vista previa tab) ---------- */
+@media print {
+  .dsh {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .dsh-nav,
+  .dsh-footer {
+    display: none;
+  }
+  .dsh-card {
+    animation: none;
+    break-inside: avoid;
+  }
+  .dsh-title {
+    break-after: avoid;
+  }
+  .dsh-seasonal-card {
+    break-inside: avoid;
+  }
+}

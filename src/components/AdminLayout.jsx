@@ -40,7 +40,7 @@ function ThemeSelect() {
 export default function AdminLayout() {
   const { user, logout } = useAuth()
   return (
-    <div className="admin" data-theme={user.theme}>
+    <div className="admin">
       <header className="admin-header">
         <Link to="/dashboard" className="brand">
           {t('app.name')}

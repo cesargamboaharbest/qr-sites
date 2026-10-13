@@ -8,7 +8,7 @@ export default function WaiterPage() {
   const { user, logout } = useAuth()
 
   return (
-    <div className="admin" data-theme={user.theme}>
+    <div className="admin">
       <header className="admin-header">
         <span className="brand">{t('app.name')}</span>
         <div className="admin-user">

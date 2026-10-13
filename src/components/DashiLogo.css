@@ -1,0 +1,56 @@
+/* Dashi logo and its steaming bowl (DashiLogo.jsx) */
+.dashi-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.dashi-logo .dashi-bowl {
+  width: 1.35em;
+  height: 1.35em;
+  margin-top: -0.2em;
+}
+
+.dashi-wordmark {
+  letter-spacing: -0.03em;
+}
+
+.dashi-bowl {
+  color: #f07a2b;
+  overflow: visible;
+}
+
+.dashi-steam path {
+  animation: dashi-steam 2.4s ease-in-out infinite;
+}
+
+.dashi-steam path:nth-child(2) {
+  animation-delay: -0.8s;
+}
+
+.dashi-steam path:nth-child(3) {
+  animation-delay: -1.6s;
+}
+
+@keyframes dashi-steam {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashi-steam path {
+    animation: none;
+  }
+}
