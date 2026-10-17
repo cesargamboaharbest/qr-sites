@@ -1,6 +1,7 @@
 import { useAuth } from '../auth/AuthContext.jsx'
 import { t } from '../i18n/index.js'
 import OrdersBoard from '../components/OrdersBoard.jsx'
+import SiteFooter from '../components/SiteFooter.jsx'
 
 // What a waiter ("mesero") sees after logging in: the orders of all the
 // businesses of the owner who created them
@@ -22,6 +23,7 @@ export default function WaiterPage() {
         <h1 className="page-title">{t('waiter.title')}</h1>
         <OrdersBoard path="/waiter/orders" />
       </main>
+      <SiteFooter />
     </div>
   )
 }

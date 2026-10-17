@@ -14,6 +14,7 @@ import MenuQrTab from './pages/business/MenuQrTab.jsx'
 import WaitersPage from './pages/WaitersPage.jsx'
 import WaiterPage from './pages/WaiterPage.jsx'
 import PublicMenuPage from './pages/PublicMenuPage.jsx'
+import TermsPage from './pages/TermsPage.jsx'
 
 function NotFound() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<AuthPage mode="login" />} />
       <Route path="/register" element={<AuthPage mode="register" />} />
+      <Route path="/terminos-y-condiciones" element={<TermsPage />} />
 
       <Route
         path="/mesero"

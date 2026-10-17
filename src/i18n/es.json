@@ -253,6 +253,19 @@
     "empty": "Aún no hay meseros.",
     "deleteConfirm": "¿Eliminar al mesero «{username}»? Ya no podrá iniciar sesión."
   },
+  "footer": {
+    "label": "Pie de página",
+    "terms": "Términos y condiciones",
+    "instagram": "Instagram",
+    "rights": "© {year} Dashi · Hecho en Costa Rica"
+  },
+  "terms": {
+    "title": "Términos y condiciones de uso",
+    "updated": "Última actualización: {date}",
+    "back": "Volver",
+    "acceptPrefix": "Al crear tu cuenta aceptas los",
+    "acceptLink": "Términos y condiciones"
+  },
   "waiter": {
     "title": "Pedidos de todos los negocios",
     "signedInAs": "Mesero: {username}"
