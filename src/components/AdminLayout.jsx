@@ -5,6 +5,7 @@ import { useAuth } from '../auth/AuthContext.jsx'
 import { errorMessage, t } from '../i18n/index.js'
 import { THEMES, themeLabel } from '../themes/index.js'
 import ProChip from './ProChip.jsx'
+import SiteFooter from './SiteFooter.jsx'
 
 // Theme for all of the owner's public sites (menus and cart pages)
 function ThemeSelect() {
@@ -67,6 +68,7 @@ export default function AdminLayout() {
       <main className="admin-main">
         <Outlet />
       </main>
+      <SiteFooter />
     </div>
   )
 }

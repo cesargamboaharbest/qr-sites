@@ -3,6 +3,7 @@ import { Link, Navigate, useLocation } from 'react-router-dom'
 import { homeFor, useAuth } from '../auth/AuthContext.jsx'
 import { errorMessage, t } from '../i18n/index.js'
 import Field from '../components/Field.jsx'
+import SiteFooter from '../components/SiteFooter.jsx'
 import DashiLogo, { DashiBowl } from '../components/DashiLogo.jsx'
 import { fieldOfError, validateCredentials } from '../utils/credentials.js'
 
@@ -111,6 +112,16 @@ export default function AuthPage({ mode }) {
               : t(pending ? 'auth.loggingIn' : 'auth.loginButton')}
           </button>
 
+          {isRegister && (
+            <p className="auth-terms">
+              {t('terms.acceptPrefix')}{' '}
+              <Link to="/terminos-y-condiciones" target="_blank" rel="noopener">
+                {t('terms.acceptLink')}
+              </Link>
+              .
+            </p>
+          )}
+
           <p className="auth-switch">
             {t(isRegister ? 'auth.haveAccount' : 'auth.noAccount')}{' '}
             <Link to={isRegister ? '/login' : '/register'} state={location.state}>
@@ -118,6 +129,7 @@ export default function AuthPage({ mode }) {
             </Link>
           </p>
         </form>
+        <SiteFooter />
       </div>
     </main>
   )

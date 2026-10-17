@@ -1544,3 +1544,158 @@ fieldset:disabled .btn {
     background: #fff;
   }
 }
+
+/* ---------- Site footer (SiteFooter.jsx) ---------- */
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.25rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+.site-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+
+.site-footer-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: inherit;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.site-footer-links a:hover {
+  color: var(--leaf-deep);
+  text-decoration: underline;
+}
+
+/* Login / register: centred under the form, no rule */
+.auth-panel {
+  align-content: center;
+  gap: 1.5rem;
+}
+
+.auth .site-footer {
+  width: min(25rem, 100%);
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  text-align: center;
+}
+
+.auth-terms {
+  margin: -0.25rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.auth-terms a {
+  color: #c2410c;
+  font-weight: 700;
+}
+
+/* ---------- Terms page (TermsPage.jsx): Dashi look like the login ---------- */
+.terms {
+  --paper: #fff6ef;
+  --ink: #1b1716;
+  --ink-soft: #7d716a;
+  --leaf-deep: #d9601a;
+  --line: #f1e1d4;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+
+.terms-header {
+  padding: 1.5rem 1rem 1rem;
+  text-align: center;
+}
+
+.terms-header a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.terms-logo {
+  font-size: 1.8rem;
+}
+
+.terms-card {
+  width: min(54rem, 100% - 2rem);
+  margin: 0 auto 2.5rem;
+  padding: clamp(1.25rem, 4vw, 2.75rem);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 40px 80px -50px rgba(180, 86, 31, 0.45);
+}
+
+.terms-card h1 {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  line-height: 1.2;
+}
+
+.terms-updated {
+  margin: 0.5rem 0 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.terms-card section {
+  margin-bottom: 1.75rem;
+}
+
+.terms-card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.terms-card p,
+.terms-card li {
+  color: #3b3330;
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.terms-card p {
+  margin: 0 0 0.6rem;
+}
+
+.terms-card ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.terms-card li {
+  margin-bottom: 0.35rem;
+}
+
+.terms-back {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var(--leaf-deep);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.terms .site-footer {
+  width: 100%;
+  margin-top: auto;
+}
