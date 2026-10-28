@@ -1,4 +1,7 @@
-:root {
+/* `.menu-scope` brings these back inside the admin area (which redefines
+   them, see adminThemes.css), so a menu shown there keeps its own theme */
+:root,
+.menu-scope {
   --paper: #e4e8dd;
   --paper-deep: #d5dbcb;
   --ink: #2b2a26;
@@ -9,6 +12,11 @@
 
   --font-display: 'Amatic SC', 'Comic Sans MS', cursive;
   --font-body: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.menu-scope {
+  color: var(--ink);
+  font-family: var(--font-body);
 }
 
 *,

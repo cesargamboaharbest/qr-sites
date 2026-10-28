@@ -97,7 +97,7 @@ export default function WaiterOrderForm({ onPlaced }) {
   // Menus without a cart: the themed menu with "Agregar" and a typed table
   if (menu && !menu.ordering) {
     return (
-      <div className="stack">
+      <div className="mo-wrap">
         {businessPicker && <div className="inline-form">{businessPicker}</div>}
         <MenuOnlyOrder key={menu.id} menu={menu} onPlaced={onPlaced} />
       </div>

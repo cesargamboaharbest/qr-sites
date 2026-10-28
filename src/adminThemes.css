@@ -2,7 +2,8 @@
    has the Dashi look, whatever theme the owner picked: that theme only styles
    their public menus. It redefines the colour/font tokens from index.css and
    admin.css on `.admin`, plus a few touches. The menu preview lives in an
-   iframe, so none of this reaches it. */
+   iframe, so none of this reaches it; menus shown inside the admin area
+   (the waiter's "Tomar pedido") sit in a `.menu-scope` that restores them. */
 .admin {
   --paper: #fff6ef;
   --paper-deep: #fce3d4;
