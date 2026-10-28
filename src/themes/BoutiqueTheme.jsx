@@ -33,7 +33,7 @@ function SeasonalBlock({ products, currency, renderAction }) {
 
 // `renderAction(product)` adds a control to each product (the waiter's
 // "Agregar" when taking an order); the public menu has none
-export default function BoutiqueTheme({ business, renderAction }) {
+export default function BoutiqueTheme({ business, renderAction, footer }) {
   const { seasonal, regular } = splitSeasonal(business.products)
   const sections = groupByCategory(regular, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(sections, '.bq-section')
@@ -93,6 +93,7 @@ export default function BoutiqueTheme({ business, renderAction }) {
           </section>
         ))}
       </main>
+      {footer}
     </div>
   )
 }

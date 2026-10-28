@@ -1,0 +1,28 @@
+/* ---------- "Hecho con dashi.cr" credit (MenuCredit.jsx) ---------- */
+.menu-credit {
+  margin: 0;
+  padding: 1.25rem 1rem calc(1rem + env(safe-area-inset-bottom));
+  text-align: center;
+  font-family: system-ui, sans-serif;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+}
+
+.menu-credit a {
+  color: inherit;
+  opacity: 0.55;
+  text-decoration: none;
+}
+
+.menu-credit a:hover,
+.menu-credit a:focus-visible {
+  opacity: 0.9;
+  text-decoration: underline;
+}
+
+@media print {
+  .menu-credit {
+    display: none;
+  }
+}

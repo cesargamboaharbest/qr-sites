@@ -353,6 +353,7 @@
   "menu": {
     "categoriesLabel": "Categorías del menú",
     "ourMenu": "Nuestro menú",
+    "credit": "Menu digital editable hecho con dashi.cr",
     "noTable": "Escanea el código QR de tu mesa para hacer un pedido.",
     "tableNotFound": "No encontramos esta mesa. Pide ayuda al personal.",
     "orderingAt": "Ordenando en {table}",

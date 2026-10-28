@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { menu, restaurant } from '../data/kuraMenu.js'
+import MenuCredit from '../components/MenuCredit.jsx'
 import './KuraMenu.css'
 import heroUrl from '../assets/kura-hero.png'
 
@@ -124,6 +125,7 @@ export default function KuraMenu() {
           </a>
         </p>
       </footer>
+      <MenuCredit />
     </div>
   )
 }
