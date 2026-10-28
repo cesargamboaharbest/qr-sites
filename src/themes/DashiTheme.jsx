@@ -13,7 +13,7 @@ import './DashiTheme.css'
 const initial = (name) => [...name.trim()][0]?.toUpperCase() ?? ''
 
 // "Producto de temporada": big orange cards with steam above the sections
-function SeasonalBlock({ products, currency }) {
+function SeasonalBlock({ products, currency, renderAction }) {
   if (products.length === 0) return null
   return (
     <section className="dsh-seasonal" aria-labelledby="dsh-seasonal-title">
@@ -29,6 +29,7 @@ function SeasonalBlock({ products, currency }) {
             {p.description && <p className="dsh-seasonal-desc">{p.description}</p>}
             <p className="dsh-seasonal-price">{formatPrice(p.price, currency)}</p>
             {!p.available && <p className="dsh-sold-out">{t('menu.soldOut')}</p>}
+            {renderAction?.(p)}
           </li>
         ))}
       </ul>
@@ -36,7 +37,9 @@ function SeasonalBlock({ products, currency }) {
   )
 }
 
-export default function DashiTheme({ business }) {
+// `renderAction(product)` adds a control to each product (the waiter's
+// "Agregar" when taking an order); the public menu has none
+export default function DashiTheme({ business, renderAction }) {
   const { seasonal, regular } = splitSeasonal(business.products)
   const sections = groupByCategory(regular, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(sections, '.dsh-section')
@@ -71,7 +74,7 @@ export default function DashiTheme({ business }) {
         </nav>
       )}
 
-      <SeasonalBlock products={seasonal} currency={business.currency} />
+      <SeasonalBlock products={seasonal} currency={business.currency} renderAction={renderAction} />
 
       <main className={business.twoColumns ? 'dsh-main is-two-col' : 'dsh-main'}>
         {business.products.length === 0 && <p className="dsh-empty">{t('menu.emptyMenu')}</p>}
@@ -99,6 +102,7 @@ export default function DashiTheme({ business }) {
                     {!p.available && <p className="dsh-sold-out">{t('menu.soldOut')}</p>}
                   </div>
                   <p className="dsh-price">{formatPrice(p.price, business.currency)}</p>
+                  {renderAction?.(p)}
                 </li>
               ))}
             </ul>

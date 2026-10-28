@@ -11,10 +11,25 @@ const MAX_QUANTITY = 99
 
 const inBusinesses = (businessIds) => ({ business: { $in: [].concat(businessIds) } })
 
-export function listOrders(businessIds, status, scope = {}) {
+const MAX_ORDERS = 500
+
+function parseDate(value) {
+  if (typeof value !== 'string' || !value) return null
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) throw new HttpError(400, 'VALIDATION')
+  return date
+}
+
+// `query` is the request's query string: `status=active` and an optional
+// `from`/`to` date range (ISO dates; the page sends the bounds of the user's
+// local day, e.g. "today")
+export function listOrders(businessIds, query = {}, scope = {}) {
   const filter = { ...inBusinesses(businessIds), ...scope }
-  if (status === 'active') filter.status = { $in: ACTIVE_STATUSES }
-  return Order.find(filter).sort({ createdAt: -1 }).limit(200)
+  if (query.status === 'active') filter.status = { $in: ACTIVE_STATUSES }
+  const from = parseDate(query.from)
+  const to = parseDate(query.to)
+  if (from || to) filter.createdAt = { ...(from && { $gte: from }), ...(to && { $lt: to }) }
+  return Order.find(filter).sort({ createdAt: -1 }).limit(MAX_ORDERS)
 }
 
 export async function updateOrderStatus(businessIds, orderId, status, scope = {}) {
@@ -35,10 +50,11 @@ export async function updateOrderStatus(businessIds, orderId, status, scope = {}
   return before
 }
 
-// Places an order for a table, from the customer's cart or a waiter.
+// Places an order for a table, from the customer's cart or a waiter. Callers
+// check who may order where: customers only in menus with a cart, waiters
+// also in menus without one (`table` is then just { name } typed by them).
 // `body` is { items: [{ productId, quantity }], notes }.
 export async function createOrder(business, table, body, { waiter } = {}) {
-  if (!business.ordering) throw new HttpError(400, 'ORDERING_DISABLED')
   const requested = Array.isArray(body?.items) ? body.items : []
   if (requested.length === 0) throw new HttpError(400, 'EMPTY_ORDER')
 

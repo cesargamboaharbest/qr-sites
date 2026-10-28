@@ -8,7 +8,7 @@ import { useSectionNav, withPeriod } from './useSectionNav.js'
 import './TeaTheme.css'
 
 // "Producto de temporada": wide caramel cards with oversized titles above the sections
-function SeasonalBlock({ products, currency }) {
+function SeasonalBlock({ products, currency, renderAction }) {
   if (products.length === 0) return null
   return (
     <section className="tt-seasonal" aria-labelledby="tt-seasonal-title">
@@ -23,6 +23,7 @@ function SeasonalBlock({ products, currency }) {
             {p.description && <p className="tt-seasonal-desc">{p.description}</p>}
             <p className="tt-seasonal-price">{formatPrice(p.price, currency)}</p>
             {!p.available && <p className="tt-sold-out">{t('menu.soldOut')}</p>}
+            {renderAction?.(p)}
           </li>
         ))}
       </ul>
@@ -30,7 +31,9 @@ function SeasonalBlock({ products, currency }) {
   )
 }
 
-export default function TeaTheme({ business }) {
+// `renderAction(product)` adds a control to each product (the waiter's
+// "Agregar" when taking an order); the public menu has none
+export default function TeaTheme({ business, renderAction }) {
   const { seasonal, regular } = splitSeasonal(business.products)
   const sections = groupByCategory(regular, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(sections, '.tt-section')
@@ -62,7 +65,7 @@ export default function TeaTheme({ business }) {
         </nav>
       )}
 
-      <SeasonalBlock products={seasonal} currency={business.currency} />
+      <SeasonalBlock products={seasonal} currency={business.currency} renderAction={renderAction} />
 
       <main className={business.twoColumns ? 'tt-main is-two-col' : 'tt-main'}>
         {business.products.length === 0 && <p className="tt-empty">{t('menu.emptyMenu')}</p>}
@@ -78,6 +81,7 @@ export default function TeaTheme({ business }) {
                   {p.description && <p className="tt-desc">{p.description}</p>}
                   <p className="tt-price">{formatPrice(p.price, business.currency)}</p>
                   {!p.available && <p className="tt-sold-out">{t('menu.soldOut')}</p>}
+                  {renderAction?.(p)}
                 </li>
               ))}
             </ul>

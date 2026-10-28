@@ -5,20 +5,36 @@ import User from '../models/User.js'
 import { HttpError } from '../errors.js'
 import { ownerHasPro } from '../plan.js'
 
+// Basic plan (no Pro): an owner can have this many waiters, and they only
+// work with menus without a cart
+export const BASIC_WAITER_LIMIT = 2
+
+// Loads the waiter making the request. Sets `req.waiter`, and
+// `req.waiterPro` (whether their owner has Pro).
 export async function loadWaiter(req) {
   const user = await User.findById(req.userId)
   if (!user) throw new HttpError(401, 'UNAUTHORIZED')
   if (user.role !== 'waiter' || !user.owner) throw new HttpError(403, 'FORBIDDEN')
-  // Waiters are a Pro feature: they stop working if the owner loses Pro
-  if (!(await ownerHasPro(user.owner))) throw new HttpError(403, 'PRO_REQUIRED')
+  const pro = await ownerHasPro(user.owner)
+  // An owner who lost Pro keeps only their first waiters
+  if (!pro) {
+    const first = await User.find({ role: 'waiter', owner: user.owner }, { _id: 1 })
+      .sort({ createdAt: 1, _id: 1 })
+      .limit(BASIC_WAITER_LIMIT)
+    if (!first.some((w) => w._id.equals(user._id))) throw new HttpError(403, 'PRO_REQUIRED')
+  }
+  req.waiter = user
+  req.waiterPro = pro
   return user
 }
 
 // Mongo filter for the businesses a waiter works for: all of the owner's, or
-// only the one their location belongs to
-export function waiterBusinesses(waiter) {
+// only the one their location belongs to. Menus with a cart are a Pro
+// feature, so without Pro only menus without one.
+export function waiterBusinesses(waiter, pro) {
   const filter = { owner: waiter.owner }
   if (waiter.location) filter._id = waiter.location.business
+  if (!pro) filter.ordering = false
   return filter
 }
 
@@ -37,7 +53,6 @@ export async function ownerOrAdmin(req, res, next) {
   }
   const waiter = await loadWaiter(req)
   if (!waiter.isAdmin) throw new HttpError(403, 'FORBIDDEN')
-  req.waiter = waiter
   req.ownerId = waiter.owner
   next()
 }

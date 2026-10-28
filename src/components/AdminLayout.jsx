@@ -4,7 +4,6 @@ import { api } from '../api/client.js'
 import { isOwner, useAuth } from '../auth/AuthContext.jsx'
 import { errorMessage, t } from '../i18n/index.js'
 import { THEMES, themeLabel } from '../themes/index.js'
-import ProChip from './ProChip.jsx'
 import SiteFooter from './SiteFooter.jsx'
 
 // Theme for all of the owner's public sites (menus and cart pages)
@@ -51,15 +50,8 @@ export default function AdminLayout() {
         </Link>
         <nav className="admin-nav" aria-label={t('nav.label')}>
           <NavLink to="/dashboard">{t('nav.businesses')}</NavLink>
-          {!owner ? (
-            <NavLink to="/mesero">{t('nav.orders')}</NavLink>
-          ) : user.proPlan ? (
-            <NavLink to="/meseros">{t('nav.waiters')}</NavLink>
-          ) : (
-            <span className="admin-nav-locked" aria-disabled="true" title={t('plan.lockedHint')}>
-              <span className="admin-nav-locked-label">{t('nav.waiters')}</span> <ProChip />
-            </span>
-          )}
+          {/* Without Pro, owners still get a couple of waiters for menus without a cart */}
+          {owner ? <NavLink to="/meseros">{t('nav.waiters')}</NavLink> : <NavLink to="/mesero">{t('nav.orders')}</NavLink>}
         </nav>
         <div className="admin-user">
           {owner && <ThemeSelect />}

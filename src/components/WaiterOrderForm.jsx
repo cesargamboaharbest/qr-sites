@@ -3,11 +3,13 @@ import { api } from '../api/client.js'
 import { errorMessage, t } from '../i18n/index.js'
 import { formatPrice, tableLocations } from '../utils/format.js'
 import { groupByCategory } from '../utils/products.js'
+import MenuOnlyOrder from './MenuOnlyOrder.jsx'
 
 const MAX_QUANTITY = 99
 
 // A waiter takes an order for a table: pick the table (grouped by location),
 // add products and send it. Prices are set by the server, like customer orders.
+// Menus without a cart are handed to MenuOnlyOrder instead.
 export default function WaiterOrderForm({ onPlaced }) {
   const [menus, setMenus] = useState(null)
   const [businessId, setBusinessId] = useState('')
@@ -34,7 +36,7 @@ export default function WaiterOrderForm({ onPlaced }) {
     ? items.reduce((sum, [id, qty]) => sum + (menu.products.find((p) => p.id === id)?.price ?? 0) * qty, 0)
     : 0
   const query = search.trim().toLowerCase()
-  const products = menu?.products.filter((p) => !query || p.name.toLowerCase().includes(query)) ?? []
+  const products = menu?.products?.filter((p) => !query || p.name.toLowerCase().includes(query)) ?? []
 
   function pickBusiness(id) {
     setBusinessId(id)
@@ -78,6 +80,30 @@ export default function WaiterOrderForm({ onPlaced }) {
   }
   if (menus.length === 0) return <p className="muted">{t('waiter.noTables')}</p>
 
+  const businessPicker = menus.length > 1 && (
+    <label className="field">
+      <span>{t('waiter.business')}</span>
+      <select value={businessId} onChange={(e) => pickBusiness(e.target.value)}>
+        <option value="">{t('waiter.pickBusiness')}</option>
+        {menus.map((m) => (
+          <option key={m.id} value={String(m.id)}>
+            {m.name}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+
+  // Menus without a cart: the themed menu with "Agregar" and a typed table
+  if (menu && !menu.ordering) {
+    return (
+      <div className="stack">
+        {businessPicker && <div className="inline-form">{businessPicker}</div>}
+        <MenuOnlyOrder key={menu.id} menu={menu} onPlaced={onPlaced} />
+      </div>
+    )
+  }
+
   const locations = menu ? tableLocations(menu.tables) : []
   const tableOption = (table) => (
     <option key={table.id} value={String(table.id)}>
@@ -88,19 +114,7 @@ export default function WaiterOrderForm({ onPlaced }) {
   return (
     <form className="stack waiter-order" onSubmit={submit}>
       <div className="inline-form">
-        {menus.length > 1 && (
-          <label className="field">
-            <span>{t('waiter.business')}</span>
-            <select value={businessId} onChange={(e) => pickBusiness(e.target.value)}>
-              <option value="">{t('waiter.pickBusiness')}</option>
-              {menus.map((m) => (
-                <option key={m.id} value={String(m.id)}>
-                  {m.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
+        {businessPicker}
         {menu && (
           <label className="field">
             <span>{t('waiter.table')}</span>

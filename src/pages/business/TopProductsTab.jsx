@@ -4,8 +4,9 @@ import { api } from '../../api/client.js'
 import { errorMessage, t } from '../../i18n/index.js'
 import { formatPrice } from '../../utils/format.js'
 
-// "Más vendidos" (menus with a cart): products ranked by units sold, from the
-// purchased-products totals. Cancelled orders don't count.
+// "Más vendidos": products ranked by units sold, from the purchased-products
+// totals. Cancelled orders don't count. Menus without a cart count the orders
+// their waiters take.
 export default function TopProductsTab() {
   const { business } = useOutletContext()
   const [products, setProducts] = useState(null)
@@ -22,10 +23,10 @@ export default function TopProductsTab() {
   }, [business.id])
 
   useEffect(() => {
-    if (business.published && business.ordering) load()
-  }, [business.published, business.ordering, load])
+    if (business.published) load()
+  }, [business.published, load])
 
-  if (!business.published || !business.ordering) return <Navigate to=".." relative="path" replace />
+  if (!business.published) return <Navigate to=".." relative="path" replace />
 
   const onMenu = new Set(business.products.map((p) => String(p._id)))
   const price = (amount) => formatPrice(amount, business.currency)
@@ -37,7 +38,7 @@ export default function TopProductsTab() {
       <div className="top-head">
         <div>
           <h2>{t('topProducts.title')}</h2>
-          <p className="muted">{t('topProducts.hint')}</p>
+          <p className="muted">{t(business.ordering ? 'topProducts.hint' : 'topProducts.hintMenuOnly')}</p>
         </div>
         <button type="button" className="btn btn-ghost btn-sm" onClick={load}>
           {t('topProducts.refresh')}

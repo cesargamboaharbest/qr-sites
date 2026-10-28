@@ -48,7 +48,8 @@ const businessSchema = new mongoose.Schema(
     slug: { type: String, required: true, unique: true, lowercase: true, match: SLUG_PATTERN },
     description: { type: String, trim: true, maxlength: 300, default: '' },
     currency: { type: String, enum: ['CRC', 'USD'], default: 'CRC' },
-    // false = "menú sin carrito": a read-only QR menu, no tables or orders
+    // false = "menú sin carrito": a read-only QR menu with no tables; only
+    // waiters place orders there, typing the table name
     // (the visual theme is an owner setting, see User.theme)
     // Creating one with a cart requires the owner's Pro plan (User.proPlan)
     ordering: { type: Boolean, default: true },

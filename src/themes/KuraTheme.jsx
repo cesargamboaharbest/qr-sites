@@ -8,7 +8,7 @@ import { useSectionNav } from './useSectionNav.js'
 import heroUrl from '../assets/kura-hero.png'
 import '../pages/KuraMenu.css'
 
-function MenuItem({ product, currency }) {
+function MenuItem({ product, currency, renderAction }) {
   return (
     <li className={product.available ? 'kura-item' : 'kura-item is-sold-out'}>
       <div className="kura-item-line">
@@ -18,12 +18,13 @@ function MenuItem({ product, currency }) {
       </div>
       {product.description && <p className="kura-item-desc">{product.description}</p>}
       {!product.available && <p className="kura-sold-out">{t('menu.soldOut')}</p>}
+      {renderAction?.(product)}
     </li>
   )
 }
 
 // "Producto de temporada": big cards on a leaf-green panel above the sections
-function SeasonalBlock({ products, currency }) {
+function SeasonalBlock({ products, currency, renderAction }) {
   if (products.length === 0) return null
   return (
     <section className="kura-seasonal" aria-labelledby="kura-seasonal-title">
@@ -38,6 +39,7 @@ function SeasonalBlock({ products, currency }) {
             {p.description && <p className="kura-seasonal-desc">{p.description}</p>}
             <p className="kura-seasonal-price">{formatPrice(p.price, currency)}</p>
             {!p.available && <p className="kura-sold-out">{t('menu.soldOut')}</p>}
+            {renderAction?.(p)}
           </li>
         ))}
       </ul>
@@ -45,7 +47,9 @@ function SeasonalBlock({ products, currency }) {
   )
 }
 
-export default function KuraTheme({ business }) {
+// `renderAction(product)` adds a control to each product (the waiter's
+// "Agregar" when taking an order); the public menu has none
+export default function KuraTheme({ business, renderAction }) {
   const { seasonal, regular } = splitSeasonal(business.products)
   const sections = groupByCategory(regular, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(sections, '.kura-section')
@@ -79,7 +83,7 @@ export default function KuraTheme({ business }) {
         </nav>
       )}
 
-      <SeasonalBlock products={seasonal} currency={business.currency} />
+      <SeasonalBlock products={seasonal} currency={business.currency} renderAction={renderAction} />
 
       <main className={business.twoColumns ? 'kura-sheet is-two-col' : 'kura-sheet'}>
         {business.products.length === 0 && <p className="kura-note">{t('menu.emptyMenu')}</p>}
@@ -90,7 +94,7 @@ export default function KuraTheme({ business }) {
             </h2>
             <ul className="kura-items">
               {s.items.map((p) => (
-                <MenuItem key={p._id} product={p} currency={business.currency} />
+                <MenuItem key={p._id} product={p} currency={business.currency} renderAction={renderAction} />
               ))}
             </ul>
           </section>

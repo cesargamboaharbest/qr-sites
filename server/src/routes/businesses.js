@@ -22,7 +22,8 @@ const router = Router()
 router.use(requireAuth, ownerOrAdmin)
 
 // The businesses the current user can manage
-const managedBusinesses = (req) => (req.waiter ? waiterBusinesses(req.waiter) : { owner: req.ownerId })
+const managedBusinesses = (req) =>
+  req.waiter ? waiterBusinesses(req.waiter, req.waiterPro) : { owner: req.ownerId }
 const orderScope = (req) => (req.waiter ? waiterOrderScope(req.waiter) : {})
 
 function pick(source, keys) {
@@ -246,7 +247,7 @@ router.get('/:id/orders', async (req, res) => {
   if (typeof req.query.location === 'string') {
     filter['table.location'] = req.query.location || { $in: ['', null] }
   }
-  res.json({ orders: await listOrders(business._id, req.query.status, { ...filter, ...orderScope(req) }) })
+  res.json({ orders: await listOrders(business._id, req.query, { ...filter, ...orderScope(req) }) })
 })
 
 router.patch('/:id/orders/:orderId', async (req, res) => {

@@ -8,7 +8,7 @@ import { useSectionNav } from './useSectionNav.js'
 import './BoutiqueTheme.css'
 
 // "Producto de temporada": black editorial cards with serif titles above the sections
-function SeasonalBlock({ products, currency }) {
+function SeasonalBlock({ products, currency, renderAction }) {
   if (products.length === 0) return null
   return (
     <section className="bq-seasonal" aria-labelledby="bq-seasonal-title">
@@ -23,6 +23,7 @@ function SeasonalBlock({ products, currency }) {
             {p.description && <p className="bq-seasonal-desc">{p.description}</p>}
             <p className="bq-seasonal-price">{formatPrice(p.price, currency)}</p>
             {!p.available && <p className="bq-sold-out">{t('menu.soldOut')}</p>}
+            {renderAction?.(p)}
           </li>
         ))}
       </ul>
@@ -30,7 +31,9 @@ function SeasonalBlock({ products, currency }) {
   )
 }
 
-export default function BoutiqueTheme({ business }) {
+// `renderAction(product)` adds a control to each product (the waiter's
+// "Agregar" when taking an order); the public menu has none
+export default function BoutiqueTheme({ business, renderAction }) {
   const { seasonal, regular } = splitSeasonal(business.products)
   const sections = groupByCategory(regular, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(sections, '.bq-section')
@@ -67,7 +70,7 @@ export default function BoutiqueTheme({ business }) {
         </nav>
       )}
 
-      <SeasonalBlock products={seasonal} currency={business.currency} />
+      <SeasonalBlock products={seasonal} currency={business.currency} renderAction={renderAction} />
 
       <main className={business.twoColumns ? 'bq-main is-two-col' : 'bq-main'}>
         {business.products.length === 0 && <p className="bq-empty">{t('menu.emptyMenu')}</p>}
@@ -83,6 +86,7 @@ export default function BoutiqueTheme({ business }) {
                   {p.description && <p className="bq-desc">{p.description}</p>}
                   <p className="bq-price">{formatPrice(p.price, business.currency)}</p>
                   {!p.available && <p className="bq-sold-out">{t('menu.soldOut')}</p>}
+                  {renderAction?.(p)}
                 </li>
               ))}
             </ul>

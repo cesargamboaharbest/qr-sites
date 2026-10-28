@@ -19,8 +19,7 @@
   },
   "plan": {
     "proChip": "Parte del plan Pro",
-    "proBadge": "Plan Pro",
-    "lockedHint": "Los meseros son parte del plan Pro. Contáctanos para activarlo en tu cuenta."
+    "proBadge": "Plan Pro"
   },
   "nav": {
     "label": "Navegación principal",
@@ -216,6 +215,7 @@
   "topProducts": {
     "title": "Productos más vendidos",
     "hint": "Ordenados por unidades vendidas desde que el menú recibe pedidos. Los pedidos cancelados no cuentan.",
+    "hintMenuOnly": "Ordenados por unidades vendidas en los pedidos que toman tus meseros. Los pedidos cancelados no cuentan.",
     "refresh": "Actualizar",
     "empty": "Aún no hay ventas. Cuando tus clientes hagan pedidos, aquí verás sus productos favoritos.",
     "totalUnits": "Unidades vendidas",
@@ -254,6 +254,8 @@
     "hint": "Los meseros inician sesión en {url} con su correo y contraseña. Ven y toman los pedidos de la ubicación que les asignes.",
     "username": "Correo del mesero",
     "password": "Contraseña",
+    "basicHint": "Plan Básico: hasta {limit} meseros para tomar pedidos en tus menús sin carrito ({count} de {limit}).",
+    "limitReached": "Llegaste al límite de {limit} meseros del Plan Básico. Con el plan Pro puedes crear todos los que necesites.",
     "location": "Ubicación",
     "allLocations": "Agregar a todas las ubicaciones (puede ver pedidos de todas las sedes de restaurantes)",
     "locationOption": "{business} · {location}",
@@ -298,7 +300,9 @@
     "pickTable": "Elige una mesa",
     "search": "Buscar producto",
     "noProducts": "No hay productos disponibles.",
-    "noTables": "Aún no hay mesas donde tomar pedidos.",
+    "noTables": "Aún no hay menús publicados ni mesas donde tomar pedidos.",
+    "tableName": "Mesa",
+    "tableNamePlaceholder": "Ej. Mesa 4 o Terraza",
     "send": "Enviar pedido",
     "placedNotice": "Pedido #{n} enviado para {table}. Total: {total}."
   },
@@ -308,7 +312,20 @@
     "filterAll": "Todos",
     "filterLabel": "Filtrar pedidos",
     "autoRefresh": "Se actualiza automáticamente",
-    "empty": "No hay pedidos por ahora.",
+    "empty": "No hay pedidos en este periodo.",
+    "emptyToday": "Aún no hay pedidos hoy.",
+    "periodLabel": "Periodo",
+    "pickDate": "Fecha",
+    "periods": {
+      "today": "Hoy",
+      "yesterday": "Ayer",
+      "week": "Últimos 7 días",
+      "month": "Últimos 30 días",
+      "date": "Elegir fecha…",
+      "all": "Todos los pedidos anteriores"
+    },
+    "count": { "one": "1 pedido", "other": "{count} pedidos" },
+    "periodTotal": "Total vendido",
     "number": "Pedido #{n}",
     "notes": "Notas",
     "total": "Total",
@@ -318,6 +335,7 @@
     "defaultLocation": "Predeterminada",
     "makeDefault": "Usar como predeterminada",
     "savingDefault": "Guardando…",
+    "menuOnlyHint": "Los pedidos de este menú los toman tus meseros desde su cuenta, indicando la mesa.",
     "noLocationsHint": "Tus mesas aún no tienen ubicación. Asígnala con «Cambiar ubicación» en",
     "statuses": {
       "pending": "Nuevo",
@@ -389,6 +407,8 @@
     "ORDERING_DISABLED": "Este menú no recibe pedidos en línea.",
     "FORBIDDEN": "No tienes permiso para hacer esto.",
     "LOCATION_NOT_FOUND": "Esa ubicación ya no existe. Recarga la página.",
+    "WAITER_LIMIT": "Llegaste al límite de meseros del Plan Básico. Con el plan Pro puedes crear más.",
+    "TABLE_NAME_REQUIRED": "Escribe el nombre o número de la mesa.",
     "PRO_REQUIRED": "Esta función es parte del plan Pro.",
     "INVALID_IMAGE": "Elige un archivo de imagen de menos de 20 MB.",
     "INVALID_IMAGE_URL": "La imagen no es válida. Súbela de nuevo.",
