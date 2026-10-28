@@ -48,8 +48,9 @@ function SeasonalBlock({ products, currency, renderAction }) {
 }
 
 // `renderAction(product)` adds a control to each product (the waiter's
-// "Agregar" when taking an order); the public menu has none
-export default function KuraTheme({ business, renderAction }) {
+// "Agregar" when taking an order); the public menu has none. `footer` goes
+// last inside the page (the public menu's Dashi credit)
+export default function KuraTheme({ business, renderAction, footer }) {
   const { seasonal, regular } = splitSeasonal(business.products)
   const sections = groupByCategory(regular, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(sections, '.kura-section')
@@ -106,6 +107,7 @@ export default function KuraTheme({ business, renderAction }) {
           <p>{business.description}</p>
         </footer>
       )}
+      {footer}
     </div>
   )
 }

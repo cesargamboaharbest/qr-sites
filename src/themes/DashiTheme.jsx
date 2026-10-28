@@ -38,8 +38,9 @@ function SeasonalBlock({ products, currency, renderAction }) {
 }
 
 // `renderAction(product)` adds a control to each product (the waiter's
-// "Agregar" when taking an order); the public menu has none
-export default function DashiTheme({ business, renderAction }) {
+// "Agregar" when taking an order); the public menu has none. `footer` goes
+// last inside the page (the public menu's Dashi credit)
+export default function DashiTheme({ business, renderAction, footer }) {
   const { seasonal, regular } = splitSeasonal(business.products)
   const sections = groupByCategory(regular, t('products.uncategorized'), business.categoryOrder)
   const { rootRef, active, goToSection } = useSectionNav(sections, '.dsh-section')
@@ -113,6 +114,7 @@ export default function DashiTheme({ business, renderAction }) {
       <footer className="dsh-footer" aria-hidden="true">
         <DashiBowl />
       </footer>
+      {footer}
     </div>
   )
 }

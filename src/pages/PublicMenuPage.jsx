@@ -5,6 +5,7 @@ import { errorMessage, t } from '../i18n/index.js'
 import { formatPrice, tableLabel } from '../utils/format.js'
 import { PLACEHOLDER_IMAGE, groupByCategory } from '../utils/products.js'
 import KuraMenu from './KuraMenu.jsx'
+import MenuCredit from '../components/MenuCredit.jsx'
 import { getTheme } from '../themes/index.js'
 import { useSectionNav, withPeriod } from '../themes/useSectionNav.js'
 import heroUrl from '../assets/kura-hero.png'
@@ -248,6 +249,7 @@ export function CartMenu({ data, themeKey, tableId, reload }) {
           </button>
         </form>
       </dialog>
+      <MenuCredit />
     </div>
   )
 }
@@ -316,6 +318,6 @@ export default function PublicMenuPage() {
 
   // The owner's theme styles both kinds of page
   const theme = getTheme(data.theme)
-  if (!data.business.ordering) return <theme.Menu business={data.business} />
+  if (!data.business.ordering) return <theme.Menu business={data.business} footer={<MenuCredit />} />
   return <CartMenu data={data} themeKey={theme.key} tableId={tableId} reload={load} />
 }
