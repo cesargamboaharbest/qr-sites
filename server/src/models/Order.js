@@ -21,7 +21,11 @@ const orderSchema = new mongoose.Schema(
     table: {
       id: { type: mongoose.Schema.Types.ObjectId, required: true },
       name: { type: String, required: true },
+      // Copied from the table so waiters of a location only see its orders
+      location: { type: String, default: '' },
     },
+    // Set when a waiter took the order instead of the customer scanning the QR
+    waiter: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     items: { type: [orderItemSchema], validate: (v) => v.length > 0 },
     notes: { type: String, trim: true, maxlength: 300, default: '' },
     total: { type: Number, required: true },
@@ -31,5 +35,6 @@ const orderSchema = new mongoose.Schema(
 )
 
 orderSchema.index({ business: 1, createdAt: -1 })
+orderSchema.index({ business: 1, 'table.location': 1, createdAt: -1 })
 
 export default mongoose.model('Order', orderSchema)

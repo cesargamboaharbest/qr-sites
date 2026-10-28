@@ -34,6 +34,9 @@ const productSchema = new mongoose.Schema({
 
 const tableSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true, maxlength: 40 },
+  // Restaurant location ("sede") for businesses with several; empty = none.
+  // A business's locations are the distinct values of its tables.
+  location: { type: String, trim: true, maxlength: 60, default: '' },
   // How many times the table's QR menu was opened (once per browser session)
   scans: { type: Number, default: 0, min: 0 },
 })
@@ -61,6 +64,8 @@ const businessSchema = new mongoose.Schema(
     menuScans: { type: Number, default: 0, min: 0 },
     products: [productSchema],
     tables: [tableSchema],
+    // Table location the "Pedidos" tab opens filtered by; empty = all
+    ordersLocation: { type: String, trim: true, maxlength: 60, default: '' },
     // Incremented atomically to give each order a short, human-friendly number
     orderSeq: { type: Number, default: 0 },
   },
@@ -70,6 +75,22 @@ const businessSchema = new mongoose.Schema(
 businessSchema.methods.toOwnerJSON = function () {
   const { orderSeq, __v, ...rest } = this.toObject()
   return { ...rest, id: this._id }
+}
+
+// Distinct table locations, in the spelling first used
+export function tableLocations(tables) {
+  const byKey = new Map()
+  for (const { location } of tables) {
+    if (location && !byKey.has(location.toLowerCase())) byKey.set(location.toLowerCase(), location)
+  }
+  return [...byKey.values()]
+}
+
+// Reuses an existing location's spelling when only the case differs, so
+// "Escazú" and "escazú" don't become two locations
+export function matchLocation(tables, value) {
+  const location = String(value ?? '').trim().slice(0, 60)
+  return tableLocations(tables).find((l) => l.toLowerCase() === location.toLowerCase()) ?? location
 }
 
 export function slugify(text) {

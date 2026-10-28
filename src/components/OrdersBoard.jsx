@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { api } from '../api/client.js'
 import { errorMessage, t } from '../i18n/index.js'
-import { formatPrice, formatTime } from '../utils/format.js'
+import { formatPrice, formatTime, tableLabel } from '../utils/format.js'
 
 const REFRESH_MS = 10_000
 
@@ -26,7 +26,8 @@ function OrderCard({ order, currency: defaultCurrency, onStatus }) {
       </header>
       {order.businessName && <p className="order-business">{order.businessName}</p>}
       <p className="order-meta">
-        <strong>{order.table.name}</strong> · <span className="muted">{formatTime(order.createdAt)}</span>
+        <strong>{tableLabel(order.table)}</strong> · <span className="muted">{formatTime(order.createdAt)}</span>
+        {order.waiter && <span className="badge">{t('orders.byWaiter')}</span>}
       </p>
       <ul className="order-items">
         {order.items.map((item, i) => (
@@ -66,26 +67,30 @@ function OrderCard({ order, currency: defaultCurrency, onStatus }) {
 
 // Live list of a business's orders. Used by the owner's "Pedidos" tab
 // (path /businesses/:id/orders) and the waiter view (path /waiter/orders).
-export default function OrdersBoard({ path, currency }) {
+// Changing `refreshKey` reloads right away (e.g. after a waiter places one).
+// `location` filters by table location ('' = tables without one).
+export default function OrdersBoard({ path, currency, refreshKey, location }) {
   const [filter, setFilter] = useState('active')
   const [orders, setOrders] = useState(null)
   const [error, setError] = useState('')
 
   const load = useCallback(async () => {
     try {
-      const data = await api(`${path}?status=${filter}`)
+      const params = new URLSearchParams({ status: filter })
+      if (location !== undefined) params.set('location', location)
+      const data = await api(`${path}?${params}`)
       setOrders(data.orders)
       setError('')
     } catch (err) {
       setError(errorMessage(err.code))
     }
-  }, [path, filter])
+  }, [path, filter, location])
 
   useEffect(() => {
     load()
     const timer = setInterval(load, REFRESH_MS)
     return () => clearInterval(timer)
-  }, [load])
+  }, [load, refreshKey])
 
   async function updateStatus(order, status) {
     try {

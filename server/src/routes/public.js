@@ -2,13 +2,10 @@
 import { Router } from 'express'
 import mongoose from 'mongoose'
 import Business from '../models/Business.js'
-import Order from '../models/Order.js'
 import User from '../models/User.js'
 import { THEMES } from '../themes.js'
 import { HttpError } from '../errors.js'
-import { recordPurchases } from '../purchases.js'
-
-const MAX_QUANTITY = 99
+import { createOrder } from '../orders.js'
 
 const router = Router()
 
@@ -50,7 +47,7 @@ router.get('/:slug', async (req, res) => {
         imageUrl,
       })),
     },
-    table: table && { id: table._id, name: table.name },
+    table: table && { id: table._id, name: table.name, location: table.location },
   })
 })
 
@@ -81,37 +78,7 @@ router.post('/:slug/orders', async (req, res) => {
   if (!business.ordering) throw new HttpError(400, 'ORDERING_DISABLED')
   const table = findTable(business, req.body?.tableId)
   if (!table) throw new HttpError(400, 'TABLE_NOT_FOUND')
-
-  const requested = Array.isArray(req.body?.items) ? req.body.items : []
-  if (requested.length === 0) throw new HttpError(400, 'EMPTY_ORDER')
-
-  // Prices always come from the database, never from the client
-  const items = requested.map(({ productId, quantity }) => {
-    const qty = Number(quantity)
-    if (!Number.isInteger(qty) || qty < 1 || qty > MAX_QUANTITY) throw new HttpError(400, 'VALIDATION')
-    const product = mongoose.isValidObjectId(productId) && business.products.id(productId)
-    if (!product || !product.available) throw new HttpError(409, 'PRODUCT_UNAVAILABLE')
-    return { product: product._id, name: product.name, price: product.price, quantity: qty }
-  })
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-
-  const { orderSeq } = await Business.findByIdAndUpdate(
-    business._id,
-    { $inc: { orderSeq: 1 } },
-    { returnDocument: 'after', projection: { orderSeq: 1 } }
-  )
-
-  const order = await Order.create({
-    business: business._id,
-    number: orderSeq,
-    table: { id: table._id, name: table.name },
-    items,
-    notes: String(req.body?.notes ?? '').slice(0, 300),
-    total,
-  })
-  // The order is already saved: don't make the customer resend it if only the
-  // stats fail (`npm run rebuild-purchases` fixes them)
-  await recordPurchases(order).catch((err) => console.error('recordPurchases failed', order._id, err))
+  const order = await createOrder(business, table, req.body)
   res.status(201).json({ order: { number: order.number, total: order.total } })
 })
 

@@ -5,7 +5,7 @@ import { errorMessage, t } from '../i18n/index.js'
 import { publicMenuUrl, slugify } from '../utils/format.js'
 import Field from '../components/Field.jsx'
 import ProChip from '../components/ProChip.jsx'
-import { useAuth } from '../auth/AuthContext.jsx'
+import { isOwner, useAuth } from '../auth/AuthContext.jsx'
 
 function CreateBusinessForm() {
   const navigate = useNavigate()
@@ -115,6 +115,9 @@ function CreateBusinessForm() {
 }
 
 export default function DashboardPage() {
+  const { user } = useAuth()
+  // Admin waiters edit the owner's businesses but can't create new ones
+  const owner = isOwner(user)
   const [businesses, setBusinesses] = useState(null)
   const [error, setError] = useState('')
 
@@ -125,7 +128,7 @@ export default function DashboardPage() {
   }, [])
 
   return (
-    <div className="dashboard">
+    <div className={`dashboard ${owner ? '' : 'is-single'}`}>
       <section>
         <h1>{t('dashboard.title')}</h1>
         {error && <p className="form-error" role="alert">{error}</p>}
@@ -152,9 +155,11 @@ export default function DashboardPage() {
           ))}
         </ul>
       </section>
-      <aside>
-        <CreateBusinessForm />
-      </aside>
+      {owner && (
+        <aside>
+          <CreateBusinessForm />
+        </aside>
+      )}
     </div>
   )
 }

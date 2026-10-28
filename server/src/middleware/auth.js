@@ -22,7 +22,8 @@ export function requireAuth(req, res, next) {
   next()
 }
 
-// Use after requireAuth on routes that manage businesses
+// Use after requireAuth on routes only the owner can use (admin waiters
+// included in ownerOrAdmin can't)
 export function ownerOnly(req, res, next) {
   if (req.role !== 'owner') throw new HttpError(403, 'FORBIDDEN')
   next()

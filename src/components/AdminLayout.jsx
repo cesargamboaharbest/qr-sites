@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import { api } from '../api/client.js'
-import { useAuth } from '../auth/AuthContext.jsx'
+import { isOwner, useAuth } from '../auth/AuthContext.jsx'
 import { errorMessage, t } from '../i18n/index.js'
 import { THEMES, themeLabel } from '../themes/index.js'
 import ProChip from './ProChip.jsx'
@@ -38,8 +38,11 @@ function ThemeSelect() {
   )
 }
 
+// Also used by admin waiters, who get the menus plus a way back to their
+// orders, but not waiters or the theme (those stay with the owner)
 export default function AdminLayout() {
   const { user, logout } = useAuth()
+  const owner = isOwner(user)
   return (
     <div className="admin">
       <header className="admin-header">
@@ -48,7 +51,9 @@ export default function AdminLayout() {
         </Link>
         <nav className="admin-nav" aria-label={t('nav.label')}>
           <NavLink to="/dashboard">{t('nav.businesses')}</NavLink>
-          {user.proPlan ? (
+          {!owner ? (
+            <NavLink to="/mesero">{t('nav.orders')}</NavLink>
+          ) : user.proPlan ? (
             <NavLink to="/meseros">{t('nav.waiters')}</NavLink>
           ) : (
             <span className="admin-nav-locked" aria-disabled="true" title={t('plan.lockedHint')}>
@@ -57,8 +62,8 @@ export default function AdminLayout() {
           )}
         </nav>
         <div className="admin-user">
-          <ThemeSelect />
-          <span className="muted">{user.username}</span>
+          {owner && <ThemeSelect />}
+          <span className="muted">{owner ? user.username : t('waiter.signedInAs', { username: user.username })}</span>
           {user.proPlan && <span className="badge badge-pro">{t('plan.proBadge')}</span>}
           <button type="button" className="btn btn-ghost btn-sm" onClick={logout}>
             {t('app.logout')}

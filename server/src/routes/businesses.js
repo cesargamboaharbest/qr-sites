@@ -1,14 +1,29 @@
 import { Router } from 'express'
-import Business, { IMAGE_URL_PATTERN, RESERVED_SLUGS, SLUG_PATTERN, slugify } from '../models/Business.js'
+import mongoose from 'mongoose'
+import Business, {
+  IMAGE_URL_PATTERN,
+  RESERVED_SLUGS,
+  SLUG_PATTERN,
+  matchLocation,
+  slugify,
+  tableLocations,
+} from '../models/Business.js'
 import Order from '../models/Order.js'
 import PurchasedProduct from '../models/PurchasedProduct.js'
 import { HttpError } from '../errors.js'
 import { ownerOnly, requireAuth } from '../middleware/auth.js'
+import { ownerOrAdmin, waiterBusinesses, waiterOrderScope } from '../middleware/staff.js'
 import { listOrders, updateOrderStatus } from '../orders.js'
 import { ownerHasPro } from '../plan.js'
 
+// Owners, and waiters with admin permission ("y demás": everything except
+// creating or deleting businesses)
 const router = Router()
-router.use(requireAuth, ownerOnly)
+router.use(requireAuth, ownerOrAdmin)
+
+// The businesses the current user can manage
+const managedBusinesses = (req) => (req.waiter ? waiterBusinesses(req.waiter) : { owner: req.ownerId })
+const orderScope = (req) => (req.waiter ? waiterOrderScope(req.waiter) : {})
 
 function pick(source, keys) {
   const out = {}
@@ -49,9 +64,18 @@ async function saveBusiness(business) {
 }
 
 async function loadOwned(req) {
-  const business = await Business.findOne({ _id: req.params.id, owner: req.userId })
+  if (!mongoose.isValidObjectId(req.params.id)) throw new HttpError(404, 'NOT_FOUND')
+  const filter = managedBusinesses(req)
+  if (filter._id && String(filter._id) !== req.params.id) throw new HttpError(404, 'NOT_FOUND')
+  const business = await Business.findOne({ ...filter, _id: req.params.id })
   if (!business) throw new HttpError(404, 'NOT_FOUND')
   return business
+}
+
+function findTable(business, tableId) {
+  const table = business.tables.id(tableId)
+  if (!table) throw new HttpError(404, 'NOT_FOUND')
+  return table
 }
 
 function findProduct(business, productId) {
@@ -63,11 +87,11 @@ function findProduct(business, productId) {
 // ---------- Businesses ----------
 
 router.get('/', async (req, res) => {
-  const businesses = await Business.find({ owner: req.userId }).sort({ createdAt: -1 })
+  const businesses = await Business.find(managedBusinesses(req)).sort({ createdAt: -1 })
   res.json({ businesses: businesses.map((b) => b.toOwnerJSON()) })
 })
 
-router.post('/', async (req, res) => {
+router.post('/', ownerOnly, async (req, res) => {
   const fields = pick(req.body, ['name', 'description', 'currency', 'ordering'])
   const slug = slugify(req.body?.slug || fields.name || '')
   validateSlug(slug)
@@ -99,6 +123,12 @@ router.patch('/:id', async (req, res) => {
   }
   if (fields.twoColumns !== undefined) fields.twoColumns = Boolean(fields.twoColumns)
   if (req.body?.categoryOrder !== undefined) fields.categoryOrder = parseCategoryOrder(req.body.categoryOrder)
+  if (req.body?.ordersLocation !== undefined) {
+    fields.ordersLocation = matchLocation(business.tables, req.body.ordersLocation)
+    if (fields.ordersLocation && !tableLocations(business.tables).includes(fields.ordersLocation)) {
+      throw new HttpError(400, 'LOCATION_NOT_FOUND')
+    }
+  }
   business.set(fields)
   await saveBusiness(business)
   res.json({ business: business.toOwnerJSON() })
@@ -106,7 +136,7 @@ router.patch('/:id', async (req, res) => {
 
 // Deleting is irreversible: the owner must type the business name (checked in
 // the dashboard's confirmation dialog and again here)
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', ownerOnly, async (req, res) => {
   const business = await loadOwned(req)
   if (String(req.body?.confirmName ?? '').trim() !== business.name) {
     throw new HttpError(400, 'CONFIRM_NAME_MISMATCH')
@@ -162,16 +192,32 @@ router.delete('/:id/products/:productId', async (req, res) => {
 
 router.post('/:id/tables', async (req, res) => {
   const business = await loadOwned(req)
-  business.tables.push(pick(req.body, ['name']))
+  business.tables.push({
+    ...pick(req.body, ['name']),
+    location: matchLocation(business.tables, req.body?.location),
+  })
   await business.save()
   res.status(201).json({ business: business.toOwnerJSON() })
 })
 
+// Renaming or moving a table to another location keeps its QR code (the QR
+// points at the table id). Past orders keep the location they were placed in.
+router.patch('/:id/tables/:tableId', async (req, res) => {
+  const business = await loadOwned(req)
+  const table = findTable(business, req.params.tableId)
+  const fields = pick(req.body, ['name'])
+  if (req.body?.location !== undefined) {
+    const others = business.tables.filter((t) => !t._id.equals(table._id))
+    fields.location = matchLocation(others, req.body.location)
+  }
+  table.set(fields)
+  await business.save()
+  res.json({ business: business.toOwnerJSON() })
+})
+
 router.delete('/:id/tables/:tableId', async (req, res) => {
   const business = await loadOwned(req)
-  const table = business.tables.id(req.params.tableId)
-  if (!table) throw new HttpError(404, 'NOT_FOUND')
-  table.deleteOne()
+  findTable(business, req.params.tableId).deleteOne()
   await business.save()
   res.json({ business: business.toOwnerJSON() })
 })
@@ -193,12 +239,19 @@ router.get('/:id/purchased-products', async (req, res) => {
 
 router.get('/:id/orders', async (req, res) => {
   const business = await loadOwned(req)
-  res.json({ orders: await listOrders(business._id, req.query.status) })
+  // ?location=<name> filters by table location; an empty value means tables
+  // without one (orders from before locations existed included). A waiter's
+  // own location scope always wins.
+  const filter = {}
+  if (typeof req.query.location === 'string') {
+    filter['table.location'] = req.query.location || { $in: ['', null] }
+  }
+  res.json({ orders: await listOrders(business._id, req.query.status, { ...filter, ...orderScope(req) }) })
 })
 
 router.patch('/:id/orders/:orderId', async (req, res) => {
   const business = await loadOwned(req)
-  const order = await updateOrderStatus(business._id, req.params.orderId, req.body?.status)
+  const order = await updateOrderStatus(business._id, req.params.orderId, req.body?.status, orderScope(req))
   res.json({ order })
 })
 export default router
