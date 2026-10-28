@@ -16,6 +16,20 @@ export function formatTime(date) {
   return new Date(date).toLocaleTimeString(numberLocale, { hour: 'numeric', minute: '2-digit' })
 }
 
+// "Mesa 4 · Escazú": the table plus its restaurant location, when it has one
+export function tableLabel(table) {
+  return table.location ? `${table.name} · ${table.location}` : table.name
+}
+
+// Distinct table locations, in the spelling first used (mirrors the server)
+export function tableLocations(tables) {
+  const byKey = new Map()
+  for (const { location } of tables) {
+    if (location && !byKey.has(location.toLowerCase())) byKey.set(location.toLowerCase(), location)
+  }
+  return [...byKey.values()]
+}
+
 export function slugify(text) {
   return String(text)
     .normalize('NFD')

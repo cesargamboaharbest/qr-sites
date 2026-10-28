@@ -931,6 +931,122 @@ textarea {
   cursor: not-allowed;
 }
 
+.business-content {
+  min-width: 0;
+}
+
+.tabs-toggle,
+.tabs-backdrop {
+  display: none;
+}
+
+/* Phones: the tabs live in a drawer that slides in from the left */
+@media screen and (max-width: 51.99rem) {
+  .tabs-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.5rem 0 1.25rem;
+    padding: 0.55rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .tabs-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    border: 0;
+    background: rgba(27, 23, 22, 0.45);
+  }
+
+  .tabs {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 41;
+    width: min(16rem, 80vw);
+    flex-direction: column;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 1.25rem 0.75rem;
+    border: 0;
+    background: var(--card);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.25);
+    overflow-y: auto;
+    transform: translateX(-105%);
+    visibility: hidden;
+    transition: transform 0.2s ease, visibility 0.2s;
+  }
+
+  .tabs.is-open {
+    transform: none;
+    visibility: visible;
+  }
+}
+
+/* Sidebar look for the tabs, in the phone drawer and on wide screens */
+@media screen {
+  .business-body .tab {
+    padding: 0.7rem 0.9rem;
+    border-bottom: 0;
+    border-left: 3px solid transparent;
+    border-radius: 0.6rem;
+    white-space: normal;
+  }
+
+  .business-body .tab:hover:not(.is-locked, .active) {
+    background: var(--paper-deep);
+    color: var(--ink);
+  }
+
+  .business-body .tab.active {
+    border-left-color: var(--leaf-deep);
+    background: var(--paper-deep);
+  }
+
+  .admin .business-body .tab.active {
+    border-left-color: #f07a2b;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabs {
+    transition: none;
+  }
+}
+
+/* Wide screens: the tabs become a sticky sidebar next to the content */
+@media screen and (min-width: 52rem) {
+  .business-body {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    gap: 2rem;
+    align-items: start;
+    margin-top: 1.25rem;
+  }
+
+  .tabs {
+    position: sticky;
+    top: 1rem;
+    flex-direction: column;
+    margin: 0;
+    padding: 0.4rem;
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    overflow: visible;
+  }
+
+  .business-content > :first-child {
+    margin-top: 0;
+  }
+}
+
 /* ---------- Products ---------- */
 .product-form {
   display: grid;
@@ -1509,6 +1625,118 @@ fieldset:disabled .btn {
 
 .page-title {
   margin: 0 0 1.25rem;
+}
+
+/* Admin waiters see the businesses without the "Nuevo negocio" column */
+@media (min-width: 52rem) {
+  .dashboard.is-single {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* "Pedidos": location filter and its default */
+.orders-location {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.orders-location .field {
+  flex: 0 1 18rem;
+}
+
+.orders-location .badge,
+.orders-location .btn {
+  margin-bottom: 0.45rem;
+}
+
+.orders-location-hint {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+}
+
+.orders-location .form-error {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+/* Tables grouped by restaurant location */
+.table-group-title {
+  margin: 0.5rem 0 0;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.waiter-row .row-actions {
+  grid-column: auto;
+  align-items: center;
+}
+
+.waiter-row select {
+  width: auto;
+  max-width: 18rem;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* ---------- Waiter: taking an order ---------- */
+.waiter-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.waiter-title .page-title,
+.waiter-title h2 {
+  margin: 0;
+}
+
+.waiter-order-category {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+}
+
+.waiter-order .product-row.is-picked .product-info strong {
+  color: var(--leaf-deep);
+}
+
+.waiter-order .product-info {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.qty-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.qty-stepper .btn {
+  min-width: 2.25rem;
+  justify-content: center;
+}
+
+.qty-stepper span {
+  min-width: 1.5rem;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.waiter-order-footer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--line);
+  background: var(--card);
 }
 
 .order-business {

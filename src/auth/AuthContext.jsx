@@ -48,12 +48,19 @@ export function homeFor(user) {
   return user.role === 'waiter' ? '/mesero' : '/dashboard'
 }
 
-// `role` limits the route to owners or waiters; others go to their own home
+export const isOwner = (user) => (user.role ?? 'owner') === 'owner'
+
+// Owners and waiters with admin permission can edit menus
+export const canManageMenus = (user) => isOwner(user) || Boolean(user.isAdmin)
+
+// `role` limits the route to 'owner', 'waiter' or 'admin' (owners and admin
+// waiters); others go to their own home
 export function RequireAuth({ role, children }) {
   const { user, ready } = useAuth()
   const location = useLocation()
   if (!ready) return <p className="page-status">{t('app.loading')}</p>
   if (!user) return <Navigate to="/login" replace state={{ from: location }} />
-  if (role && (user.role ?? 'owner') !== role) return <Navigate to={homeFor(user)} replace />
+  const allowed = role === 'admin' ? canManageMenus(user) : !role || (user.role ?? 'owner') === role
+  if (!allowed) return <Navigate to={homeFor(user)} replace />
   return children
 }

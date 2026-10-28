@@ -1,19 +1,30 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link, NavLink, Outlet, useNavigate, useParams } from 'react-router-dom'
+import { Link, NavLink, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../../api/client.js'
 import { errorMessage, t } from '../../i18n/index.js'
 import { publicMenuUrl } from '../../utils/format.js'
+import { isOwner, useAuth } from '../../auth/AuthContext.jsx'
 import CopyButton from '../../components/CopyButton.jsx'
 import DeleteBusinessDialog from '../../components/DeleteBusinessDialog.jsx'
 
 export default function BusinessLayout() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [business, setBusiness] = useState(null)
   const [error, setError] = useState('')
   const [pending, setPending] = useState(false)
   const [justPublished, setJustPublished] = useState(false)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    if (!drawerOpen) return
+    const onKey = (e) => e.key === 'Escape' && setDrawerOpen(false)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [drawerOpen])
 
   useEffect(() => {
     api(`/businesses/${id}`)
@@ -65,6 +76,11 @@ export default function BusinessLayout() {
         { key: 'topProducts', path: 'mas-vendidos' },
       ]
     : [{ key: 'qr', path: 'qr' }]
+  const section = pathname.split(`/negocios/${id}`)[1]?.replace(/^\/|\/$/g, '') ?? ''
+  const currentKey =
+    [{ key: 'products', path: '' }, { key: 'preview', path: 'vista-previa' }, ...extraTabs].find(
+      (tab) => tab.path === section
+    )?.key ?? 'products'
   const lockedTab = (key) => (
     <span key={key} className="tab is-locked" title={t('business.lockedTab')} aria-disabled="true">
       {t(`business.tabs.${key}`)}
@@ -108,9 +124,11 @@ export default function BusinessLayout() {
               {t(pending ? 'business.publishing' : 'business.publish')}
             </button>
           )}
-          <button type="button" className="btn btn-danger btn-sm" onClick={() => setConfirmingDelete(true)}>
-            {t('business.deleteBusiness')}
-          </button>
+          {isOwner(user) && (
+            <button type="button" className="btn btn-danger btn-sm" onClick={() => setConfirmingDelete(true)}>
+              {t('business.deleteBusiness')}
+            </button>
+          )}
         </div>
       </header>
 
@@ -128,25 +146,53 @@ export default function BusinessLayout() {
         </p>
       )}
 
-      <nav className="tabs" aria-label={t('business.tabsLabel')}>
-        <NavLink to="" end className="tab">
-          {t('business.tabs.products')}
-        </NavLink>
-        <NavLink to="vista-previa" className="tab">
-          {t('business.tabs.preview')}
-        </NavLink>
-        {extraTabs.map((tab) =>
-          business.published ? (
-            <NavLink key={tab.key} to={tab.path} className="tab">
-              {t(`business.tabs.${tab.key}`)}
-            </NavLink>
-          ) : (
-            lockedTab(tab.key)
-          )
-        )}
-      </nav>
+      <button
+        type="button"
+        className="tabs-toggle"
+        aria-expanded={drawerOpen}
+        aria-controls="business-tabs"
+        onClick={() => setDrawerOpen(true)}
+      >
+        <span aria-hidden="true">☰</span> {t(`business.tabs.${currentKey}`)}
+      </button>
 
-      <Outlet context={{ business, mutate }} />
+      <div className="business-body">
+        {drawerOpen && (
+          <button
+            type="button"
+            className="tabs-backdrop"
+            aria-label={t('business.closeSections')}
+            onClick={() => setDrawerOpen(false)}
+          />
+        )}
+        <nav
+          id="business-tabs"
+          className={`tabs${drawerOpen ? ' is-open' : ''}`}
+          aria-label={t('business.tabsLabel')}
+          // The phone drawer closes once a section is picked
+          onClick={(e) => e.target.closest('a') && setDrawerOpen(false)}
+        >
+          <NavLink to="" end className="tab">
+            {t('business.tabs.products')}
+          </NavLink>
+          <NavLink to="vista-previa" className="tab">
+            {t('business.tabs.preview')}
+          </NavLink>
+          {extraTabs.map((tab) =>
+            business.published ? (
+              <NavLink key={tab.key} to={tab.path} className="tab">
+                {t(`business.tabs.${tab.key}`)}
+              </NavLink>
+            ) : (
+              lockedTab(tab.key)
+            )
+          )}
+        </nav>
+
+        <div className="business-content">
+          <Outlet context={{ business, mutate }} />
+        </div>
+      </div>
     </div>
   )
 }

@@ -46,13 +46,20 @@ export default function App() {
 
       <Route
         element={
-          <RequireAuth role="owner">
+          <RequireAuth role="admin">
             <AdminLayout />
           </RequireAuth>
         }
       >
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/meseros" element={<WaitersPage />} />
+        <Route
+          path="/meseros"
+          element={
+            <RequireAuth role="owner">
+              <WaitersPage />
+            </RequireAuth>
+          }
+        />
         <Route path="/negocios/:id" element={<BusinessLayout />}>
           <Route index element={<ProductsTab />} />
           <Route path="vista-previa" element={<PreviewTab />} />

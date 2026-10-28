@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { api } from '../api/client.js'
 import { errorMessage, t } from '../i18n/index.js'
-import { formatPrice } from '../utils/format.js'
+import { formatPrice, tableLabel } from '../utils/format.js'
 import { PLACEHOLDER_IMAGE, groupByCategory } from '../utils/products.js'
 import KuraMenu from './KuraMenu.jsx'
 import { getTheme } from '../themes/index.js'
@@ -124,7 +124,7 @@ export function CartMenu({ data, themeKey, tableId, reload }) {
 
       {tableId && !table && <p className="pm-banner pm-banner--warn">{t('menu.tableNotFound')}</p>}
       {!tableId && <p className="pm-banner">{t('menu.noTable')}</p>}
-      {table && <p className="pm-banner">{t('menu.orderingAt', { table: table.name })}</p>}
+      {table && <p className="pm-banner">{t('menu.orderingAt', { table: tableLabel(table) })}</p>}
 
       {groups.length > 1 && (
         <nav className="pm-tabs" aria-label={t('menu.categoriesLabel')}>
@@ -211,7 +211,7 @@ export function CartMenu({ data, themeKey, tableId, reload }) {
               {t('menu.close')}
             </button>
           </header>
-          {table && <p className="muted">{table.name}</p>}
+          {table && <p className="muted">{tableLabel(table)}</p>}
 
           {cartLines.length === 0 ? (
             <p className="muted">{t('menu.emptyCart')}</p>
