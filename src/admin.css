@@ -1,5 +1,6 @@
 /* Shared UI for the admin area and forms. Colours come from index.css. */
-:root {
+:root,
+.menu-scope {
   --card: #f3f5ef;
   --line: rgba(43, 42, 38, 0.15);
   --ok: #3f6b2a;
@@ -1735,8 +1736,11 @@ fieldset:disabled .btn {
 }
 
 .qty-stepper .btn {
-  min-width: 2.25rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
   justify-content: center;
+  font-size: 1.15rem;
+  touch-action: manipulation;
 }
 
 .qty-stepper span {
@@ -1746,10 +1750,85 @@ fieldset:disabled .btn {
   font-variant-numeric: tabular-nums;
 }
 
-/* Waiter ordering in a menu without a cart: the themed menu plus "Agregar" */
-.mo-menu {
-  overflow: hidden;
-  border-radius: 1rem;
+/* ---------- Waiter: "Tomar pedido" full screen (phones first) ---------- */
+.take-order {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+}
+
+.take-order-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  padding-top: max(0.6rem, env(safe-area-inset-top));
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-deep);
+}
+
+.take-order-head h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+/* The scrolling area; sticky bars inside stick to its edges */
+.take-order-body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.take-order-body > * {
+  max-width: 48rem;
+  margin-inline: auto;
+  padding: 0.75rem;
+}
+
+/* Menus without a cart: the owner's themed menu runs edge to edge */
+.take-order-body > .mo-wrap {
+  max-width: none;
+  padding: 0;
+}
+
+.mo-wrap > .inline-form {
+  padding: 0.75rem;
+}
+
+/* Colours, fonts and the controls (qty-add, qty, pm-cartbar, pm-dialog,
+   pm-cart) come from the theme in pages/PublicMenu.css; only the layout is
+   tuned here */
+.mo.pm {
+  min-height: 0;
+}
+
+.mo-table {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--pm-line);
+  background: var(--pm-bg);
+  color: var(--pm-ink);
+  font-weight: 700;
+}
+
+.mo-table input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.6rem 0.8rem;
+  border: 1.5px solid var(--pm-line);
+  border-radius: 0.75rem;
+  background: var(--pm-surface);
+  color: var(--pm-ink);
+  font-size: 1rem; /* 16px+ keeps iOS from zooming in */
 }
 
 /* Spans the whole card in the themes whose cards are grids */
@@ -1757,81 +1836,59 @@ fieldset:disabled .btn {
   grid-column: 1 / -1;
   display: flex;
   justify-content: flex-end;
-  margin-top: 0.5rem;
+  margin-top: 0.6rem;
 }
 
-.mo-add,
-.mo-qty button {
-  border: 0;
-  border-radius: 999px;
-  background: #f07a2b;
-  color: #fff;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
+/* Thumb-sized tap targets (44px+) */
+.mo :is(.qty-add, .qty) {
+  min-height: 2.75rem;
+  touch-action: manipulation;
 }
 
-.mo-add {
-  padding: 0.4rem 1rem;
+.mo-action .qty-add {
+  width: auto;
+  min-width: 8rem;
 }
 
-.mo-qty {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.2rem;
-  border-radius: 999px;
-  background: #fff;
-  color: #1b1716;
-  box-shadow: inset 0 0 0 1.5px #f07a2b;
+.mo-action .qty {
+  min-width: 8rem;
 }
 
-.mo-qty button {
-  width: 2rem;
-  height: 2rem;
+.mo .qty button {
+  width: 2.75rem;
+  height: 2.75rem;
+  touch-action: manipulation;
 }
 
-.mo-qty output {
-  min-width: 1.25rem;
-  text-align: center;
-  font-weight: 700;
+.mo-sheet :is(input, textarea) {
+  font-size: 1rem;
 }
 
-.mo-bar {
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
-  display: grid;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-  background: var(--card);
-  box-shadow: 0 -10px 30px -20px rgba(0, 0, 0, 0.4);
+/* Phones: the order slides up from the bottom as a sheet */
+@media (max-width: 39.99rem) {
+  .mo-sheet.pm-dialog {
+    width: 100%;
+    max-width: 100%;
+    max-height: 88dvh;
+    margin: auto 0 0;
+    padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    overflow-y: auto;
+  }
 }
 
-.mo-bar .waiter-order-footer {
-  position: static;
-  padding: 0;
-  border: 0;
+@media (prefers-reduced-motion: no-preference) {
+  .mo-sheet[open] {
+    animation: mo-sheet-in 0.2s ease-out;
+  }
 }
 
-.mo-lines {
-  display: grid;
-  gap: 0.2rem;
-  max-height: 8rem;
-  margin: 0;
-  padding: 0;
-  overflow-y: auto;
-  list-style: none;
-  font-size: 0.9rem;
-}
-
-.mo-lines li {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+@keyframes mo-sheet-in {
+  from {
+    transform: translateY(2rem);
+    opacity: 0;
+  }
 }
 
 .waiter-order-footer {

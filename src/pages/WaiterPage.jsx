@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext.jsx'
 import { t } from '../i18n/index.js'
@@ -6,6 +6,32 @@ import { formatPrice, tableLabel } from '../utils/format.js'
 import OrdersBoard from '../components/OrdersBoard.jsx'
 import SiteFooter from '../components/SiteFooter.jsx'
 import WaiterOrderForm from '../components/WaiterOrderForm.jsx'
+
+// "Tomar pedido" takes the whole screen: waiters use it on their phones
+function TakeOrderScreen({ onClose, onPlaced }) {
+  useEffect(() => {
+    // The page underneath shouldn't scroll along with the menu
+    const { overflow } = document.body.style
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = overflow
+    }
+  }, [])
+
+  return (
+    <div className="take-order" role="dialog" aria-modal="true" aria-labelledby="take-order-title">
+      <header className="take-order-head">
+        <h2 id="take-order-title">{t('waiter.takeOrder')}</h2>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={onClose}>
+          {t('menu.close')}
+        </button>
+      </header>
+      <div className="take-order-body">
+        <WaiterOrderForm onPlaced={onPlaced} />
+      </div>
+    </div>
+  )
+}
 
 // What a waiter ("mesero") sees after logging in: the orders of the owner's
 // businesses (or of their location), and a form to take an order for a table
@@ -40,18 +66,16 @@ export default function WaiterPage() {
           <h1 className="page-title">
             {user.location ? t('waiter.titleLocation', { location: user.location.name }) : t('waiter.title')}
           </h1>
-          {!taking && (
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => {
-                setPlaced(null)
-                setTaking(true)
-              }}
-            >
-              {t('waiter.takeOrder')}
-            </button>
-          )}
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => {
+              setPlaced(null)
+              setTaking(true)
+            }}
+          >
+            {t('waiter.takeOrder')}
+          </button>
         </div>
 
         {placed && (
@@ -64,20 +88,9 @@ export default function WaiterPage() {
           </p>
         )}
 
-        {taking && (
-          <section className="card">
-            <div className="waiter-title">
-              <h2>{t('waiter.takeOrder')}</h2>
-              <button type="button" className="btn btn-ghost btn-sm" onClick={() => setTaking(false)}>
-                {t('menu.close')}
-              </button>
-            </div>
-            <WaiterOrderForm onPlaced={handlePlaced} />
-          </section>
-        )}
-
         <OrdersBoard path="/waiter/orders" refreshKey={placed} />
       </main>
+      {taking && <TakeOrderScreen onClose={() => setTaking(false)} onPlaced={handlePlaced} />}
       <SiteFooter />
     </div>
   )
