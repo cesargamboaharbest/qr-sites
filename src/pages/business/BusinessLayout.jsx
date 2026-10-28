@@ -68,14 +68,13 @@ export default function BusinessLayout() {
   }
 
   const url = publicMenuUrl(business.slug)
-  // Tabs unlocked by "Crear"; menus without a cart only get a single QR code
-  const extraTabs = business.ordering
-    ? [
-        { key: 'tables', path: 'mesas' },
-        { key: 'orders', path: 'pedidos' },
-        { key: 'topProducts', path: 'mas-vendidos' },
-      ]
-    : [{ key: 'qr', path: 'qr' }]
+  // Tabs unlocked by "Crear". Menus without a cart get a single QR code
+  // instead of tables; their orders are taken by waiters.
+  const extraTabs = [
+    business.ordering ? { key: 'tables', path: 'mesas' } : { key: 'qr', path: 'qr' },
+    { key: 'orders', path: 'pedidos' },
+    { key: 'topProducts', path: 'mas-vendidos' },
+  ]
   const section = pathname.split(`/negocios/${id}`)[1]?.replace(/^\/|\/$/g, '') ?? ''
   const currentKey =
     [{ key: 'products', path: '' }, { key: 'preview', path: 'vista-previa' }, ...extraTabs].find(

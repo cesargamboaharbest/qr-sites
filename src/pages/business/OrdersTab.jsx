@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, Navigate, useOutletContext } from 'react-router-dom'
-import { useAuth } from '../../auth/AuthContext.jsx'
+import { isOwner, useAuth } from '../../auth/AuthContext.jsx'
 import { errorMessage, t } from '../../i18n/index.js'
 import { tableLocations } from '../../utils/format.js'
 import OrdersBoard from '../../components/OrdersBoard.jsx'
@@ -20,10 +20,11 @@ export default function OrdersTab() {
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
 
-  if (!business.published || !business.ordering) return <Navigate to=".." relative="path" replace />
+  if (!business.published) return <Navigate to=".." relative="path" replace />
 
-  // Waiters with a location only ever see theirs, so they get no filter
-  const showFilter = !user.location
+  // Locations come from tables, which menus without a cart don't have.
+  // Waiters with a location only ever see theirs, so they get no filter.
+  const showFilter = business.ordering && !user.location
   const noLocations = locations.length === 0
   const isDefault = location === savedDefault
 
@@ -41,6 +42,11 @@ export default function OrdersTab() {
 
   return (
     <div className="stack">
+      {!business.ordering && (
+        <p className="muted">
+          {t('orders.menuOnlyHint')} {isOwner(user) && <Link to="/meseros">{t('nav.waiters')}</Link>}
+        </p>
+      )}
       {showFilter && (
         <div className="orders-location">
           <label className="field">

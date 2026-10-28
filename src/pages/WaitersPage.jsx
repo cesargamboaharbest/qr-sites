@@ -4,7 +4,6 @@ import { errorMessage, t } from '../i18n/index.js'
 import Field from '../components/Field.jsx'
 import ProChip from '../components/ProChip.jsx'
 import { fieldOfError, validateCredentials } from '../utils/credentials.js'
-import { useAuth } from '../auth/AuthContext.jsx'
 
 const EMPTY_FORM = { username: '', password: '', location: '', isAdmin: false }
 
@@ -33,13 +32,15 @@ function LocationSelect({ locations, value, onChange, disabled, label }) {
 }
 
 // Owner creates waiter accounts ("meseros"): each works at one location or
-// all of them, and can be made admin to also edit the menus. Creating waiters
-// is locked without the Pro plan.
+// all of them, and can be made admin to also edit the menus. Without the Pro
+// plan there's a limit (from the API) and they only work with menus without
+// a cart; the form locks once it's reached.
 export default function WaitersPage() {
-  const { user } = useAuth()
-  const locked = !user.proPlan
   const [waiters, setWaiters] = useState(null)
   const [locations, setLocations] = useState([])
+  // Max waiters, or null without a limit (Pro)
+  const [limit, setLimit] = useState(null)
+  const locked = limit !== null && (waiters?.length ?? 0) >= limit
   const [form, setForm] = useState(EMPTY_FORM)
   const [created, setCreated] = useState('')
   const [error, setError] = useState('')
@@ -51,6 +52,7 @@ export default function WaitersPage() {
       .then((data) => {
         setWaiters(data.waiters)
         setLocations(data.locations)
+        setLimit(data.limit)
       })
       .catch((err) => setError(errorMessage(err.code)))
   }, [])
@@ -126,10 +128,13 @@ export default function WaitersPage() {
         <h2>
           {t('waiters.title')} {locked && <ProChip />}
         </h2>
-        <p className="muted">
-          {locked ? t('plan.lockedHint') : t('waiters.hint', { url: `${window.location.origin}/login` })}
-        </p>
-        {/* Without the Pro plan the whole form is disabled (greyed out) */}
+        <p className="muted">{t('waiters.hint', { url: `${window.location.origin}/login` })}</p>
+        {limit !== null && (
+          <p className={locked ? 'notice' : 'muted'}>
+            {t(locked ? 'waiters.limitReached' : 'waiters.basicHint', { limit, count: waiters?.length ?? 0 })}
+          </p>
+        )}
+        {/* Once the Basic plan's limit is reached the whole form is disabled (greyed out) */}
         <form onSubmit={createWaiter} noValidate>
           <fieldset className="stack" disabled={locked}>
             <div className="inline-form">
@@ -209,9 +214,8 @@ export default function WaitersPage() {
                   value={locationKey(waiter.location)}
                   onChange={(key) => updateWaiter(waiter, { location: locationFor(key) })}
                   label={t('waiters.locationOf', { username: waiter.username })}
-                  disabled={locked}
                 />
-                <button type="button" className="btn btn-ghost btn-sm" onClick={() => toggleAdmin(waiter)} disabled={locked}>
+                <button type="button" className="btn btn-ghost btn-sm" onClick={() => toggleAdmin(waiter)}>
                   {t(waiter.isAdmin ? 'waiters.removeAdmin' : 'waiters.makeAdmin')}
                 </button>
                 <button type="button" className="btn btn-danger btn-sm" onClick={() => deleteWaiter(waiter)}>

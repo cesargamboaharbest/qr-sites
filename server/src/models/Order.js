@@ -19,7 +19,8 @@ const orderSchema = new mongoose.Schema(
     business: { type: mongoose.Schema.Types.ObjectId, ref: 'Business', required: true },
     number: { type: Number, required: true },
     table: {
-      id: { type: mongoose.Schema.Types.ObjectId, required: true },
+      // Unset for menus without a cart: the waiter types the table name
+      id: { type: mongoose.Schema.Types.ObjectId },
       name: { type: String, required: true },
       // Copied from the table so waiters of a location only see its orders
       location: { type: String, default: '' },
