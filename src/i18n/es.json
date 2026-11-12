@@ -106,6 +106,10 @@
     "dashi": {
       "name": "Dashi",
       "description": "portada oscura, naranja vivo y tarjetas divertidas"
+    },
+    "soleado": {
+      "name": "Soleado",
+      "description": "amarillo vivo, fotos en círculo y secciones de colores"
     }
   },
   "types": {

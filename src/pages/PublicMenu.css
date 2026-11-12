@@ -978,6 +978,116 @@
   }
 }
 
+/* =====================================================================
+   Soleado: bright yellow, charcoal header, coloured uppercase sections
+   ===================================================================== */
+.pm--soleado {
+  --pm-bg: #f9cb45;
+  --pm-ink: #2b2d2f;
+  --pm-soft: #4a4335;
+  --pm-line: rgba(43, 45, 47, 0.14);
+  --pm-surface: #fbe08f;
+  --pm-accent: #2b2d2f;
+  --pm-accent-ink: #f9cb45;
+  --pm-bar: #2b2d2f;
+  --pm-font: 'Montserrat', system-ui, sans-serif;
+}
+
+.pm--soleado .pm-band {
+  background: #2b2d2f;
+  color: #f9cb45;
+}
+
+.pm--soleado .pm-hero {
+  padding: clamp(2rem, 7vw, 3rem) 1rem;
+}
+
+.pm--soleado .pm-kicker {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pm--soleado .pm-name {
+  font-size: clamp(2.2rem, 10vw, 4rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+
+.pm--soleado .pm-banner {
+  background: #2b2d2f;
+  color: #f9cb45;
+}
+
+.pm--soleado .pm-tabs {
+  border-bottom: 0;
+  background: color-mix(in srgb, #f9cb45 90%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.pm--soleado .pm-tabs a {
+  border: 2px solid var(--pm-ink);
+  border-radius: 999px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pm--soleado .pm-tabs a.is-active {
+  background: var(--pm-ink);
+  color: #f9cb45;
+}
+
+.pm--soleado .pm-category {
+  padding: 2rem 0 1rem;
+}
+
+.pm--soleado .pm-category span {
+  display: block;
+  padding: 0.6rem 1rem;
+  border-radius: 0.4rem;
+  background: #5b4fa3;
+  color: #fff;
+  font-size: clamp(1.05rem, 4vw, 1.35rem);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pm--soleado .pm-section:nth-of-type(5n + 2) .pm-category span { background: #e67e22; }
+.pm--soleado .pm-section:nth-of-type(5n + 3) .pm-category span { background: #0b4f63; }
+.pm--soleado .pm-section:nth-of-type(5n + 4) .pm-category span { background: #a63f22; }
+.pm--soleado .pm-section:nth-of-type(5n + 5) .pm-category span { background: #1a7a99; }
+
+.pm--soleado .pm-card-img {
+  border-radius: 50%;
+  border: 4px solid var(--pm-ink);
+}
+
+.pm--soleado .pm-card-name {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pm--soleado .pm-card-desc {
+  font-style: italic;
+}
+
+.pm--soleado .pm-card-price {
+  font-weight: 600;
+}
+
+.pm--soleado .pm-dialog {
+  border-radius: 1rem;
+}
+
+.pm--soleado .pm-sent {
+  border-radius: 1rem;
+  background: #2b2d2f;
+  color: #fff;
+}
+
 /* ---------- Printing / PDF (Vista previa tab) ---------- */
 @media print {
   .pm {

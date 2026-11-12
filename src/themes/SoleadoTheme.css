@@ -1,0 +1,447 @@
+/* "Soleado" theme */
+.sol {
+  --sol-yellow: #f9cb45;
+  --sol-yellow-d: #f2bb24;
+  --sol-ink: #2b2d2f;
+  --sol-soft: #4a4335;
+  --sol-line: rgba(43, 45, 47, 0.14);
+  /* Section header colours, in turn */
+  --sol-c1: #5b4fa3;
+  --sol-c2: #e67e22;
+  --sol-c3: #0b4f63;
+  --sol-c4: #a63f22;
+  --sol-c5: #1a7a99;
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--sol-yellow);
+  color: var(--sol-ink);
+  font-family: 'Montserrat', system-ui, sans-serif;
+}
+
+/* Charcoal quarter circles in the top corners, as on the printed menu */
+.sol::before,
+.sol::after {
+  content: '';
+  position: absolute;
+  top: calc(clamp(4rem, 14vw, 7rem) / -2);
+  width: clamp(4rem, 14vw, 7rem);
+  aspect-ratio: 1;
+  border: clamp(1.1rem, 3.5vw, 1.9rem) solid var(--sol-ink);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.sol::before {
+  left: calc(clamp(4rem, 14vw, 7rem) / -2);
+}
+
+.sol::after {
+  right: calc(clamp(4rem, 14vw, 7rem) / -2);
+}
+
+/* ---------- Header ---------- */
+.sol-hero {
+  position: relative;
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: clamp(2.25rem, 8vw, 3.5rem) 1.25rem 1.5rem;
+  text-align: center;
+}
+
+.sol-kicker {
+  margin: 0 0 0.3rem;
+  font-size: clamp(0.8rem, 2.6vw, 1rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sol-name {
+  margin: 0;
+  font-size: clamp(2.2rem, 10vw, 4rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+
+.sol-logo {
+  margin: 0;
+}
+
+.sol-logo img {
+  display: block;
+  width: min(100%, 22rem);
+  height: auto;
+  margin: 0 auto;
+}
+
+.sol-band {
+  margin: 0.9rem 0 0;
+  font-size: clamp(0.8rem, 2.6vw, 0.95rem);
+  font-weight: 500;
+  line-height: 1.55;
+  white-space: pre-line;
+}
+
+/* ---------- Three round photos over a charcoal stripe ---------- */
+.sol-photos {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.5rem 1.5rem;
+}
+
+.sol-photos::before {
+  content: '';
+  position: absolute;
+  inset: 32% 0 auto;
+  height: 28%;
+  background: var(--sol-ink);
+}
+
+.sol-photo {
+  position: relative;
+  display: block;
+  flex: none;
+  width: clamp(6.5rem, 30vw, 13rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  background: color-mix(in srgb, #fff 45%, var(--sol-yellow));
+  box-shadow: 0 14px 28px -16px rgba(0, 0, 0, 0.55);
+}
+
+.sol-photos .sol-photo {
+  margin-inline: calc(clamp(6.5rem, 30vw, 13rem) * -0.08);
+}
+
+.sol-photos .sol-photo.is-main {
+  z-index: 1;
+  width: clamp(8rem, 38vw, 16rem);
+}
+
+.sol-photo.is-placeholder {
+  display: grid;
+  place-items: center;
+  border: 3px dashed rgba(43, 45, 47, 0.45);
+  color: rgba(43, 45, 47, 0.5);
+}
+
+.sol-photo.is-placeholder svg {
+  width: 28%;
+  height: auto;
+}
+
+/* ---------- Section pills ---------- */
+.sol-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--sol-yellow) 90%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.sol-nav ul {
+  display: flex;
+  justify-content: safe center;
+  gap: 0.5rem;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0.8rem 1rem;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sol-nav a {
+  display: block;
+  padding: 0.45rem 0.95rem;
+  border: 2px solid var(--sol-ink);
+  border-radius: 999px;
+  color: var(--sol-ink);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sol-nav a.is-active {
+  background: var(--sol-ink);
+  color: var(--sol-yellow);
+}
+
+/* ---------- Sections ---------- */
+.sol-main {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 2rem;
+}
+
+.sol-section {
+  scroll-margin-top: 4rem;
+}
+
+.sol-title {
+  margin: 0;
+  padding: 2rem 0 0.9rem;
+}
+
+.sol-title span {
+  display: block;
+  padding: 0.6rem 1rem;
+  border-radius: 0.4rem;
+  background: var(--sol-c1);
+  color: #fff;
+  font-size: clamp(1.05rem, 4vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-transform: uppercase;
+  box-shadow: 0 6px 14px -10px rgba(0, 0, 0, 0.6);
+}
+
+.sol-section:nth-of-type(5n + 2) .sol-title span { background: var(--sol-c2); }
+.sol-section:nth-of-type(5n + 3) .sol-title span { background: var(--sol-c3); }
+.sol-section:nth-of-type(5n + 4) .sol-title span { background: var(--sol-c4); }
+.sol-section:nth-of-type(5n + 5) .sol-title span { background: var(--sol-c5); }
+
+.sol-list {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sol-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.25rem 1rem;
+  padding: 0.65rem 0.25rem;
+  border-bottom: 1px solid var(--sol-line);
+}
+
+.sol-item:last-child {
+  border-bottom: 0;
+}
+
+/* The waiter's "Agregar" control, under the dish */
+.sol-item > :nth-child(n + 3) {
+  grid-column: 1 / -1;
+}
+
+.sol-item-name {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.sol-item-desc {
+  margin: 0.2rem 0 0;
+  color: var(--sol-soft);
+  font-size: 0.82rem;
+  font-style: italic;
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
+.sol-price {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---------- "Platillo agotado" ---------- */
+.sol-item.is-sold-out :is(.sol-item-name, .sol-item-desc, .sol-price) {
+  opacity: 0.45;
+}
+
+.sol-item.is-sold-out .sol-price {
+  text-decoration: line-through;
+}
+
+.sol-sold-out {
+  display: inline-block;
+  margin: 0.35rem 0 0;
+  padding: 0.12rem 0.6rem;
+  border-radius: 999px;
+  background: var(--sol-ink);
+  color: var(--sol-yellow);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* ---------- "Producto de temporada" ---------- */
+.sol-seasonal {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.sol-seasonal-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sol-seasonal-card {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: var(--sol-ink);
+  color: #fff;
+}
+
+.sol-seasonal-kicker {
+  margin: 0;
+  color: var(--sol-yellow);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sol-seasonal-name {
+  margin: 0.5rem 0 0;
+  font-size: clamp(1.4rem, 5vw, 1.8rem);
+  font-weight: 700;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.sol-seasonal-desc {
+  margin: 0.4rem 0 0;
+  color: #e6e1d4;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.sol-seasonal-price {
+  display: inline-block;
+  margin: 0.9rem 0 0;
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+  background: var(--sol-yellow);
+  color: var(--sol-ink);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.sol-seasonal-card.is-sold-out {
+  opacity: 0.6;
+}
+
+.sol-seasonal-card .sol-sold-out {
+  display: block;
+  width: fit-content;
+  background: var(--sol-yellow);
+  color: var(--sol-ink);
+}
+
+.sol-empty {
+  padding: 3rem 0;
+  text-align: center;
+}
+
+/* ---------- Photo strip at the end, under a charcoal wave ---------- */
+.sol-footer-photos {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: clamp(0.5rem, 2vw, 1rem);
+  margin-top: 1rem;
+  padding: 2.5rem 1rem 1.5rem;
+}
+
+.sol-footer-photos::before {
+  content: '';
+  position: absolute;
+  inset: 0 -10% auto;
+  height: 5rem;
+  border-top: clamp(0.9rem, 3vw, 1.4rem) solid var(--sol-ink);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+}
+
+.sol-footer-photos .sol-photo {
+  width: clamp(5.5rem, 27vw, 11rem);
+  border: 4px solid var(--sol-ink);
+}
+
+.sol-footer-photos .sol-photo.is-placeholder {
+  border-style: dashed;
+}
+
+/* ---------- Two columns on every screen (Business.twoColumns) ---------- */
+.sol-main.is-two-col {
+  max-width: 80rem;
+  columns: 2;
+  column-gap: clamp(1rem, 4vw, 2.5rem);
+}
+
+.is-two-col .sol-section {
+  break-inside: avoid;
+}
+
+@media (max-width: 48rem) {
+  .sol-main.is-two-col {
+    padding-inline: 0.75rem;
+  }
+  .is-two-col .sol-title {
+    padding: 1.5rem 0 0.6rem;
+  }
+  .is-two-col .sol-title span {
+    padding: 0.45rem 0.5rem;
+    font-size: 0.85rem;
+  }
+  .is-two-col .sol-item {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0.55rem 0.1rem;
+  }
+  .is-two-col .sol-item-name {
+    font-size: 0.8rem;
+    overflow-wrap: anywhere;
+  }
+  .is-two-col .sol-item-desc {
+    font-size: 0.72rem;
+  }
+  .is-two-col .sol-price {
+    font-size: 0.82rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sol-nav a {
+    transition: none;
+  }
+}
+
+/* ---------- Printing / PDF (Vista previa tab) ---------- */
+@media print {
+  .sol {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .sol-nav {
+    display: none;
+  }
+  .sol-item,
+  .sol-seasonal-card {
+    break-inside: avoid;
+  }
+  .sol-title {
+    break-after: avoid;
+  }
+}

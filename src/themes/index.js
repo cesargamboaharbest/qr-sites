@@ -12,12 +12,14 @@ import KuraTheme from './KuraTheme.jsx'
 import TeaTheme from './TeaTheme.jsx'
 import BoutiqueTheme from './BoutiqueTheme.jsx'
 import DashiTheme from './DashiTheme.jsx'
+import SoleadoTheme from './SoleadoTheme.jsx'
 
 export const THEMES = {
   kura: { Menu: KuraTheme },
   tea: { Menu: TeaTheme },
   boutique: { Menu: BoutiqueTheme },
   dashi: { Menu: DashiTheme },
+  soleado: { Menu: SoleadoTheme },
 }
 
 export const DEFAULT_THEME = Object.keys(THEMES)[0]
