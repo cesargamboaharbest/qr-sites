@@ -12,7 +12,7 @@ import './SoleadoTheme.css'
 // Empty = a placeholder circle. `logo` replaces the name in the header.
 const FOOD = 'https://cocoviquez.com/comida/'
 const PHOTOS = {
-  logo: '',
+  logo: 'https://cocoviquez.com/logo/logo.webp',
   hero: [
     `${FOOD}WhatsApp%20Image%202026-04-05%20at%2022.08.07.jpeg`,
     `${FOOD}WhatsApp%20Image%202026-04-05%20at%2022.08.05.jpeg`,
